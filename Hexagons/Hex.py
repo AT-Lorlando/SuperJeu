@@ -1,3 +1,5 @@
+
+
 class Hex:
     def __init__(self, q=0,r=0, s=None) :
         self.q=q
@@ -8,8 +10,21 @@ class Hex:
     def __eq__(self, other) :
         return self.q==other.q and self.r==other.r and self.s==other.s
 
+    def __add__(self, other) :
+        return Hex(self.q+other.q,self.r+other.r,self.s+other.s)
+
+    def neighbors(self, direction) :
+        return self+axial_hex_directions[direction]
+
+axial_hex_directions = [Hex(1,0),Hex(0,1),Hex(-1,1),Hex(-1,0),Hex(0,1),Hex(1,-1)] #clockwise orientation, starting from the hexagon on the right
+
+
+
+
+
 a=Hex(1,2)
 b=Hex(1,2,-3)
+a=a+b
 print(f"{a.q} {a.r} {a.s}")
 print(a==b)
 print(a!=b)
