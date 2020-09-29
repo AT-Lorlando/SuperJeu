@@ -2,11 +2,10 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication
 from ui_menu import Ui_Menu
-from ui_donjon import Ui_Calculator
 
 
 
-class GameWindow(QtWidgets.QMainWindow, Ui_Menu,Ui_Calculator):
+class GameWindow(QtWidgets.QMainWindow, Ui_Menu):
     firNumber = None
     typingNumber = False
 
@@ -18,8 +17,7 @@ class GameWindow(QtWidgets.QMainWindow, Ui_Menu,Ui_Calculator):
         self.pushButton_options.clicked.connect(self.options)
 
     def options(self):
-    	self.setupUiTest(self)
-    	print(8)
+    	print(2)
 
 
 app = QApplication(sys.argv)
