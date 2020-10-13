@@ -23,6 +23,7 @@ class Hex:
         return self * x
 
     def neighbor(self, direction) :
+        assert 0<=direction<6
         return self+axial_hex_directions[direction]
     
     def neighbors(self) :
@@ -30,7 +31,11 @@ class Hex:
 
 axial_hex_directions = [Hex(1,0),Hex(0,1),Hex(-1,1),Hex(-1,0),Hex(0,1),Hex(1,-1)] #clockwise orientation, starting from the hexagon on the right
 
-
+def length(hex) :
+        return (abs(hex.q)+abs(hex.r)+abs(hex.s))/2 #Manhattan distance between two cubes (divided by 2 because we work with hexagons)
+    
+def distance(hex1, hex2) :
+        return length(hex1-hex2)
 
 
 
