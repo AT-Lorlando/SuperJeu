@@ -1,6 +1,7 @@
-
-
 class Hex:
+    """
+    This class represents a tile of the hexagonal grid
+    """
     def __init__(self, q=0,r=0, s=None) :
         self.q=q
         self.r=r
@@ -18,24 +19,36 @@ class Hex:
 
     def __mul__(self, x) :
         return Hex(self.q*x,self.r*x,self.s*x)
-    
+
     def __rmul__(self, x) :
         return self * x
 
     def neighbor(self, direction) :
+        """
+        Return the nearest tile in the selected direction. Direction 0 is on the right side, continuing clockwise
+        """
         assert 0<=direction<6
         return self+axial_hex_directions[direction]
-    
+
     def neighbors(self) :
+        """
+        Return all the neighbors of a tile in a list, starting from the one on the right side
+        """
         return [self.neighbor(i) for i in range(6)]
 
 axial_hex_directions = [Hex(1,0),Hex(0,1),Hex(-1,1),Hex(-1,0),Hex(0,1),Hex(1,-1)] #clockwise orientation, starting from the hexagon on the right
 
 def length(hex) :
-        return (abs(hex.q)+abs(hex.r)+abs(hex.s))/2 #Manhattan distance between two cubes (divided by 2 because we work with hexagons)
-    
+    """
+    Returns the Manhattan distances between a tile and the 0 0 0 tile
+    """
+    return (abs(hex.q)+abs(hex.r)+abs(hex.s))/2 #(divided by 2 because we work with hexagons)
+
 def distance(hex1, hex2) :
-        return length(hex1-hex2)
+    """
+    Returns the Manhattan distances between two tiles
+    """
+    return length(hex1-hex2)
 
 
 
