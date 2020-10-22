@@ -7,6 +7,9 @@ class Hex:
         self.r=r
         self.s= (s if s!=None else int(-q-r))
         assert self.s+self.q+self.r==0 , "The sum of the 3 coordinates should be equal to 0!"#condition so that all the hexagons are in the same plan
+    
+    def __repr__(self):
+        return f"{self.q} {self.r} {self.s}"
 
     def __eq__(self, other) :
         return self.q==other.q and self.r==other.r and self.s==other.s
@@ -27,7 +30,7 @@ class Hex:
         """
         Return the nearest tile in the selected direction. Direction 0 is on the right side, continuing clockwise
         """
-        assert 0<=direction<6
+        direction %=5
         return self+axial_hex_directions[direction]
 
     def neighbors(self) :
@@ -53,6 +56,6 @@ def distance(hex1, hex2) :
 
 
 a=Hex(1,2)
-print(f"{a.q} {a.r} {a.s}")
+print(a)
 a=2*a
-print(f"{a.q} {a.r} {a.s}")
+print(a)
