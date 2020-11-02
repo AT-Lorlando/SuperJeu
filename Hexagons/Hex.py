@@ -80,12 +80,12 @@ class Orientation:
         self.start_angle = start_angle #The starting angle of the orientation, in multiple of 60° (i.e. should be 0 for flat topped (0°) and 0.5 for pointy topped (30°)) !!! THIS ANGLE IS FROM THE X AXIS (or whatever its equivalent is in hex coordinates)
 
 
-layout_pointy = Orientation(
+orientation_pointy = Orientation(
                             sqrt(3),sqrt(3)/2.0,0.0,3.0/2.0,
                             sqrt(3)/3.0, -1.0/3.0,0.0,2.0/3.0,
                             0.5)
 
-layout_flat = Orientation(
+orientation_flat = Orientation(
                             3.0 / 2.0, 0.0,sqrt(3) / 2.0, sqrt(3),
                             2.0 / 3.0, 0.0, -1.0 / 3.0,sqrt(3) / 3.0,
                             0.0)
@@ -124,6 +124,7 @@ def hex_corner(layout, hex) :
     return [(center[0]+offset[0],center[1]+offset[1]) for offset in [corner_offset(layout,i) for i in range(6)]]
 
 if __name__ == "__main__":
+    Layout()
     a=Hex(1,2)
     print(a)
     a=2*a
