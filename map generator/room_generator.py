@@ -6,7 +6,7 @@ import csv
 fichier = "map_generator.txt"
 fichier_lire = open(fichier, "w")
 
-fichier_csv = csv.reader(fichier_lire, delimiter=" ")
+
 tab = list(fichier_csv)
 print(type(tab), ("\n\n"))
 # d?termine le nombre de ligne ( taille de la matrice nbL*2 NB:0,1,2)

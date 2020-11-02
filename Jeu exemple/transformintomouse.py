@@ -43,7 +43,8 @@ walkRight = [pygame.image.load('imgs/img_sprite/R1.png'), pygame.image.load('img
 walkLeft = [pygame.image.load('imgs/img_sprite/L1.png'), pygame.image.load('imgs/img_sprite/L2.png'), pygame.image.load('imgs/img_sprite/L3.png'), pygame.image.load('imgs/img_sprite/L4.png'), pygame.image.load('imgs/img_sprite/L5.png'), pygame.image.load('imgs/img_sprite/L6.png'), pygame.image.load('imgs/img_sprite/L7.png'), pygame.image.load('imgs/img_sprite/L8.png'), pygame.image.load('imgs/img_sprite/L9.png')]
 char = pygame.image.load('imgs/img_sprite/standing.png')
 #BACKGROUND
-bg = pygame.transform.scale(pygame.image.load(os.path.join("imgs","background.png")),(WIDTH,HEIGTH))
+bg = pygame.image.load(os.path.join("imgs","background2.png"))
+indicator= pygame.image.load(os.path.join("imgs","goto.png"))
 
 
 def redraw_window():
@@ -63,7 +64,38 @@ run = True
 FPS = 27
 clock = pygame.time.Clock()
 
-man = player(300,500,128,64)
+def goto(x,y):
+	screen.blit(indicator,(x,y))
+	run  = False
+	if man.playerX-x>0:
+		xflag=1			#goleft
+		man.left=True
+	else:
+		xflag=-1				#goright
+		man.right=False
+	if man.playerY-y>0:
+		yflag=1				#godown
+	else:
+		yflag=+1			#goup
+	xdist=(man.playerX-x)*xflag
+	ydist=(man.playerY-y)*yflag
+	length=max(xdist,ydist)//man.change
+	print(length)
+	xsteps=xdist//length
+	ysteps=ydist//length
+	for count in range(length+1):
+		clock.tick(FPS)
+
+		man.playerX -= xsteps*xflag
+		man.playerY -= ysteps*yflag
+		redraw_window()
+
+	run  = True
+	man.left = False
+	man.right = False
+
+
+man = player(200,200,64,64)
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -74,7 +106,10 @@ while run:
     mouse= pygame.mouse.get_pressed()
 
     x,y=pygame.mouse.get_pos()
-    print(keys[pygame.K_LEFT])
+    if mouse[2]:	#Right click
+    	x,y=pygame.mouse.get_pos()
+    	goto(x,y)
+    	
     """
     if keys[pygame.K_LEFT] and man.playerX > man.change:
         man.playerX -= man.change
@@ -112,5 +147,8 @@ while run:
             man.jumpCount = 10
     """
     redraw_window()
+
+
+
 
 pygame.quit()
