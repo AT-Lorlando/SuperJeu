@@ -2,7 +2,7 @@ import pygame
 import os
 import random
 import sys
-
+from math import ceil
 pygame.init()
 class player(object):
     def __init__(self,playerX,playerY,width,heigth):
@@ -44,13 +44,11 @@ walkLeft = [pygame.image.load('imgs/img_sprite/L1.png'), pygame.image.load('imgs
 char = pygame.image.load('imgs/img_sprite/standing.png')
 #BACKGROUND
 bg = pygame.image.load(os.path.join("imgs","background2.png"))
-indicator= pygame.image.load(os.path.join("imgs","goto.png"))
 
 
 def redraw_window():
     screen.blit(bg,(0,0))
     man.draw(screen)
-
 
     #Draw text:
     lives_label = main_font.render(f"LIVES: {lives}",1,RED)
@@ -61,34 +59,38 @@ def redraw_window():
     pygame.display.update()
 
 run = True
-FPS = 27
+FPS = 30
 clock = pygame.time.Clock()
 
 def goto(x,y):
-	screen.blit(indicator,(x,y))
 	run  = False
-	if man.playerX-x>0:
-		xflag=1			#goleft
+	if x-man.playerX>0:
+		xflag=-1			#goleft
+		man.right=True
+	else:
+		xflag=1				#goright
 		man.left=True
+	if y-man.playerY>0:
+		yflag=-1			#godown
 	else:
-		xflag=-1				#goright
-		man.right=False
-	if man.playerY-y>0:
-		yflag=1				#godown
-	else:
-		yflag=+1			#goup
+		yflag=1				#goup
 	xdist=(man.playerX-x)*xflag
 	ydist=(man.playerY-y)*yflag
-	length=max(xdist,ydist)//man.change
-	print(length)
-	xsteps=xdist//length
-	ysteps=ydist//length
+	if xdist<ydist:
+		length=ydist//man.change
+		ysteps=man.change
+		xsteps=ceil(man.change*xdist/ydist)
+	else:
+		length=xdist//man.change
+		xsteps=man.change
+		ysteps=ceil(man.change*ydist/xdist)
 	for count in range(length+1):
 		clock.tick(FPS)
 
 		man.playerX -= xsteps*xflag
 		man.playerY -= ysteps*yflag
 		redraw_window()
+	print(x-man.playerX,y-man.playerY)
 
 	run  = True
 	man.left = False
@@ -108,7 +110,7 @@ while run:
     x,y=pygame.mouse.get_pos()
     if mouse[2]:	#Right click
     	x,y=pygame.mouse.get_pos()
-    	goto(x,y)
+    	goto(x-32,y-32)
     	
     """
     if keys[pygame.K_LEFT] and man.playerX > man.change:
