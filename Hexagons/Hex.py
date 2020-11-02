@@ -92,7 +92,6 @@ orientation_flat = Orientation(
 
 class Layout :
     def  __init__(self, orientation,tuplesize, tupleorigin) :
-        assert type(tupleorigin)==tuple and type(tuplesize)==tuple
         self.orientation=orientation
         self.sizex = tuplesize[0]  #Size of the hexagons along x axis in PIXELS
         self.sizey=tuplesize[1]
@@ -105,7 +104,8 @@ def hex_to_pixel(layout, hex) :
     y = (orientation.f2 * hex.q + orientation.f3 * hex.r) * layout.sizey +layout.originy
     return (x, y)
 
-def pixel_to_hex(layout,x,y):
+def pixel_to_hex(layout,coord):
+    x,y = coord[0], coord[1]
     orientation = layout.orientation
     hexX = (x - layout.originx) / layout.sizex
     hexY = (y - layout.originy) / layout.sizey
@@ -124,8 +124,8 @@ def hex_corner(layout, hex) :
     return [(center[0]+offset[0],center[1]+offset[1]) for offset in [corner_offset(layout,i) for i in range(6)]]
 
 if __name__ == "__main__":
-    Layout()
-    a=Hex(1,2)
+    l = Layout(orientation_flat,(1,1),(0,0))
+    a=Hex(0,0)
     print(a)
-    a=2*a
-    print(a)
+    print (hex_corner(l,a))
+
