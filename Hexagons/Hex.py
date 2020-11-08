@@ -81,13 +81,13 @@ class Orientation:
 
 
 orientation_pointy = Orientation(
-                            sqrt(3),sqrt(3)/2.0,0.0,3.0/2.0,
-                            sqrt(3)/3.0, -1.0/3.0,0.0,2.0/3.0,
+                            sqrt(3), sqrt(3)/2.0, 0.0, 3.0/2.0,
+                            sqrt(3)/3.0,  -1.0/3.0, 0.0, 2.0/3.0,
                             0.5)
 
 orientation_flat = Orientation(
-                            3.0 / 2.0, 0.0,sqrt(3) / 2.0, sqrt(3),
-                            2.0 / 3.0, 0.0, -1.0 / 3.0,sqrt(3) / 3.0,
+                            3.0 / 2.0, 0.0, sqrt(3) / 2.0, sqrt(3),
+                            2.0 / 3.0, 0.0,  -1.0 / 3.0, sqrt(3) / 3.0,
                             0.0)
 
 class Layout :
