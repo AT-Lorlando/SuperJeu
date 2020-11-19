@@ -121,11 +121,19 @@ def corner_offset(layout, corner) :
 
 def hex_corner(layout, hex) :
     center=hex_to_pixel(layout, hex)
-    return [(center[0]+offset[0],center[1]+offset[1]) for offset in [corner_offset(layout,i) for i in range(6)]]
+    return [(round(center[0]+offset[0]),round(center[1]+offset[1])) for offset in [corner_offset(layout,i) for i in range(6)]]
 
 if __name__ == "__main__":
     l = Layout(orientation_flat,(1,1),(0,0))
     a=Hex(0,0)
     print(a)
-    print (hex_corner(l,a))
-
+    #print (hex_corner(l,a))
+    layout=Layout(orientation_pointy,(758,876),(758/2,876/2)) #layout bizarre
+    print (hex_corner(layout,a))
+    #grille rectangle
+    x=1
+    for y in range(7) :
+        x+=(y)%2 -1
+        for z in range(x,7+x):
+            8
+            #print(z,y)
