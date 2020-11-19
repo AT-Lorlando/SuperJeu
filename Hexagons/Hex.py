@@ -93,8 +93,12 @@ orientation_flat = Orientation(
 class Layout :
     def  __init__(self, orientation,tuplesize, tupleorigin) :
         self.orientation=orientation
-        self.sizex = tuplesize[0]  #Size of the hexagons along x axis in PIXELS
-        self.sizey=tuplesize[1]
+        if orientation==orientation_pointy :
+            self.sizex = tuplesize[0]/cos(pi/6) #Size of the hexagons along x axis in PIXELS
+            self.sizey=tuplesize[1]
+        if orientation==orientation_flat :
+            self.sizex = tuplesize[0] #Size of the hexagons along x axis in PIXELS
+            self.sizey=tuplesize[1]/sin(pi/3)
         self.originx=tupleorigin[0] #Origin coordinates in PIXELS
         self.originy=tupleorigin[1]
 
