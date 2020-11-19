@@ -41,7 +41,7 @@ class Hex:
         """
         return [self.neighbor(i) for i in range(6)]
 
-axial_hex_directions = [Hex(1,0),Hex(0,1),Hex(-1,1),Hex(-1,0),Hex(0,1),Hex(1,-1)] #clockwise orientation, starting from the hexagon on the right
+axial_hex_directions = [Hex(1,0),Hex(1,1),Hex(-1,1),Hex(-1,0),Hex(0,1),Hex(1,-1)] #clockwise orientation, starting from the hexagon on the right
 
 def length_hex(hex) :
     """
