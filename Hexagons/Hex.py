@@ -32,7 +32,7 @@ class Hex:
         """
         Return the nearest tile in the selected direction. Direction 0 is on the right side, continuing clockwise
         """
-        direction %=5
+        direction %=6
         return self+axial_hex_directions[direction]
 
     def neighbors(self) :
