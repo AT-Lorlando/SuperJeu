@@ -18,7 +18,7 @@ from math import ceil
 from Hex import *
 
 img_dir=path.join(path.dirname(__file__),'imgs')
-sprite_dir=path.join(path.dirname(__file__),'imgs/img_sprite')
+sprite_dir=path.join(path.dirname(__file__),'imgs' , 'img_sprite')
 
 pygame.init()
 class player(object):
