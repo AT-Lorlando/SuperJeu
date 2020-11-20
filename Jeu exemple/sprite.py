@@ -63,7 +63,7 @@ run = True
 FPS = 27
 clock = pygame.time.Clock()
 
-man = player(300,500,64,64)
+man = player(300,500,128,64)
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -71,6 +71,11 @@ while run:
             run  = False
         
     keys = pygame.key.get_pressed()
+    mouse= pygame.mouse.get_pressed()
+
+    x,y=pygame.mouse.get_pos()
+    print(keys[pygame.K_LEFT])
+    """
     if keys[pygame.K_LEFT] and man.playerX > man.change:
         man.playerX -= man.change
         man.left = True
@@ -105,11 +110,7 @@ while run:
         else:
             man.isJump = False
             man.jumpCount = 10
-        
+    """
     redraw_window()
 
 pygame.quit()
-    
-
-
-
