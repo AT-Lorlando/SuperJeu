@@ -60,10 +60,11 @@ main_font = pygame.font.SysFont("Blue Eyes.otf",30)
 screen = pygame.display.set_mode((WIDTH,HEIGTH))
 pygame.display.set_caption("Sprite and Animation")
 
-# path.join(sprite_dir,"starfield.png")
+
 #IMAGE
-walkRight = [pygame.image.load(path.join(sprite_dir,"R1.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R2.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R3.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R4.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R5.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R6.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R7.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R8.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"R9.png")).convert_alpha()]
-walkLeft = [pygame.image.load(path.join(sprite_dir,"L1.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L2.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L3.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L4.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L5.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L6.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L7.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L8.png")).convert_alpha(),pygame.image.load(path.join(sprite_dir,"L9.png")).convert_alpha()]
+
+walkRight = [(pygame.image.load(path.join(sprite_dir,"R" + str(x) +".png")).convert_alpha()) for x in range(1,10)]
+walkLeft =  [(pygame.image.load(path.join(sprite_dir,"L" + str(x) +".png")).convert_alpha()) for x in range(1,10)]
 
 char = pygame.image.load(path.join(sprite_dir,"standing.png")).convert_alpha()
 
