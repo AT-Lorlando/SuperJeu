@@ -112,7 +112,6 @@ while nb_room > 0:
     for i in range(random.randrange(nb_available)):
         # choose a room to initialize it
         init = pick_a_room(map, choose)
-        print(count)
         map[init[0]][init[1]] = room_letter(count)           # initialize the room                               /!\
         count += 1
         # remove the room from the availables one
