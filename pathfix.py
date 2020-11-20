@@ -15,10 +15,10 @@ YELLOW = (255,255,0)
 
 
 from math import ceil
-from Hex import *
+from Hexagons.Hex import *
 
-img_dir=path.join(path.dirname(__file__),'imgs')
-sprite_dir=path.join(path.dirname(__file__),'imgs' , 'img_sprite')
+img_dir=path.join(path.dirname(__file__),'Jeu exemple' ,'imgs')
+sprite_dir=path.join(img_dir , 'img_sprite')
 
 pygame.init()
 class player(object):
