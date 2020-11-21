@@ -1,6 +1,6 @@
 from types import CoroutineType
 import numpy as np
-import map_generator as mapgen
+import mapgenerator as mapgen
 # from map_generator import * 
 # map_generator as mapgen
 
