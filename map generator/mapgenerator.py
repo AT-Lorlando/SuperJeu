@@ -11,37 +11,47 @@ def find_room(map):
 
     return tab
 
-
 # chip_select is INITIALIZED or AVAILABLE
-def rooms_type(chip_select, map, xRoom, yRoom):
+def rooms_type(chip_select, map, xRoom, yRoom, precision = False):
     tab = []  # list of the rooms availables
 
-    # right
+    # bottom
     if 0 <= xRoom+1 < len(map):
-        right = (xRoom+1, yRoom)
-        if map[right[0]][right[1]] in chip_select:
-            tab.append(right)
-
-    # left
-    if 0 <= xRoom-1 < len(map):
-        left = (xRoom-1, yRoom)
-        if map[left[0]][left[1]] in chip_select:
-            tab.append(left)
+        bottom = (xRoom+1, yRoom)
+        if map[bottom[0]][bottom[1]] in chip_select:
+            if precision :
+                tab.append('b')
+            else :
+                tab.append(bottom)
 
     # top
-    if 0 <= yRoom+1 < len(map):
-        top = (xRoom, yRoom+1)
+    if 0 <= xRoom-1 < len(map):
+        top = (xRoom-1, yRoom)
         if map[top[0]][top[1]] in chip_select:
-            tab.append(top)
+            if precision :
+                tab.append('t')
+            else :
+                tab.append(top)
 
-    # bottom
+    # right
+    if 0 <= yRoom+1 < len(map):
+        right = (xRoom, yRoom+1)
+        if map[right[0]][right[1]] in chip_select:
+            if precision :
+                tab.append('r')
+            else :
+                tab.append(right)
+
+    # left
     if 0 <= yRoom-1 < len(map):
-        bottom = (xRoom, yRoom-1)
-        if map[bottom[0]][bottom[1]] in chip_select:
-            tab.append(bottom)
+        left = (xRoom, yRoom-1)
+        if map[left[0]][left[1]] in chip_select:
+            if precision :
+                tab.append('l')
+            else :
+                tab.append(left)
 
     return tab
-
 
 def pick_a_room(map, choose):
     filled = rooms_type(INITIALIZED, map, choose[0], choose[1])
@@ -63,6 +73,17 @@ def pick_a_room(map, choose):
     choosen = random.choice(tab[0])
 
     return choosen
+
+def room_letter(count) :
+    return chr(ord('a')+count)
+
+# write the map in the file
+def write_map(map,file) :
+    for a in map:
+        if str(a) != '[' or str(a) != ']':
+            for b in a:
+                file.write(str(b))
+        file.write('\n')
 
 
 file_room = open("room_generator.txt", "w")
@@ -91,9 +112,7 @@ start_y = len(map)//2
 map[start_x][start_y] = 'a'  # start = 2 or 'a'                                                  /!\
 nb_room -= 1
 
-def room_letter(count) :
-    # print count
-    return chr(ord('a')+count)
+
 count = 1
 while nb_room > 0:
     nb_available = 0
@@ -120,16 +139,5 @@ while nb_room > 0:
         if nb_room <= 0:  # check if we have enought rooms
             break
 
-# file_map.write(str(map))  # write the matrix in the file
-print(map)
-# print(str(str(map).split('[')))
-for a in map:
-    if str(a) != '[' or str(a) != ']':
-        for b in a:
-            file_room.write(str(b))
-            # file_room.write(",")
-    # file_room.write("-")
-    file_room.write("\n")
-
-
+write_map(map,file_map)
 file_map.close()
