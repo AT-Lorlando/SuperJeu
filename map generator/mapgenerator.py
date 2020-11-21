@@ -12,11 +12,15 @@ def find_room(map):
     return tab
 
 # chip_select is INITIALIZED or AVAILABLE
-def rooms_type(chip_select, map, xRoom, yRoom, precision = False):
+def rooms_type(chip_select, map, xRoom, yRoom, precision = False,HEIGHT = 0, WIDTH = 0):
     tab = []  # list of the rooms availables
+    if HEIGHT == 0 :
+        HEIGHT = len(map)
+    if WIDTH == 0 :
+        WIDTH = len(map)
 
     # bottom
-    if 0 <= xRoom+1 < len(map):
+    if 0 <= xRoom+1 < HEIGHT :
         bottom = (xRoom+1, yRoom)
         if map[bottom[0]][bottom[1]] in chip_select:
             if precision :
@@ -25,7 +29,7 @@ def rooms_type(chip_select, map, xRoom, yRoom, precision = False):
                 tab.append(bottom)
 
     # top
-    if 0 <= xRoom-1 < len(map):
+    if 0 <= xRoom-1 < HEIGHT:
         top = (xRoom-1, yRoom)
         if map[top[0]][top[1]] in chip_select:
             if precision :
@@ -34,8 +38,9 @@ def rooms_type(chip_select, map, xRoom, yRoom, precision = False):
                 tab.append(top)
 
     # right
-    if 0 <= yRoom+1 < len(map):
+    if 0 <= yRoom+1 < WIDTH:
         right = (xRoom, yRoom+1)
+        # print("right=",right,"||WIDTH=",WIDTH,"||len",len(map),"||yroom+1=",yRoom+1)
         if map[right[0]][right[1]] in chip_select:
             if precision :
                 tab.append('r')
@@ -43,7 +48,7 @@ def rooms_type(chip_select, map, xRoom, yRoom, precision = False):
                 tab.append(right)
 
     # left
-    if 0 <= yRoom-1 < len(map):
+    if 0 <= yRoom-1 < WIDTH :
         left = (xRoom, yRoom-1)
         if map[left[0]][left[1]] in chip_select:
             if precision :
