@@ -130,6 +130,7 @@ def goto(tup):
     path=pathfinding(tup)
     for tobechangedelmt in path:
         #current pos - destination
+        print(pygame.time.Clock())
         if tobechangedelmt==Hex(0,1):                  #Hex to right
             man.right=True
             for k in range(70//man.change):
@@ -216,8 +217,8 @@ while run:
     x,y = pygame.mouse.get_pos()
     if mouse[2] and pixel_to_hex(layout,(x,y)) in Grid:	#Right click
         goto(hexpointed((x,y),layout))
-        print("Coo",hexpointed((x,y),layout))
-    	
+        # print("Coo",hexpointed((x,y),layout))
+    
     redraw_window()
     pygame.display.update()
 
