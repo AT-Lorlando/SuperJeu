@@ -3,7 +3,8 @@ import os
 import random
 import sys
 from math import ceil
-sys.path.append('C:/Users/mariu/super-jeu/Hexagons')
+path=os.getcwd()
+sys.path.append(path.removesuffix("Jeu exemple")+'/Hexagons')
 from Hex import *
 pygame.init()
 class player(object):
