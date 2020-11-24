@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>bacground.jpg</file>
+  </qresource>
+  <qresource prefix="logo">
+    <file>Logo.png</file>
+  </qresource>
+  <qresource prefix="username">
+    <file>user.png</file>
+  </qresource>
+  <qresource prefix="password">
+    <file>lock.png</file>
+  </qresource>
+</RCC>
