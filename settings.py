@@ -35,6 +35,7 @@ WALL_ID = 2
 FLOOR_ID = 1
 #CORNER_ID = 3
 VOID_ID = 0
+SPAWN_ID = 7
 
 # Player settings
 PLAYER_SPEED = 800

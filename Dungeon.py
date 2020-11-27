@@ -52,6 +52,8 @@ class Room:
         self.size = Room_size
         self.data = np.full( (self.size, self.size), 0)
         self.tile = 0
+        self.tile_Xpos = 0
+        self.tile_Ypos = 0
         self.pos = 0
         self.corridor_tab = []
         self.connected = False
@@ -113,6 +115,8 @@ class Room:
             thisX = random.randint(SPACE_BETWEEN_END, self.size-SPACE_BETWEEN_END)
             thisY = random.randint(SPACE_BETWEEN_END, self.size-SPACE_BETWEEN_END)
             tile.make_size(self.size)
+        self.tile_Xpos = thisX
+        self.tile_Ypos = thisY
         for x in range(0,tile.Width):
             for y in range(0,tile.Height):
                 X = thisX+x
@@ -129,6 +133,12 @@ class Room:
             else:
                 tile.set_pos(thisX-tile.Width+1, thisY-tile.Height+1) 
         self.tile = tile
+
+    def add_spawn(self):
+        assert(self.tile != 0)
+        thisX = random.randint(2, self.tile.Width-2)
+        thisY = random.randint(2, self.tile.Height-2)
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = SPAWN_ID
 
     def save(self):
         df = pd.DataFrame(data=self.data.astype(float))
@@ -324,9 +334,12 @@ def New_Stage(ID, difficulty):
     while(not stage.are_connected(tile_number)):
         stage = Stage(ID, stage_size, ROOM_SIZE)
         Tile_pos_tab = np.sort(random.sample([i for i in range(stage_size*stage_size)], k = tile_number))
+        room_spawn_id = random.choice(Tile_pos_tab)
         for pos in Tile_pos_tab:
             new_room = Room(pos, Room_size)
             new_room.add_tile(Tile(pos))
+            if pos == room_spawn_id:
+                new_room.add_spawn()
             if(pos%stage_size == 0): #RIGHT
                 new_room.add_corridor('RIGHT')
             elif(pos%stage_size == stage_size): #RIGHT
