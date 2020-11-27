@@ -65,7 +65,8 @@ while run:
     if var == "exit" :
         run = False
     elif var == 'game_launch':
-        g.new_room(0, 0, 'start')
+        g.load_dungeon_data(1)
+        #g.new_room(0, 0, 'start')
         g.run()
     
     for event in pg.event.get():

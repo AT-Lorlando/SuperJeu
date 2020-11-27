@@ -147,8 +147,6 @@ class Wall(pg.sprite.Sprite):
         self.groups = game.backLayer.all_sprites, game.obstacle, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        thisHeight = len(self.game.room.data)
-        thisWidth = len(self.game.room.data[0])
         self.x = x
         self.y = y
         # if(x == 0):
