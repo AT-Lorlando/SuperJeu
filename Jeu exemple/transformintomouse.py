@@ -141,7 +141,7 @@ while run:
     ###############################################DANGER###########################################
     #pygame.draw.polygon(screen,(0,0,0),hex_corner(layout,pixel_to_hex(layout,(x,y))))
 
-    if mouse[2]:	#Right click
+    if mouse[2] and listecase == []:	#Right click
         print(x,y)
         hextogo = pixel_to_hex(layout,(x,y))
         
