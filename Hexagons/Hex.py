@@ -136,6 +136,66 @@ def initgrid(x,y): #draw a rectangular hex grid with x the number of lines and y
             Grid.append(Hex(j,i))
     return Grid
 
+
+class cell :
+    def __init__(self, hex) :
+        self.hex=hex
+        self.g=0
+        self.camefrom=None
+        self.f =0
+
+    def reconstruct_path(self,path) :
+        
+        path.insert(0,self.hex)
+        if self.camefrom != None:
+            print("pas none")
+            return self.camefrom.reconstruct_path(path)
+        else:
+            return path
+    
+    def __repr__(self):
+        return self.hex.__repr__()
+
+def pathfinding(hexstart, hexgoal) :
+    start = cell(hexstart)
+    goal = cell(hexgoal)
+
+    discovered = [start]
+    explored = []
+    start.f =start.g + distance_hex(start.hex,goal.hex)
+
+    while(discovered != []): 
+        print(discovered)
+        print(explored)
+        min = discovered[0].f
+        for cells in discovered:
+            if cells.f <= min :
+                min = cells.f
+                current = cells
+        
+        if current.hex == goal.hex :
+            path = []
+            return current.reconstruct_path(path)
+            #explored.append(current)
+            #return explored
+        
+        discovered.remove(current)
+        explored.append(current)
+
+        for neigh in [cell(hex) for hex in current.hex.neighbors()] :
+            if neigh in explored :
+                continue
+
+            gtest = current.g + distance_hex(current.hex,neigh.hex) 
+            if (gtest < neigh.g) or (neigh not in discovered) :
+                neigh.camefrom = current
+                neigh.g = gtest
+                neigh.f = neigh.g + distance_hex(neigh.hex, goal.hex)
+                if neigh not in discovered :
+                        discovered.append(neigh)
+    return -1
+
+
 if __name__ == "__main__":
     l = Layout(orientation_flat,(1,1),(0,0))
     a=Hex(0,0)
@@ -143,10 +203,5 @@ if __name__ == "__main__":
     #print (hex_corner(l,a))
     layout=Layout(orientation_pointy,(758,876),(758/2,876/2)) #layout bizarre
     print (hex_corner(layout,a))
-    #grille rectangle
-    x=1
-    for y in range(7) :
-        x+=(y)%2 -1
-        for z in range(x,7+x):
-            8
-            #print(z,y)
+    cellulle = cell(Hex(0,0))
+    print(cellulle.hex.neighbors())

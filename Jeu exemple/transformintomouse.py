@@ -123,7 +123,10 @@ def goto(tup):
 
 
 man = player(200,200,64,64)
-input()
+
+listecase=[]
+i=0
+poshex= pixel_to_hex(layout,(man.playerX,man.playerY))
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -134,16 +137,29 @@ while run:
     mouse= pygame.mouse.get_pressed()
 
     x,y=pygame.mouse.get_pos()
-
+    
     ###############################################DANGER###########################################
-    #pygame.draw.polygon(screen,(0,0,0),hex_corner(hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))))
+    #pygame.draw.polygon(screen,(0,0,0),hex_corner(layout,pixel_to_hex(layout,(x,y))))
 
     if mouse[2]:	#Right click
         print(x,y)
         hextogo = pixel_to_hex(layout,(x,y))
+        
+        #print(poshex)
+        print(hextogo)
         if hextogo in Grid :
-            goto(hex_to_pixel(layout, hextogo))
-            
+            listecase= pathfinding(poshex,hextogo)
+            print(listecase)
+
+    if i != len(listecase) :
+        goto(hex_to_pixel(layout, listecase[i]))
+        poshex= listecase[i]
+        i+=1
+        clock.tick(1)
+    else :
+        listecase= []
+        i=0
+
     """
     if keys[pygame.K_LEFT] and man.playerX > man.change:
         man.playerX -= man.change
