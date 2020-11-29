@@ -148,7 +148,6 @@ class cell :
         
         path.insert(0,self.hex)
         if self.camefrom != None:
-            print("pas none")
             return self.camefrom.reconstruct_path(path)
         else:
             return path
@@ -165,8 +164,6 @@ def pathfinding(hexstart, hexgoal,Grid) :
     start.f =start.g + distance_hex(start.hex,goal.hex)
 
     while(discovered != []): 
-        print(discovered)
-        print(explored)
         min = discovered[0].f
         for cells in discovered:
             if cells.f <= min :
