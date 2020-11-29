@@ -156,7 +156,7 @@ class cell :
     def __repr__(self):
         return self.hex.__repr__()
 
-def pathfinding(hexstart, hexgoal) :
+def pathfinding(hexstart, hexgoal,Grid) :
     start = cell(hexstart)
     goal = cell(hexgoal)
 
@@ -183,9 +183,8 @@ def pathfinding(hexstart, hexgoal) :
         explored.append(current)
 
         for neigh in [cell(hex) for hex in current.hex.neighbors()] :
-            if neigh in explored :
+            if (neigh in explored) or (neigh.hex not in Grid) :
                 continue
-
             gtest = current.g + distance_hex(current.hex,neigh.hex) 
             if (gtest < neigh.g) or (neigh not in discovered) :
                 neigh.camefrom = current

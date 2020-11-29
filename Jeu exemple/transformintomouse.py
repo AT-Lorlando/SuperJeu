@@ -148,14 +148,14 @@ while run:
         #print(poshex)
         print(hextogo)
         if hextogo in Grid :
-            listecase= pathfinding(poshex,hextogo)
+            listecase= pathfinding(poshex,hextogo,Grid)
             print(listecase)
 
-    if i != len(listecase) :
+    if i  != len(listecase) :
         goto(hex_to_pixel(layout, listecase[i]))
         poshex= listecase[i]
         i+=1
-        clock.tick(1)
+        clock.tick(5)
     else :
         listecase= []
         i=0
