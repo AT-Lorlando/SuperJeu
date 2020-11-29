@@ -147,8 +147,10 @@ while run:
 
     if mouse[2]:	#Right click
         print(x,y)
-        goto(hex_to_pixel(layout,pixel_to_hex(layout,(x,y))))
-    	
+        hextogo = pixel_to_hex(layout,(x,y))
+        if hextogo in Grid :
+            goto(hex_to_pixel(layout, hextogo))
+            
     """
     if keys[pygame.K_LEFT] and man.playerX > man.change:
         man.playerX -= man.change
