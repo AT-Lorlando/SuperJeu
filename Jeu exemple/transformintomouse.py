@@ -54,14 +54,7 @@ print(hex_corner(layout,Hex(0,0)))
 
 #print(hex_to_pixel(layout,Hex(1,0)))
 
-def initgrid(x,y):
-    Grid=[]
-    k=1
-    for i in range(x) :
-        k+=(i)%2 -1
-        for j in range(k,y+k):
-            Grid.append(Hex(j,i))
-    return Grid
+
 
 Grid=initgrid(8,12)
 def redraw_window():

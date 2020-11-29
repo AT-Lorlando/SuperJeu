@@ -127,6 +127,15 @@ def hex_corner(layout, hex) :
     center=hex_to_pixel(layout, hex)
     return [(round(center[0]+offset[0]),round(center[1]+offset[1])) for offset in [corner_offset(layout,i) for i in range(6)]]
 
+def initgrid(x,y): #draw a rectangular hex grid with x the number of lines and y the number of "columns"
+    Grid=[]
+    k=1
+    for i in range(x) :
+        k+=(i)%2 -1
+        for j in range(k,y+k):
+            Grid.append(Hex(j,i))
+    return Grid
+
 if __name__ == "__main__":
     l = Layout(orientation_flat,(1,1),(0,0))
     a=Hex(0,0)
