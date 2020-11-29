@@ -127,6 +127,7 @@ man = player(200,200,64,64)
 listecase=[]
 i=0
 poshex= pixel_to_hex(layout,(man.playerX,man.playerY))
+goto(hex_to_pixel(layout,poshex))
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
