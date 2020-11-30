@@ -25,7 +25,7 @@ class Minimap():
             thisYRange-=(thisYRange-thisPlayerYpos)
         for row, tiles in enumerate(data[thisPlayerYpos-thisYRange:thisPlayerYpos+thisYRange]):
             for col, tile in enumerate(tiles[thisPlayerXpos-thisXRange:thisPlayerXpos+thisXRange]):
-                if(floor(tile%100/10) in known_data):
+                if(floor(tile/10) in known_data):
                     if tile%10 == SPAWN_ID:
                         pg.draw.rect(self.game.screen, ORANGE, pg.Rect(
                             self.y+((self.size+1)*col), self.x+((self.size+1)*row), self.size, self.size))

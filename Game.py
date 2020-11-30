@@ -35,7 +35,7 @@ class Game:
         PlayerRange = 2
         for tiles in (self.map_data[PlayerY-PlayerRange:PlayerY+PlayerRange]):
             for tile in (tiles[PlayerX-PlayerRange:PlayerX+PlayerRange]):
-                tileID = floor(tile%100/10)
+                tileID = floor(tile/10)
                 if(tileID not in self.known_tiles):
                     self.known_tiles.append(tileID)
 
