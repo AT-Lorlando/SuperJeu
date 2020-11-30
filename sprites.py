@@ -1,6 +1,8 @@
+from Dungeon import New_Stage
 import pygame as pg
 from settings import *
 from os import path
+from Dungeon import *
 
 vec = pg.math.Vector2
 
@@ -9,7 +11,7 @@ class Player(pg.sprite.Sprite):
         self.groups = game.frontLayer.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((120, 170))
+        self.image = pg.Surface((12, 17))
         self.rect = self.image.get_rect()
         self.looking_at = 'Bot'
         self.actual_frame = 1
@@ -54,7 +56,6 @@ class Player(pg.sprite.Sprite):
                 self.image = self.walk_top[0]
             elif(self.looking_at == 'Bot'):
                 self.image = self.walk_bot[0]
-            
             self.image.set_colorkey(WHITE)
 
     def get_keys(self):
@@ -116,8 +117,13 @@ class Player(pg.sprite.Sprite):
                     pass
 
     def passing_door(self, door):
-        self.game.actual_room = door.room_number
-        self.game.new_room(door.room_number, self.game.actual_map, door.side)
+        if(door.door_type > 0): #Door linked to a dungeon
+            self.game.load_dungeon(door.instance_behind[0], door.instance_behind[1])
+            self.game.actual_stage+=1
+            self.game.draw_instance(self.game.actual_dungeon.stage_tab[self.game.actual_stage])
+        else: #Door linked to menu
+            self.game.actual_stage=0
+            self.game.draw_instance(self.game.hub)
 
     def update(self):
         self.get_keys()
@@ -149,38 +155,18 @@ class Wall(pg.sprite.Sprite):
         self.game = game
         self.x = x
         self.y = y
-        # if(x == 0):
-        #     if(y == thisHeight-1):
-        #         self.image = pg.image.load(path.join(room_folder, "room-corner-1.png")).convert_alpha()
-        #     elif(y == 0):
-        #         self.image = pg.image.load(path.join(room_folder, "room-corner-2.png")).convert_alpha()
-        #     else:
-        #         self.image = pg.image.load(path.join(room_folder, "room-wall-left.png")).convert_alpha()
-        # elif(x == thisWidth-1):
-        #     if(y == thisHeight-1):
-        #         self.image = pg.image.load(path.join(room_folder, "room-corner-4.png")).convert_alpha()
-        #     elif(y == 0):
-        #         self.image = pg.image.load(path.join(room_folder, "room-corner-3.png")).convert_alpha()
-        #     else:
-        #         self.image = pg.image.load(path.join(room_folder, "room-wall-right.png")).convert_alpha()
-        # elif(y == 0):
-        #     self.image = pg.image.load(path.join(room_folder, "room-wall-top.png")).convert_alpha()
-        # elif(y == thisHeight-1):
-        #     self.image = pg.image.load(path.join(room_folder, "room-wall-bot.png")).convert_alpha()
-        # else:
-        #    self.image = pg.image.load(path.join(room_folder, "room-wall-bot.png")).convert_alpha()
         self.image = pg.image.load(path.join(wall_folder, "w (7).png")).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
 class Door(pg.sprite.Sprite):
-    def __init__(self, game, x, y, i, side):
+    def __init__(self, game, x, y, door_type, instance_type, difficulty):
         self.groups = game.backLayer.all_sprites, game.obstacle, game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.room_number = i
-        self.side = side
+        self.door_type = door_type
+        self.instance_behind = (instance_type, difficulty)
         self.image = pg.Surface((TILESIZE,TILESIZE))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
@@ -188,14 +174,8 @@ class Door(pg.sprite.Sprite):
         self.y = y
         self.rect.x = (x) * TILESIZE
         self.rect.y = (y) * TILESIZE
-        if side == 'RIGHT':
-            self.image = pg.transform.rotate(pg.image.load(path.join(wall_folder, "door.png")), 90)
-        elif side == 'LEFT':
-            self.image = pg.transform.rotate(pg.image.load(path.join(wall_folder, "door.png")), 270)
-        elif side == 'BOT':
-            self.image = pg.image.load(path.join(wall_folder, "door.png"))
-        elif side == 'TOP':
-            self.image = pg.transform.rotate(pg.image.load(path.join(wall_folder, "door.png")), 180)
+        
+        #self.image = pg.image.load(path.join(wall_folder, "door.png"))
 
 class Exit(pg.sprite.Sprite):
     def __init__(self, game, x, y, i):

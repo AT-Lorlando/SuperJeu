@@ -23,7 +23,7 @@ button_folder = path.join(assets_folder, 'buttons_img')
 # game settings
 WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 1080  # 16 * 48 or 32 * 24 or 64 * 12
-FPS = 120
+FPS = 60
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY
 
@@ -36,6 +36,7 @@ FLOOR_ID = 1
 #CORNER_ID = 3
 VOID_ID = 0
 SPAWN_ID = 7
+DOOR_ID = 8
 
 # Player settings
 PLAYER_SPEED = 800

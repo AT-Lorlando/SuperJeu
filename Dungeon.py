@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from numpy.lib.function_base import diff
 import pandas as pd
 from math import floor, ceil
 from settings import *
@@ -9,6 +10,25 @@ SPACE_BETWEEN_END = floor(0.10 * ROOM_SIZE)
 
 def random_lenght(Room_size):
     return random.randint(floor(0.35 * Room_size), ceil(0.75*Room_size))
+
+class Instance:
+    def __init__(self, name):
+        self.name = name
+        self.data = []
+        self.data = np.full( (20, 35), FLOOR_ID)
+        self.data[:,0] = np.full_like(1, WALL_ID)
+        self.data[:,-1] = np.full_like(1, WALL_ID)
+        self.data[0] = np.full_like(1, WALL_ID)
+        self.data[-1] = np.full_like(1, WALL_ID)
+        self.data[5,5] = np.full_like(1, 100 + 10 + DOOR_ID)
+        self.data[8,5] = np.full_like(1, 200 + 10 + DOOR_ID)
+        self.data[8,8] = np.full_like(1, SPAWN_ID)
+        self.door_type = 1
+
+    def save(self):
+        file = open(f'Instance_{self.name}.txt', "w")
+        for line in self.data:
+            file.write(str(line).replace('0', ' ').replace(' ', ' ').replace('[', '').replace('\n', '').replace(']','\n'))
 
 class Tile:
     def __init__(self, ID):
@@ -21,15 +41,11 @@ class Tile:
     def make_size(self, Room_size):
         self.Width = random_lenght(Room_size)
         self.Height = random_lenght(Room_size)
-        self.data = np.full( (self.Height, self.Width), FLOOR_ID)
-        self.data[:,0] = np.full_like(1, WALL_ID)
-        self.data[:,-1] = np.full_like(1, WALL_ID)
-        self.data[0] = np.full_like(1, WALL_ID)
-        self.data[-1] = np.full_like(1, WALL_ID)
-        self.data[0][0] = WALL_ID
-        self.data[0][-1] = WALL_ID
-        self.data[-1][0] = WALL_ID
-        self.data[-1][-1] = WALL_ID
+        self.data = np.full( (self.Height, self.Width), 10*self.ID + FLOOR_ID)
+        self.data[:,0] = np.full_like(1, 10*self.ID + WALL_ID)
+        self.data[:,-1] = np.full_like(1, 10*self.ID + WALL_ID)
+        self.data[0] = np.full_like(1, 10*self.ID + WALL_ID)
+        self.data[-1] = np.full_like(1, 10*self.ID + WALL_ID)
 
     def set_pos(self, x, y):
         self.x = x
@@ -45,12 +61,11 @@ class Corridor:
         self.side = side
         self.lenght = l
 
-
 class Room:
     def __init__(self, ID, Room_size):
         self.ID = ID
         self.size = Room_size
-        self.data = np.full( (self.size, self.size), 0)
+        self.data = np.full( (self.size, self.size), VOID_ID)
         self.tile = 0
         self.tile_Xpos = 0
         self.tile_Ypos = 0
@@ -61,23 +76,23 @@ class Room:
     def connect(self):
         self.connected = True
 
-    def write_corridor(self, corridor):
-        x = corridor.x
-        y = corridor.y
-        for i in range(corridor.lenght):
-            for j in [-1,1]:
-                if(corridor.side == 'LEFT'):
-                    self.data[y+j][x+i] = WALL_ID
-                    self.data[y][x+i] = FLOOR_ID
-                elif(corridor.side == 'RIGHT'):
-                    self.data[y+j][x-i] = WALL_ID
-                    self.data[y][x-i] = FLOOR_ID
-                elif(corridor.side == 'TOP'):
-                    self.data[y-i][x+j] = WALL_ID
-                    self.data[y-i][x] = FLOOR_ID
-                elif(corridor.side == 'BOT'):  
-                    self.data[y+i][x+j] = WALL_ID
-                    self.data[y+i][x] = FLOOR_ID
+    # def write_corridor(self, corridor):
+    #     x = corridor.x
+    #     y = corridor.y
+    #     for i in range(corridor.lenght):
+    #         for j in [-1,1]:
+    #             if(corridor.side == 'LEFT'):
+    #                 self.data[y+j][x+i] = 10*self.ID +WALL_ID
+    #                 self.data[y][x+i] = 10*self.ID +FLOOR_ID
+    #             elif(corridor.side == 'RIGHT'):
+    #                 self.data[y+j][x-i] = 10*self.ID +WALL_ID
+    #                 self.data[y][x-i] = 10*self.ID +FLOOR_ID
+    #             elif(corridor.side == 'TOP'):
+    #                 self.data[y-i][x+j] = 10*self.ID +WALL_ID
+    #                 self.data[y-i][x] = 10*self.ID +FLOOR_ID
+    #             elif(corridor.side == 'BOT'):  
+    #                 self.data[y+i][x+j] = 10*self.ID +WALL_ID
+    #                 self.data[y+i][x] = 10*self.ID +FLOOR_ID
 
     def add_corridor(self, side):
         assert(self.tile) #Can't create corridor without tile in the room
@@ -100,8 +115,7 @@ class Room:
             thisCorridorX = random.randint(self.tile.x+SPACE_BETWEEN_END, self.tile.X-SPACE_BETWEEN_END)
             thisCorridorY = self.size - 1
             thisCorridorLenght = self.size-self.tile.Y
-        thisCorridor = Corridor(10*self.ID + len(self.corridor_tab), thisCorridorX, thisCorridorY,side, thisCorridorLenght)
-        self.corridor_tab.append(thisCorridor)
+        self.corridor_tab.append(Corridor(10*len(self.corridor_tab) + self.ID, thisCorridorX, thisCorridorY,side, thisCorridorLenght))
 
     def add_tile(self, tile):
         tile.make_size(self.size)
@@ -138,11 +152,7 @@ class Room:
         assert(self.tile != 0)
         thisX = random.randint(2, self.tile.Width-2)
         thisY = random.randint(2, self.tile.Height-2)
-        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = SPAWN_ID
-
-    def save(self):
-        df = pd.DataFrame(data=self.data.astype(float))
-        df.to_csv(f'room{self.ID}.csv', sep=' ', header=False, float_format='%i', index=False)
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = 10*self.ID +SPAWN_ID
 
 class Stage:
     def __init__(self, ID, Final_size, Room_size):
@@ -150,9 +160,10 @@ class Stage:
         self.factor = Final_size
         self.size = Final_size*ROOM_SIZE-Final_size
         self.room_size = Room_size
-        self.data = np.full( (self.size, self.size), 0)
+        self.data = np.full( (self.size, self.size), VOID_ID)
         self.corridor_tab = []
         self.room_tab = []
+        self.door_type = 2
 
     def add_room(self, room):
         for roomT in self.room_tab:
@@ -167,8 +178,7 @@ class Stage:
         self.room_tab.append(room)
         
         for corridor in room.corridor_tab:
-            new_corridor = Corridor(corridor.ID, thisX*(self.room_size-1)+corridor.x, thisY*(self.room_size-1)+corridor.y, corridor.side, corridor.lenght)
-            self.corridor_tab.append(new_corridor)
+            self.corridor_tab.append(Corridor(corridor.ID, thisX*(self.room_size-1)+corridor.x, thisY*(self.room_size-1)+corridor.y, corridor.side, corridor.lenght))
 
     def are_connected(self, tile_number):
         count = 0
@@ -183,17 +193,17 @@ class Stage:
         for i in range(1,corridor.lenght):
             for j in [-1,1]:
                 if(corridor.side == 'LEFT'):
-                    self.data[y+j][x+i] = WALL_ID
-                    self.data[y][x+i] = FLOOR_ID
+                    self.data[y+j][x+i] = 10*corridor.ID +WALL_ID
+                    self.data[y][x+i] = 10*corridor.ID +FLOOR_ID
                 elif(corridor.side == 'RIGHT'):
-                    self.data[y+j][x-i] = WALL_ID
-                    self.data[y][x-i] = FLOOR_ID
+                    self.data[y+j][x-i] = 10*corridor.ID +WALL_ID
+                    self.data[y][x-i] = 10*corridor.ID +FLOOR_ID
                 elif(corridor.side == 'TOP'):
-                    self.data[y+i][x+j] = WALL_ID
-                    self.data[y+i][x] = FLOOR_ID
+                    self.data[y+i][x+j] = 10*corridor.ID +WALL_ID
+                    self.data[y+i][x] = 10*corridor.ID +FLOOR_ID
                 elif(corridor.side == 'BOT'):  
-                    self.data[y-i][x+j] = WALL_ID
-                    self.data[y-i][x] = FLOOR_ID
+                    self.data[y-i][x+j] = 10*corridor.ID +WALL_ID
+                    self.data[y-i][x] = 10*corridor.ID +FLOOR_ID
 
     def connect_corridor(self, room1, room2):
         #Ordering the rooms to connect
@@ -221,21 +231,21 @@ class Stage:
                 #ID*(space-1) + interate / (ID+1)*(space-1) + wall & floor
                 for y in range(secondCorridor.y-1, firstCorridor.y+2):
                     for x in [-1, 1]:
-                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = WALL_ID
-                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)] = FLOOR_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = WALL_ID
-                self.data[thisY*(self.room_size-1)+secondCorridor.y-1][(thisX+1)*(self.room_size-1)] = WALL_ID
+                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = 10*firstCorridor.ID +WALL_ID
+                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +FLOOR_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +WALL_ID
+                self.data[thisY*(self.room_size-1)+secondCorridor.y-1][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +WALL_ID
             elif(firstCorridor.y < secondCorridor.y):
                 for y in range(firstCorridor.y-1, secondCorridor.y+2):
                     for x in [-1, 1]:
-                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = WALL_ID
-                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)] = FLOOR_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = WALL_ID
-                self.data[thisY*(self.room_size-1)+secondCorridor.y+1][(thisX+1)*(self.room_size-1)] = WALL_ID
+                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = 10*firstCorridor.ID +WALL_ID
+                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +FLOOR_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +WALL_ID
+                self.data[thisY*(self.room_size-1)+secondCorridor.y+1][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +WALL_ID
             elif(firstCorridor.y == secondCorridor.y):
-                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = WALL_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y][(thisX+1)*(self.room_size-1)] = FLOOR_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = WALL_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +WALL_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +FLOOR_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = 10*firstCorridor.ID +WALL_ID
             #Picking the corridor in the Final room tab
             for cor in self.corridor_tab:
                 if(firstCorridor.ID == cor.ID):
@@ -262,21 +272,21 @@ class Stage:
                 #ID*(space-1) + interate / (ID+1)*(space-1) + wall & floor
                 for x in range(secondCorridor.x-1, firstCorridor.x+2):
                     for y in [-1, 1]:
-                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = WALL_ID
-                        self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+x] = FLOOR_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = WALL_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x-1] = WALL_ID
+                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = 10*firstCorridor.ID +WALL_ID
+                        self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+x] = 10*firstCorridor.ID +FLOOR_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = 10*firstCorridor.ID +WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x-1] = 10*firstCorridor.ID +WALL_ID
             elif(firstCorridor.x < secondCorridor.x):
                 for x in range(firstCorridor.x-1, secondCorridor.x+2):
                     for y in [-1, 1]:
-                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = WALL_ID
-                        self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+x] = FLOOR_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = WALL_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x+1] = WALL_ID
+                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = 10*firstCorridor.ID +WALL_ID
+                        self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+x] = 10*firstCorridor.ID +FLOOR_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = 10*firstCorridor.ID +WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x+1] = 10*firstCorridor.ID +WALL_ID
             elif(firstCorridor.x == secondCorridor.x):
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = WALL_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x] = FLOOR_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = 10*firstCorridor.ID +WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x] = 10*firstCorridor.ID +FLOOR_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = 10*firstCorridor.ID +WALL_ID
             #Picking the corridor in the Final room tab
             for cor in self.corridor_tab:
                 if(firstCorridor.ID == cor.ID):
@@ -288,14 +298,30 @@ class Stage:
             if(room1.connected or room2.connected):
                 room1.connect()
                 room2.connect()
-        else:
-            pass
 
     def save(self):
-        file = open("map_exemple.txt", "w")
+        file = open(f"Stage{self.ID}.txt", "w")
         for line in self.data:
-            file.write(str(line).replace('0', ' ').replace(' ', ' ').replace('[', '').replace('\n', '').replace(']','\n'))
+            file.write(str(line).replace('[', '').replace('\n', '').replace(']','\n'))
+            #file.write(str(line).replace(f'{VOID_ID}', ' ').replace(' ', ' ').replace('[', '').replace('\n', '').replace(']','\n'))
 
+
+class Dungeon:
+    def __init__(self, instance_type, difficulty):
+        assert(difficulty > 0, difficulty)
+        print('New dungeon lvl', difficulty, 'type', instance_type)
+        self.stage_tab = []
+        self.type = instance_type
+        self.difficulty = difficulty
+        self.stage_numbers = random.randint(self.difficulty+2, self.difficulty+3)
+        print(self.stage_numbers)
+        for i in range(1,self.stage_numbers+1):
+            if(i>8):
+                i = 8
+            print('add stage', i)
+            self.stage_tab.append(New_Stage(i, i))
+        print('Final stage')
+        self.stage_tab.append(New_Stage(0, 0))
 
 def New_Stage(ID, difficulty):
     tile_number = 0
@@ -337,7 +363,7 @@ def New_Stage(ID, difficulty):
         room_spawn_id = random.choice(Tile_pos_tab)
         for pos in Tile_pos_tab:
             new_room = Room(pos, Room_size)
-            new_room.add_tile(Tile(pos))
+            new_room.add_tile(Tile(pos+1))
             if pos == room_spawn_id:
                 new_room.add_spawn()
             if(pos%stage_size == 0): #RIGHT
@@ -359,5 +385,6 @@ def New_Stage(ID, difficulty):
             for room2 in stage.room_tab:
                 stage.connect_corridor(room1, room2)
 
+    print('Stage diffuclty', difficulty)
     stage.save()
     return stage

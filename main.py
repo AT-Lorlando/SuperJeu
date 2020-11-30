@@ -6,6 +6,8 @@ import sys
 from os import path
 from Accueil import *
 from Game import *
+from Dungeon import *
+
 
 pg.init()
 
@@ -54,6 +56,7 @@ game_launch = False
 var = ""
 g = Game()
 
+
 while run:
     clock.tick(FPS)
 
@@ -65,7 +68,7 @@ while run:
     if var == "exit" :
         run = False
     elif var == 'game_launch':
-        g.load_dungeon_data(1)
+        g.draw_instance(g.hub)
         #g.new_room(0, 0, 'start')
         g.run()
     
