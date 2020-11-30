@@ -2,7 +2,7 @@ import first_screen
 import pygame
 
 class Item(pygame.sprite.Sprite) :
-    def __init__(self,image,pos_x,pos_y) :
+    def __init__(self,image,pos_x,pos_y,name) :
         super(Item, self).__init__()
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -11,6 +11,7 @@ class Item(pygame.sprite.Sprite) :
         self.centery = pos_y + self.rect[1]/2
         self.image = image
         self.print = image
+        self.name = name
     
     # Is true if the mouse is over the sprite
     def is_over(self,pos_mouse) :
@@ -33,3 +34,18 @@ class Item(pygame.sprite.Sprite) :
     #Draw the image at the position given
     def draw(self,screen):
         screen.blit(self.print, (self.pos_x,self.pos_y))
+
+class Stuff(Item) :
+    def __init__(self,STR,DEX,CON,INT,WIS,CHA) :
+        super(Stuff, self).__init__()
+        self.STR = STR
+        self.DEX = DEX
+        self.CON = CON
+        self.INT = INT
+        self.WIS = WIS
+        self.CHA = CHA
+        
+class Consumable(Item):
+    def __init__(self,health):
+        super(Stuff, self).__init__()
+        self.health = health
