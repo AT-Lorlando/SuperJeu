@@ -12,18 +12,19 @@ class Minimap():
         self.range = 20
         self.data = []
         self.x = 0
-        self.y = 0    
+        self.y = 0
 
     def event_zoom(self, y):
         self.zoom = (self.zoom + y)%len(ZOOM_VALUE)
         zoom = ZOOM_VALUE[self.zoom]
         self.size = floor(TILESIZE/40 * zoom)
-        self.x = WIDTH - len(self.data)*self.size - 2 * TILESIZE
+        self.range = floor(20/zoom)
+        self.x = WIDTH - (self.range+10)*self.size - TILESIZE
         self.y = 10
     
     def data_update(self, data):
         self.data = data
-        self.x = WIDTH - len(self.data)*self.size - 2 * TILESIZE
+        self.x = WIDTH - (self.range+10)*self.size - TILESIZE
         self.y = 10
 
     def draw(self, data, known_data):
