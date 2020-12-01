@@ -1,3 +1,4 @@
+from pygame.constants import MOUSEWHEEL
 from Dungeon import New_Stage
 import pygame as pg
 import sys
@@ -19,6 +20,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.map_data = []
         self.minimap = Minimap(self)
+        self.HUD = [1,1,1,1,1,1,1,1] #HUD list: Minimap, Life, etc
         self.actual_stage = 0
         self.actual_dungeon = 0
         self.hub = Instance('Hub')
@@ -43,6 +45,9 @@ class Game:
         self.obstacle = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
+        self.stairs = pg.sprite.Group()
+        self.backLayer = pg.sprite.Group()
+        self.backLayer.all_sprites = pg.sprite.Group()
         self.map_data = instance.data
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
@@ -53,12 +58,17 @@ class Game:
                 elif tile%10 == SPAWN_ID:
                     Floor(self, col, row)
                     self.player.set_pos(col*TILESIZE, row*TILESIZE)
+                    print('Set player to', col, row)
                 elif tile%10 == DOOR_ID:
                     Floor(self, col, row)
-                    Door(self, col, row, instance.door_type, floor(tile%100/10), floor(tile%1000/100))
+                    Door(self, col, row, instance.door_type, tile)
+                elif tile%10 == STAIR_ID:
+                    Floor(self, col, row)
+                    Stair(self, col, row)
         self.camera = Camera(WIDTH , HEIGHT)
+        self.backLayer.all_sprites.update()
         self.frontLayer.all_sprites.update()
-        self.minimap.data = self.map_data
+        self.minimap.data_update(self.map_data)
         print('Stage:', self.actual_stage)
         self.player.isPlaying = True 
 
@@ -92,12 +102,13 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        self.screen.fill(BGCOLOR)
+        self.screen.fill(RED)
         for sprite in self.backLayer.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         for sprite in self.frontLayer.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
-        self.minimap.draw(self.map_data, self.known_tiles)
+        if(self.HUD[0]):
+            self.minimap.draw(self.map_data, self.known_tiles)
         pg.display.flip()
 
     def events(self):
@@ -108,6 +119,10 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                elif event.key == pg.K_m:
+                    self.HUD[0] = (self.HUD[0]+1)%2
+            elif event.type == MOUSEWHEEL:
+                self.minimap.event_zoom(event.y)
 
     def show_start_screen(self):
         pass

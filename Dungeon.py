@@ -26,9 +26,9 @@ class Instance:
         self.data[:,-1] = np.full_like(1, WALL_ID)
         self.data[0] = np.full_like(1, WALL_ID)
         self.data[-1] = np.full_like(1, WALL_ID)
-        self.data[5,5] = np.full_like(1, 100 + 10 + DOOR_ID)
-        self.data[8,5] = np.full_like(1, 200 + 10 + DOOR_ID)
-        self.data[8,8] = np.full_like(1, SPAWN_ID)
+        self.data[5,5] = 100 + 10 + DOOR_ID
+        self.data[8,5] = 100 + 20 + DOOR_ID
+        self.data[8,8] = SPAWN_ID
         self.door_type = 1
 
     def save(self):
@@ -143,7 +143,13 @@ class Room:
         assert(self.tile != 0)
         thisX = random.randint(2, self.tile.Width-2)
         thisY = random.randint(2, self.tile.Height-2)
-        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.header +SPAWN_ID
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + SPAWN_ID
+    
+    def add_stair(self):
+        assert(self.tile != 0)
+        thisX = random.randint(2, self.tile.Width-2)
+        thisY = random.randint(2, self.tile.Height-2)
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + STAIR_ID
 
 class Stage:
     def __init__(self, ID, Final_size, Room_size):
@@ -356,12 +362,14 @@ def New_Stage(ID, difficulty):
     while(not stage.are_connected(tile_number)):
         stage = Stage(ID, stage_size, ROOM_SIZE)
         Tile_pos_tab = np.sort(random.sample([i for i in range(stage_size*stage_size)], k = tile_number))
-        room_spawn_id = random.choice(Tile_pos_tab)
+        special_room = random.sample(sorted(Tile_pos_tab), k = 2 if tile_number > 1 else 1) #Spawn and Stair pos
         for pos in Tile_pos_tab:
             new_room = Room(pos, Room_size)
             new_room.add_tile(Tile(pos+1))
-            if pos == room_spawn_id:
+            if pos == special_room[0]:
                 new_room.add_spawn()
+            elif pos == special_room[1]:
+                new_room.add_stair()
             if(pos%stage_size == 0): #RIGHT
                 new_room.add_corridor('RIGHT')
             elif(pos%stage_size == stage_size): #RIGHT

@@ -69,7 +69,6 @@ while run:
         run = False
     elif var == 'game_launch':
         g.draw_instance(g.hub)
-        #g.new_room(0, 0, 'start')
         g.run()
     
     for event in pg.event.get():

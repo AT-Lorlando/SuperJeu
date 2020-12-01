@@ -85,6 +85,8 @@ class Player(pg.sprite.Sprite):
             self.walking()
         if self.vel.x != 0 and self.vel.y != 0:
             self.vel *= 0.7071
+        if keys[pg.K_0]:
+            print(self.pos/TILESIZE)
 
     def collide_with_obstacle(self, dir):
         if dir == 'x':
@@ -99,7 +101,10 @@ class Player(pg.sprite.Sprite):
                 if hits[0] in self.game.doors:
                     self.isPlaying = False
                     self.passing_door(hits[0])
-                if hits[0] in self.game.walls:
+                elif hits[0] in self.game.stairs:
+                    self.isPlaying = False
+                    self.go_upstair()
+                elif hits[0] in self.game.walls:
                     pass
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
@@ -113,21 +118,31 @@ class Player(pg.sprite.Sprite):
                 if hits[0] in self.game.doors:
                     self.isPlaying = False
                     self.passing_door(hits[0])
-                if hits[0] in self.game.walls:
+                elif hits[0] in self.game.stairs:
+                    self.isPlaying = False
+                    self.go_upstair()
+                elif hits[0] in self.game.walls:
                     pass
 
     def passing_door(self, door):
+        self.game.known_tiles = []
         if(door.door_type > 0): #Door linked to a dungeon
             self.game.load_dungeon(door.instance_behind[0], door.instance_behind[1])
             self.game.actual_stage+=1
-            self.game.draw_instance(self.game.actual_dungeon.stage_tab[self.game.actual_stage])
+            self.game.draw_instance(self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
         else: #Door linked to menu
             self.game.actual_stage=0
             self.game.draw_instance(self.game.hub)
+    
+    def go_upstair(self):
+        assert(self.game.actual_dungeon)
+        self.game.known_tiles = []
+        self.game.actual_stage+=1
+        self.game.draw_instance(self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
 
     def update(self):
-        self.get_keys()
         if(self.isPlaying):
+            self.get_keys()
             self.pos += 2*self.vel * self.game.clock.tick(FPS) / 1000
             self.rect.x = self.pos.x
             self.collide_with_obstacle('x')
@@ -161,12 +176,12 @@ class Wall(pg.sprite.Sprite):
         self.rect.y = y * TILESIZE
 
 class Door(pg.sprite.Sprite):
-    def __init__(self, game, x, y, door_type, instance_type, difficulty):
+    def __init__(self, game, x, y, door_type, instance_behind):
         self.groups = game.backLayer.all_sprites, game.obstacle, game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.door_type = door_type
-        self.instance_behind = (instance_type, difficulty)
+        self.instance_behind = (floor(instance_behind%1000/100), floor(instance_behind%100/10))
         self.image = pg.image.load(path.join(portal_folder,'1.png'))
         self.rect = self.image.get_rect()
         self.x = x
@@ -187,16 +202,14 @@ class Door(pg.sprite.Sprite):
     def update(self):
         self.turn()
 
-class Exit(pg.sprite.Sprite):
-    def __init__(self, game, x, y, i):
-        self.groups = game.backLayer.all_sprites, game.obstacle, game.doors
+class Stair(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.backLayer.all_sprites, game.obstacle, game.stairs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.map_number = i
-        self.image = pg.Surface((1.25 * TILESIZE, 1.25 * TILESIZE))
-        self.image.fill(ORANGE)
+        self.image = pg.image.load(path.join(room_folder,'stair.png'))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
-        self.rect.x = (x - 0.125) * TILESIZE
-        self.rect.y = (y - 0.125) * TILESIZE
+        self.rect.x = (x) * TILESIZE
+        self.rect.y = (y) * TILESIZE

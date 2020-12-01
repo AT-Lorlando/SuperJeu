@@ -25,7 +25,7 @@ portal_folder = path.join(assets_folder, 'portal')
 # game settings
 WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 1080  # 16 * 48 or 32 * 24 or 64 * 12
-FPS = 60
+FPS = 120
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY
 
@@ -33,12 +33,16 @@ TILESIZE = 180
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
-WALL_ID = 2
-FLOOR_ID = 1
-#CORNER_ID = 3
 VOID_ID = 0
+FLOOR_ID = 1
+WALL_ID = 2
+#CORNER_ID = 3
 SPAWN_ID = 7
 DOOR_ID = 8
+STAIR_ID = 9
 
 # Player settings
-PLAYER_SPEED = 800
+PLAYER_SPEED = 1600
+RANGE = 25
+
+ZOOM_VALUE = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3.5, 5]
