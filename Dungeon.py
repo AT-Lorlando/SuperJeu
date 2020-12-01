@@ -15,6 +15,8 @@ def random_lenght(Room_size):
 def get_header():
     global global_header
     global_header += 10
+    if global_header > 9900:
+        global_header = 110
     return global_header
 
 class Instance:
@@ -106,7 +108,7 @@ class Room:
             thisCorridorX = random.randint(self.tile.x+SPACE_BETWEEN_END, self.tile.X-SPACE_BETWEEN_END)
             thisCorridorY = self.size - 1
             thisCorridorLenght = self.size-self.tile.Y
-        self.corridor_tab.append(Corridor(10*len(self.corridor_tab) + self.ID, thisCorridorX, thisCorridorY,side, thisCorridorLenght))
+        self.corridor_tab.append(Corridor( 10*self.ID+len(self.corridor_tab), thisCorridorX, thisCorridorY,side, thisCorridorLenght))
 
     def add_tile(self, tile):
         tile.make_size(self.size)
@@ -365,7 +367,7 @@ def New_Stage(ID, difficulty):
         special_room = random.sample(sorted(Tile_pos_tab), k = 2 if tile_number > 1 else 1) #Spawn and Stair pos
         for pos in Tile_pos_tab:
             new_room = Room(pos, Room_size)
-            new_room.add_tile(Tile(pos+1))
+            new_room.add_tile(Tile(pos))
             if pos == special_room[0]:
                 new_room.add_spawn()
             elif pos == special_room[1]:
