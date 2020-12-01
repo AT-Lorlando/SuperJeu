@@ -19,6 +19,8 @@ champ_folder = path.join(assets_folder, 'character')
 wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
 button_folder = path.join(assets_folder, 'buttons_img')
+portal_folder = path.join(assets_folder, 'portal')
+
 
 # game settings
 WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16

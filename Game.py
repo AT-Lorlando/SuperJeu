@@ -54,6 +54,7 @@ class Game:
                     Floor(self, col, row)
                     self.player.set_pos(col*TILESIZE, row*TILESIZE)
                 elif tile%10 == DOOR_ID:
+                    Floor(self, col, row)
                     Door(self, col, row, instance.door_type, floor(tile%100/10), floor(tile%1000/100))
         self.camera = Camera(WIDTH , HEIGHT)
         self.frontLayer.all_sprites.update()

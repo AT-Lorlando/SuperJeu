@@ -167,15 +167,25 @@ class Door(pg.sprite.Sprite):
         self.game = game
         self.door_type = door_type
         self.instance_behind = (instance_type, difficulty)
-        self.image = pg.Surface((TILESIZE,TILESIZE))
-        self.image.fill(RED)
+        self.image = pg.image.load(path.join(portal_folder,'1.png'))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = (x) * TILESIZE
         self.rect.y = (y) * TILESIZE
+        self.actual_frame = 1
+        self.time_since_anime = 0
+        self.portal = [(pg.image.load(path.join(portal_folder,f'{x}.png')).convert_alpha()) for x in range(1,4)]
         
-        #self.image = pg.image.load(path.join(wall_folder, "door.png"))
+    def turn(self):
+        self.time = pg.time.get_ticks()
+        if(self.time > self.time_since_anime + 150):
+            self.time_since_anime = self.time
+            self.actual_frame = (self.actual_frame + 1) % 3
+            self.image = self.portal[self.actual_frame]
+
+    def update(self):
+        self.turn()
 
 class Exit(pg.sprite.Sprite):
     def __init__(self, game, x, y, i):
