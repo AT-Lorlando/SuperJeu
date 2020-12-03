@@ -48,4 +48,4 @@ class Stuff(Item) :
 class Consumable(Item):
     def __init__(self,health):
         super(Stuff, self).__init__()
-        self.health = health
+        self.health = health #
