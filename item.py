@@ -1,4 +1,3 @@
-import first_screen
 import pygame
 
 class Item(pygame.sprite.Sprite) :
