@@ -40,6 +40,7 @@ class Game:
                 tileID = floor(tile/10)
                 if(tileID not in self.known_tiles):
                     self.known_tiles.append(tileID)
+                    self.minimap.update(self.known_tiles)
 
     def draw_instance(self, instance):
         self.obstacle = pg.sprite.Group()
@@ -108,7 +109,7 @@ class Game:
         for sprite in self.frontLayer.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if(self.HUD[0]):
-            self.minimap.draw(self.map_data, self.known_tiles)
+            self.minimap.draw()
         pg.display.flip()
 
     def events(self):
