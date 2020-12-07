@@ -6,8 +6,11 @@ class Spell ():
         self.countdown # remaining rounds
     
     def hexTouched(self,pos_x,pos_y,x_map,y_map):
-        
-        return [(pos_x+self.zone.x,pos_y+self.zone.y) for each_case in self.zone]
+        tab=[]
+        for case in self.zone :
+            if (0 <= pos_x + case(0) < x_map) and  (0 <= pos_x + case(1) < y_map) : # check if the case is in the map
+                tab.append((pos_x+case(0), pos_y+case(1)))
+        return tab # return a table with the hex which exists
 
     def isPressed(self,key_pressed):
         if self.key == key_pressed :
