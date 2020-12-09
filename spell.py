@@ -2,7 +2,7 @@ class Spell ():
     def __init__(self,zone,key,cooldown):
         self.zone = zone # zone is a table of the affected hex in relatif point of view (ex : (0,0) if the spell affects only one case) 
         self.key = key #the key on the keyboard
-        self.cooldown = cooldown # base stat of the spells
+        self.cooldown = cooldown # base stat of the spell
         self.countdown # remaining rounds
     
     def hexTouched(self,pos_x,pos_y,x_map,y_map):
