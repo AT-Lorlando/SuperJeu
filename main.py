@@ -7,6 +7,8 @@ from os import path
 from Accueil import *
 from Game import *
 from Dungeon import *
+#from shop import *
+from screen_shop import *
 
 
 pg.init()
@@ -55,7 +57,7 @@ pg.display.flip()
 game_launch = False
 var = ""
 g = Game()
-
+screen_shop=Screen_shop(screen)
 
 while run:
     clock.tick(FPS)
@@ -64,21 +66,27 @@ while run:
     x,y = pg.mouse.get_pos()
 
     var = accueil(screen,bg,buttons,mouse,x,y,play,game_launch,exit,main_font,dialogue,options)
-
     if var == "exit" :
         run = False
     elif var == 'game_launch':
         g.draw_instance(g.hub)
         g.run()
-    
+    elif screen_shop.running :
+        screen_shop.run(screen.copy())
+
     for event in pg.event.get():
         if event.type == pg.QUIT:
             run = False
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
+            if event.key == pg.K_ESCAPE:  
                 run = False
+            if event.key == pg.K_s:
+                screen_shop.running = True
 
     pg.display.update()
+
+       
+
 
 pg.quit()
 sys.exit()
