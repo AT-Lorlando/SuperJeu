@@ -1,4 +1,4 @@
-import pg as pg
+import pygame as pg
 import sys
 from os import path
 from slidercara import *
@@ -28,16 +28,17 @@ class Screen_cara(Mother_screen):
     def update(self):
         button = pg.mouse.get_pressed()
         pos = pg.mouse.get_pos()
-        if self.y_slider < pos[1] < self.y_slider + self.height_slider and button[0] != 0:
-            y = pos[1]
-            self.x = pos[0]
+        for slid in self.attributs.values():
+            if slid.y_slider < pos[1] < slid.y_slider + slid.height_slider and button[0] != 0:
+                y = pos[1]
+                slid.x = pos[0]
 
-        a = self.x - 5
-        if a < 0:
-            a = 0
-        if self.x >= self.end - self.witdh_slider:
-            self.x = self.end - self.witdh_slider
-        self.value = str(int(self.x // (self.end/self.nb_division)))
+            a = slid.x - 5
+            if a < 0:
+                a = 0
+            if slid.x >= slid.end - slid.witdh_slider:
+                slid.x = slid.end - slid.witdh_slider
+            slid.value = str(int(slid.x // (slid.end/slid.nb_division)))
 
     def draw(self):
         for x in self.attributs.values():
