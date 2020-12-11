@@ -9,42 +9,45 @@ from Game import *
 from Dungeon import *
 #from shop import *
 from screen_shop import *
-
+from screen_cara import *
 
 pg.init()
 
 run = True
 FPS = 60
-clock = pg.time.Clock()    
+clock = pg.time.Clock()
 
-main_font = pg.font.SysFont("Blue Eyes.otf",30)
-screen = pg.display.set_mode((WIDTH,HEIGHT))
+main_font = pg.font.SysFont("Blue Eyes.otf", 30)
+screen = pg.display.set_mode((WIDTH, HEIGHT))
 pg.display.set_caption("First screen")
 
 # Setup the image directory
 
 # BACKGROUND
-bg=pg.image.load(path.join(assets_folder,"menu_background.jpg"))
-#dialogue 
-dialogue = pg.image.load(path.join(assets_folder,"dialogue.png")).convert_alpha()
+bg = pg.image.load(path.join(assets_folder, "menu_background.jpg"))
+# dialogue
+dialogue = pg.image.load(
+    path.join(assets_folder, "dialogue.png")).convert_alpha()
 
 # Dictionnary of buttons
-tab_buttons = ["play", "ok","exit","options","restart","resume","cancel"]
+tab_buttons = ["play", "ok", "exit", "options", "restart", "resume", "cancel"]
 _button = dict()
 for x in tab_buttons:
-    _button[x] =  pg.image.load(path.join(button_folder,x+".png")).convert()
-    _button[x].set_colorkey((93,94,94))
-    _button[x+"_clicked"] = pg.image.load(path.join(button_folder,x+"_clicked.png")).convert()
-    _button[x+"_clicked"].set_colorkey((93,94,94))
+    _button[x] = pg.image.load(path.join(button_folder, x+".png")).convert()
+    _button[x].set_colorkey((93, 94, 94))
+    _button[x+"_clicked"] = pg.image.load(
+        path.join(button_folder, x+"_clicked.png")).convert()
+    _button[x+"_clicked"].set_colorkey((93, 94, 94))
 
 # the coordinates the first button
 pos_x = WIDTH/2 - _button["play"].get_size()[0]/2
 pos_y = HEIGHT/2 - _button["play"].get_size()[1]/2
 
 # Declare the buttons
-play=Button(pos_x,pos_y,_button["play"],_button["play_clicked"])
-exit=Button(pos_x ,pos_y + 100,_button["exit"],_button["exit_clicked"])
-options=Button(pos_x ,pos_y + 200,_button["options"],_button["options_clicked"])
+play = Button(pos_x, pos_y, _button["play"], _button["play_clicked"])
+exit = Button(pos_x, pos_y + 100, _button["exit"], _button["exit_clicked"])
+options = Button(pos_x, pos_y + 200,
+                 _button["options"], _button["options_clicked"])
 
 
 # Buttons become sprite
@@ -57,35 +60,39 @@ pg.display.flip()
 game_launch = False
 var = ""
 g = Game()
-screen_shop=Screen_shop(screen)
+screen_shop = Screen_shop(screen)
+screen_cara = Screen_cara(screen)
 
 while run:
     clock.tick(FPS)
 
     mouse = pg.mouse.get_pressed()
-    x,y = pg.mouse.get_pos()
+    x, y = pg.mouse.get_pos()
 
-    var = accueil(screen,bg,buttons,mouse,x,y,play,game_launch,exit,main_font,dialogue,options)
-    if var == "exit" :
+    var = accueil(screen, bg, buttons, mouse, x, y, play,
+                  game_launch, exit, main_font, dialogue, options)
+    if var == "exit":
         run = False
     elif var == 'game_launch':
         g.draw_instance(g.hub)
         g.run()
-    elif screen_shop.running :
+    elif screen_shop.running:
         screen_shop.run(screen.copy())
+    elif screen_cara.running:
+        screen_cara.run(screen.copy())
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
             run = False
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:  
+            if event.key == pg.K_ESCAPE:
                 run = False
             if event.key == pg.K_s:
                 screen_shop.running = True
+            if event.key == pg.K_c:
+                screen_cara.running = True
 
     pg.display.update()
-
-       
 
 
 pg.quit()

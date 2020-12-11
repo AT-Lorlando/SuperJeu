@@ -3,7 +3,7 @@ import sys
 from os import path
 from shop import *
 from settings import HEIGHT, WIDTH
-from _screen import *
+from Mother_screen import *
 
 
 class Screen_shop(Mother_screen):
@@ -27,5 +27,3 @@ class Screen_shop(Mother_screen):
 
     def is_over(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
-
-

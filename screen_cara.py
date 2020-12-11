@@ -3,7 +3,7 @@ import sys
 from os import path
 from slidercara import *
 from settings import HEIGHT, WIDTH
-from _screen import *
+from Mother_screen import *
 
 
 class Screen_cara(Mother_screen):
@@ -18,11 +18,11 @@ class Screen_cara(Mother_screen):
         self.CHA = Slider()
         self.attributs = {
             "STR": self.STR,
-            "DEX": self.DEX,
-            "CON": self.CON,
-            "INT": self.INT,
-            "WIS": self.WIS,
-            "CHA": self.CHA
+            # "DEX": self.DEX,
+            # "CON": self.CON,
+            # "INT": self.INT,
+            # "WIS": self.WIS,
+            # "CHA": self.CHA
         }
 
     def update(self):
@@ -42,5 +42,5 @@ class Screen_cara(Mother_screen):
 
     def draw(self):
         for x in self.attributs.values():
-            self.screen.blit(x.slider_fond, x.x, x.y_slider)
-            self.screen.blit(x.barre_fond, x.x_barre, x.y_barre)
+            self.screen.blit(x.slider_fond, (x.x, x.y_slider))
+            self.screen.blit(x.barre_fond, (x.x_barre, x.y_barre))

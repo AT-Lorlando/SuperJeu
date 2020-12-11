@@ -14,7 +14,7 @@ class Slider():
         self.y_barre = self.y_center - self.height_barre/2
         self.x_barre = 0
 
-        self.barre_fond = pg.Surface(self.end, self.height_barre)
+        self.barre_fond = pg.Surface((self.end, self.height_barre))
         self.barre_fond.fill((255, 0, 0))
         # slider
         self.witdh_slider = 20
@@ -24,7 +24,7 @@ class Slider():
         self.y_slider = self.slider_center - self.height_slider / 2
         self.nb_division = 11
 
-        self.slider_fond = pg.Surface(self.witdh_slider, self.height_slider)
+        self.slider_fond = pg.Surface((self.witdh_slider, self.height_slider))
         self.slider_fond.fill((255, 0, 0))
         self.x = 100  # position du curseur
 
