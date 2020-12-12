@@ -4,23 +4,24 @@ from os import path
 from slidercara import *
 from settings import HEIGHT, WIDTH
 from Mother_screen import *
+import json
 
 
 class Screen_cara(Mother_screen):
     def __init__(self, screen):
         super(Screen_cara, self).__init__()
         self.screen = screen
-        self.STR = Slider()
-        self.DEX = Slider()
-        self.CON = Slider()
-        self.INT = Slider()
-        self.WIS = Slider()
-        self.CHA = Slider()
+        self.STR = Slider(0, 120, "STR")
+        self.DEX = Slider(0, 240, "DEX")
+        self.CON = Slider(0, 360, "CON")
+        self.INT = Slider(0, 480, "INT")
+        # self.WIS = Slider()
+        # self.CHA = Slider()
         self.attributs = {
             "STR": self.STR,
-            # "DEX": self.DEX,
-            # "CON": self.CON,
-            # "INT": self.INT,
+            "DEX": self.DEX,
+            "CON": self.CON,
+            "INT": self.INT,
             # "WIS": self.WIS,
             # "CHA": self.CHA
         }
@@ -29,18 +30,8 @@ class Screen_cara(Mother_screen):
         button = pg.mouse.get_pressed()
         pos = pg.mouse.get_pos()
         for slid in self.attributs.values():
-            if slid.y_slider < pos[1] < slid.y_slider + slid.height_slider and button[0] != 0:
-                y = pos[1]
-                slid.x = pos[0]
-
-            a = slid.x - 5
-            if a < 0:
-                a = 0
-            if slid.x >= slid.end - slid.witdh_slider:
-                slid.x = slid.end - slid.witdh_slider
-            slid.value = str(int(slid.x // (slid.end/slid.nb_division)))
+            slid.update(button, pos)
 
     def draw(self):
-        for x in self.attributs.values():
-            self.screen.blit(x.slider_fond, (x.x, x.y_slider))
-            self.screen.blit(x.barre_fond, (x.x_barre, x.y_barre))
+        for slid in self.attributs.values():
+            slid.draw(self.screen)

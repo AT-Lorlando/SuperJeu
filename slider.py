@@ -50,8 +50,8 @@ while s == 0:
             a = 0
         if x >= width - witdh_slider:
             x = width - witdh_slider
-        pygame.draw.rect(windowSurfaceObj, blackColor, Rect(
-            0, 0, width, height))  # background black
+        # pygame.draw.rect(windowSurfaceObj, blackColor, Rect(
+        #    0, 0, width, height))  # background black
         pygame.draw.rect(windowSurfaceObj, whiteColor, Rect(
             0, ybarre, width, height_barre))  # barre curseur
         pygame.draw.rect(windowSurfaceObj, redColor, Rect(
