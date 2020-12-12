@@ -6,18 +6,22 @@ from Dungeon import *
 
 vec = pg.math.Vector2
 
+def resize(img, size):
+    return pg.transform.scale(img, (size+2,size+2))
+
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.frontLayer.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((12, 17))
+        self.image = pg.Surface((100, 100))
         self.rect = self.image.get_rect()
         self.looking_at = 'Bot'
         self.actual_frame = 1
         self.time_since_anime = 0
         self.vel = vec(0, 0)
         self.pos = vec(x, y) * TILESIZE
+        self.playerpos = [floor(pos/TILESIZE) for pos in self.pos]
         self.isPlaying = False
         self.walk_right = [(pg.image.load(path.join(champ_folder,f'R{x}.png')).convert_alpha()) for x in range(1,4)]
         self.walk_top = [(pg.image.load(path.join(champ_folder,f'T{x}.png')).convert_alpha()) for x in range(1,4)]
@@ -86,43 +90,44 @@ class Player(pg.sprite.Sprite):
         if self.vel.x != 0 and self.vel.y != 0:
             self.vel *= 0.7071
         if keys[pg.K_0]:
-            print(self.pos/TILESIZE)
+            print(self.pos[0])
 
     def collide_with_obstacle(self, dir):
+        # self.game.interactif_dialogue(0)
+        
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
             if hits:
+                self.collide_interaction(hits[0])
                 if self.vel.x > 0:
                     self.pos.x = hits[0].rect.left - self.rect.width
                 if self.vel.x < 0:
                     self.pos.x = hits[0].rect.right
                 self.vel.x = 0
                 self.rect.x = self.pos.x
-                if hits[0] in self.game.doors:
-                    self.isPlaying = False
-                    self.passing_door(hits[0])
-                elif hits[0] in self.game.stairs:
-                    self.isPlaying = False
-                    self.go_upstair()
-                elif hits[0] in self.game.walls:
-                    pass
-        if dir == 'y':
+        elif dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
             if hits:
+                self.collide_interaction(hits[0])
                 if self.vel.y > 0:
                     self.pos.y = hits[0].rect.top - self.rect.height
                 if self.vel.y < 0:
                     self.pos.y = hits[0].rect.bottom
                 self.vel.y = 0
-                self.rect.y = self.pos.y
-                if hits[0] in self.game.doors:
-                    self.isPlaying = False
-                    self.passing_door(hits[0])
-                elif hits[0] in self.game.stairs:
-                    self.isPlaying = False
-                    self.go_upstair()
-                elif hits[0] in self.game.walls:
-                    pass
+                self.rect.y = self.pos.y       
+            
+    def collide_interaction(self, sprite):
+        if sprite in self.game.doors:
+            self.isPlaying = False
+            self.passing_door(sprite)
+        elif sprite in self.game.stairs:
+            self.isPlaying = False
+            self.go_upstair()
+        elif isinstance(sprite,Shoper):
+            self.game.interactif_dialogue(sprite)
+        else:
+            self.game.interactif_dialogue(0)
+
 
     def passing_door(self, door):
         self.game.known_tiles = []
@@ -141,6 +146,8 @@ class Player(pg.sprite.Sprite):
         self.game.draw_instance(self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
 
     def update(self):
+        hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
+        self.collide_interaction(hits)
         if(self.isPlaying):
             self.get_keys()
             self.pos += 2*self.vel * self.game.clock.tick(FPS) / 1000
@@ -148,15 +155,17 @@ class Player(pg.sprite.Sprite):
             self.collide_with_obstacle('x')
             self.rect.y = self.pos.y
             self.collide_with_obstacle('y')
+            self.playerpos = [floor(pos/TILESIZE) for pos in self.pos]
         if(self.vel == (0, 0)):
             self.chilling()
+
 
 class Floor(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.backLayer.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.image.load(path.join(room_folder, "room-floor.png")).convert_alpha()
+        self.image = resize(pg.image.load(path.join(room_folder, "room-floor.png")).convert_alpha(),TILESIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -170,7 +179,7 @@ class Wall(pg.sprite.Sprite):
         self.game = game
         self.x = x
         self.y = y
-        self.image = pg.image.load(path.join(wall_folder, "w (7).png")).convert_alpha()
+        self.image = resize(pg.image.load(path.join(wall_folder, "w (7).png")).convert_alpha(),TILESIZE)
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
@@ -182,7 +191,7 @@ class Door(pg.sprite.Sprite):
         self.game = game
         self.door_type = door_type
         self.instance_behind = (floor(instance_behind%1000/100), floor(instance_behind%100/10))
-        self.image = pg.image.load(path.join(portal_folder,'1.png'))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -197,7 +206,7 @@ class Door(pg.sprite.Sprite):
         if(self.time > self.time_since_anime + 150):
             self.time_since_anime = self.time
             self.actual_frame = (self.actual_frame + 1) % 3
-            self.image = self.portal[self.actual_frame]
+            self.image = resize(self.portal[self.actual_frame],TILESIZE)
 
     def update(self):
         self.turn()
@@ -207,7 +216,33 @@ class Stair(pg.sprite.Sprite):
         self.groups = game.backLayer.all_sprites, game.obstacle, game.stairs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.image.load(path.join(room_folder,'stair.png'))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = (x) * TILESIZE
+        self.rect.y = (y) * TILESIZE
+        self.actual_frame = 1
+        self.time_since_anime = 0
+        self.portal = [(pg.image.load(path.join(portal_folder,f'{x}.png')).convert_alpha()) for x in range(1,4)]
+
+    def turn(self):
+        self.time = pg.time.get_ticks()
+        if(self.time > self.time_since_anime + 150):
+            self.time_since_anime = self.time
+            self.actual_frame = (self.actual_frame + 1) % 3
+            self.image = resize(self.portal[self.actual_frame],TILESIZE)
+
+    def update(self):
+        self.turn()
+
+class Shoper(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.frontLayer.all_sprites, game.obstacle
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE*2, TILESIZE*2))
+        self.image.fill(ORANGE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

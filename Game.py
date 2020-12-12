@@ -28,8 +28,10 @@ class Game:
         self.frontLayer.all_sprites = pg.sprite.Group()
         self.backLayer = pg.sprite.Group()
         self.backLayer.all_sprites = pg.sprite.Group()
+        self.interactif = pg.sprite.Group()
         self.player = Player(self, 0, 0)
         self.known_tiles = []
+        self.interactif_sentence = None
 
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
@@ -43,6 +45,7 @@ class Game:
 
     def draw_instance(self, instance):
         self.obstacle = pg.sprite.Group()
+        self.obstacle.interactif = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
@@ -62,6 +65,9 @@ class Game:
                 elif tile%10 == DOOR_ID:
                     Floor(self, col, row)
                     Door(self, col, row, instance.door_type, tile)
+                elif tile%10 == SHOP_ID:
+                    Floor(self, col, row)
+                    Shoper(self, col, row)
                 elif tile%10 == STAIR_ID:
                     Floor(self, col, row)
                     Stair(self, col, row)
@@ -96,6 +102,13 @@ class Game:
         self.camera.update(self.player)
         self.minimap.update()
 
+    def interactif_dialogue(self, sprite):
+        if(sprite):
+            # print('2')
+            self.interactif_sentence = f'Press sprite.key to interact with {sprite}'
+        else:
+            self.interactif_sentence = None
+            # print('3')
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -104,12 +117,19 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        self.screen.fill(RED)
+        self.screen.fill(DARKGREY)
         for sprite in self.backLayer.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         for sprite in self.frontLayer.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            self.screen.blit(sprite.image, self.camera.apply(sprite))  
+        if(self.interactif_sentence):
+            font_surface = pg.font.SysFont("Blue Eyes.otf", 30).render(self.interactif_sentence, True,(255,255,255))
+            font_size=[font_surface.get_rect()[2],font_surface.get_rect()[3]]
+            dialogue = pg.transform.scale(pg.image.load(path.join(assets_folder, "dialogue.png")).convert_alpha(),(font_size[0]+15,font_size[1]+20))
+            self.screen.blit(dialogue, (WIDTH/2-60,HEIGHT/1.3))
+            self.screen.blit(font_surface, (WIDTH/2-60,HEIGHT/1.3+20))
         pg.display.flip()
+        
 
     def print_minimap(self):
         while self.HUD[0]:

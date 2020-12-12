@@ -31,6 +31,7 @@ class Instance:
         self.data[5,5] = 100 + 10 + DOOR_ID
         self.data[8,5] = 100 + 20 + DOOR_ID
         self.data[8,8] = SPAWN_ID
+        self.data[10,10] = SHOP_ID
         self.door_type = 1
 
     def save(self):
