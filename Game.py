@@ -40,7 +40,6 @@ class Game:
                 tileID = floor(tile/10)
                 if(tileID not in self.known_tiles):
                     self.known_tiles.append(tileID)
-                    self.minimap.update(self.known_tiles)
 
     def draw_instance(self, instance):
         self.obstacle = pg.sprite.Group()
@@ -95,6 +94,8 @@ class Game:
         self.frontLayer.all_sprites.update()
         self.add_to_known_tiles()
         self.camera.update(self.player)
+        self.minimap.update()
+
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -108,9 +109,13 @@ class Game:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         for sprite in self.frontLayer.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
-        if(self.HUD[0]):
-            self.minimap.draw()
         pg.display.flip()
+
+    def print_minimap(self):
+        while self.HUD[0]:
+            self.minimap.draw()
+            pg.display.flip()
+            self.events()
 
     def events(self):
         # catch all events here
@@ -122,6 +127,9 @@ class Game:
                     self.quit()
                 elif event.key == pg.K_m:
                     self.HUD[0] = (self.HUD[0]+1)%2
+                    if(self.HUD[0]):
+                        self.print_minimap()
+
             elif event.type == MOUSEWHEEL:
                 self.minimap.event_zoom(event.y)
 
