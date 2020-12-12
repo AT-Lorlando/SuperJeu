@@ -33,10 +33,11 @@ class Slider():
         self.font = pg.font.SysFont("Blue Eyes.otf", self.size_font)
         self.name = name
 
-        self.value = str(int(self.x // (self.end/self.nb_division)))
+        self.value = str(
+            int((self.x-self.x_barre) // (self.end/self.nb_division)))
 
     def update(self, button, pos):
-        if self.y_slider < pos[1] < self.y_slider + self.height_slider and button[0] != 0:
+        if self.y_slider < pos[1] < self.y_slider + self.height_slider and self.x_barre < pos[0] < self.x_barre + self.end and button[0] != 0:
             y = pos[1]
             self.x = pos[0]
 
