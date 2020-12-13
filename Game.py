@@ -6,9 +6,11 @@ from os import path
 from math import floor
 
 from settings import *
+from player import *
 from sprites import *
 from tilemap import *
 from Minimap import *
+
 #from Dungeon import *
 
 

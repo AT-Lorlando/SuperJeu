@@ -16,6 +16,10 @@ dungeon_folder = path.join(game_folder, 'dungeon')
 assets_folder = path.join(game_folder, 'assets')
 room_folder = path.join(assets_folder, 'room')
 champ_folder = path.join(assets_folder, 'character')
+dark_wizard_folder = path.join(champ_folder, 'dark_wizard')
+sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
+hunter_folder = path.join(champ_folder, 'archer')
+explode_folder = path.join(champ_folder, 'explode')
 wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
 button_folder = path.join(assets_folder, 'buttons_img')
@@ -29,7 +33,7 @@ FPS = 120
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY
 
-TILESIZE = 100
+TILESIZE = 75
     
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE

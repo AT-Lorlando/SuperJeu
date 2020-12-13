@@ -7,16 +7,16 @@ from settings import *
 
 ROOM_SIZE = 50
 SPACE_BETWEEN_END = floor(0.10 * ROOM_SIZE)
-global_header = 110
+global_header = 1100    
 
 def random_lenght(Room_size):
     return random.randint(floor(0.35 * Room_size), ceil(0.75*Room_size))
 
 def get_header():
     global global_header
-    global_header += 10
-    if global_header > 9900:
-        global_header = 110
+    global_header += 100
+    if global_header > 99000:
+        global_header = 1100
     return global_header
 
 class Instance:
@@ -28,6 +28,10 @@ class Instance:
         self.data[:,-1] = np.full_like(1, WALL_ID)
         self.data[0] = np.full_like(1, WALL_ID)
         self.data[-1] = np.full_like(1, WALL_ID)
+        self.data[0,0] = WALL_ID
+        self.data[0,-1] = WALL_ID
+        self.data[-1,0] = WALL_ID
+        self.data[-1,-1] = WALL_ID
         self.data[5,5] = 100 + 10 + DOOR_ID
         self.data[8,5] = 100 + 20 + DOOR_ID
         self.data[8,8] = SPAWN_ID
