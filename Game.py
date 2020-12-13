@@ -132,7 +132,6 @@ class Game:
                 assets_folder, "dialogue.png")).convert_alpha(), (font_size[0]+15, font_size[1]+20))
             self.screen.blit(dialogue, (WIDTH/2-60, HEIGHT/1.3))
             self.screen.blit(font_surface, (WIDTH/2-60, HEIGHT/1.3+20))
-            screen_shop.running = True
         pg.display.flip()
 
     def print_minimap(self):

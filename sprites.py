@@ -5,6 +5,7 @@ from os import path
 from Dungeon import *
 from inventory_clem import *
 from shop import *
+from screen_shop import *
 vec = pg.math.Vector2
 
 
@@ -32,6 +33,11 @@ class Player(pg.sprite.Sprite):
             path.join(champ_folder, f'T{x}.png')).convert_alpha()) for x in range(1, 4)]
         self.walk_bot = [(pg.image.load(
             path.join(champ_folder, f'B{x}.png')).convert_alpha()) for x in range(1, 4)]
+        self.inv = Inventory()
+        self.inv.add(Sword("epee"))
+        self.inv.add(Sword("bite"))
+        self.inv.add(Sword("cul"))
+            
 
     def set_pos(self, x, y):
         self.pos.x = x
@@ -132,6 +138,7 @@ class Player(pg.sprite.Sprite):
             self.go_upstair()
         elif isinstance(sprite, Shoper):
             self.game.interactif_dialogue(sprite)
+            sprite.shop.run(self.game.screen.copy(), self.inv)
         else:
             self.game.interactif_dialogue(0)
 
@@ -266,4 +273,4 @@ class Shoper(pg.sprite.Sprite):
         self.y = y
         self.rect.x = (x) * TILESIZE
         self.rect.y = (y) * TILESIZE
-        self.shop = create_screen_shop(create_shop())
+        self.shop = Screen_shop(game.screen)

@@ -12,7 +12,8 @@ class Screen_shop(Mother_screen):
         self.screen = screen
         # 180 is the argument to change the blur
         self.fond.fill((0, 0, 0, 180))
-        self.shop = Shop()
+        self.shop = create_shop()
+        self.player_inventory = None
 
     def update(self):
         self.mouse = pg.mouse.get_pressed()
@@ -21,11 +22,24 @@ class Screen_shop(Mother_screen):
             self.shop.fond.fill((255, 255, 255))
         else:
             self.shop.fond.fill((0, 0, 0))
+            
 
     def draw(self):
-        self.screen.blit(self.shop.fond, (self.shop.pos_x, self.shop.pos_y))
-        for items in self.shop.inv.inventory:
-            self.screen.blit(items.print, (items.pos_x, items.pos_y))
+        self.screen.blit(self.shop.fond, (self.shop.inv.pos_x, self.shop.inv.pos_y))
+        self.shop.inv.draw(self.screen)
+        self.player_inventory.draw(self.screen)
 
     def is_over(self, target):
-        return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
+        return target.inv.pos_x < self.pos_mouse[0] < target.inv.pos_x + target.rect[0] and target.inv.pos_y < self.pos_mouse[1] < target.inv.pos_y + target.rect[1]
+
+    def run(self, background, player_inventory):
+        self.running = True
+        self.player_inventory = player_inventory
+        self.player_inventory.pos_x = 500
+        while self.running:
+            self.print_background(background)
+            self.events()
+            self.update()
+            player_inventory.draw(self.screen)
+            self.draw()
+            pg.display.update()

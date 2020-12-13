@@ -7,11 +7,9 @@ import random
 
 class Shop():
     def __init__(self):
-        self.rect = (900, 500)
+        self.rect = (900, 400)
         self.fond = pg.Surface(self.rect)
         self.fond.fill((0, 0, 0))
-        self.pos_x = 50
-        self.pos_y = 50
         self.inv = Inventory()
 
     def update(self):
@@ -21,4 +19,6 @@ class Shop():
 def create_shop():
     shop = Shop()
     shop.inv.add(Sword("epee"))
+    shop.inv.add(Sword("bite"))
+    shop.inv.add(Sword("cul"))
     return shop

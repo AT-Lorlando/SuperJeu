@@ -27,6 +27,7 @@ class Mother_screen():
         pass
 
     def run(self, background):
+        self.running = True
         while self.running:
             self.print_background(background)
             self.events()

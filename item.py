@@ -4,12 +4,12 @@ import pygame
 class Item(pygame.sprite.Sprite):
     def __init__(self):  # , image, pos_x, pos_y, name
         super(Item, self).__init__()
-        self.pos_x = 10
-        self.pos_y = 10
+        self.pos_x = 0
+        self.pos_y = 0
         # self.rect = image.get_size()
         # self.centerx = pos_x + self.rect[0]/2
         # self.centery = pos_y + self.rect[1]/2
-        self.image = pygame.Surface((9, 9))
+        self.image = pygame.Surface((90, 90))
         self.image.fill((255, 255, 0))
         self.print = self.image
         # self.name = name
