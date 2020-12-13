@@ -40,7 +40,7 @@ for x in tab_buttons:
         path.join(button_folder, x+"_clicked.png")).convert()
     _button[x+"_clicked"].set_colorkey((93, 94, 94))
 
-# the coordinates the first button
+# the coordinates the first buttons
 pos_x = WIDTH/2 - _button["play"].get_size()[0]/2
 pos_y = HEIGHT/2 - _button["play"].get_size()[1]/2
 
