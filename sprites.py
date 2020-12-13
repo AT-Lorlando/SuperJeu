@@ -34,10 +34,9 @@ class Player(pg.sprite.Sprite):
         self.walk_bot = [(pg.image.load(
             path.join(champ_folder, f'B{x}.png')).convert_alpha()) for x in range(1, 4)]
         self.inv = Inventory()
-        self.inv.add(Sword("epee"))
-        self.inv.add(Sword("bite"))
-        self.inv.add(Sword("cul"))
-            
+        self.inv.add(Sword("sprite1"))
+        self.inv.add(Sword("sprite2"))
+        self.inv.add(Sword("sprite3"))
 
     def set_pos(self, x, y):
         self.pos.x = x

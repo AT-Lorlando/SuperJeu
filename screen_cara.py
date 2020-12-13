@@ -47,6 +47,8 @@ class Screen_cara(Mother_screen):
             json.dump(new, f)
 
     def run(self, background):
+
+        self.running = True
         # set the coor of center of the hex of attributs
         self.coord((400, 1000), 250)
         for x in self.attributs.items():
@@ -79,6 +81,4 @@ class Screen_cara(Mother_screen):
         self.attributs["CHA"].x_barre = center[1] - radius * 0.866
         self.attributs["CHA"].y_center = center[0] + radius * 0.5
 
-
-    #def draw_hex(self) :
-        
+    # def draw_hex(self) :

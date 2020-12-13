@@ -18,14 +18,16 @@ class Screen_shop(Mother_screen):
     def update(self):
         self.mouse = pg.mouse.get_pressed()
         self.pos_mouse = pg.mouse.get_pos()
+        self.liberty = (self.player_inventory.update(
+            self.mouse, self.pos_mouse, self.liberty) and self.shop.inv.update(self.mouse, self.pos_mouse, self.liberty))
         if self.is_over(self.shop):
             self.shop.fond.fill((255, 255, 255))
         else:
             self.shop.fond.fill((0, 0, 0))
-            
 
     def draw(self):
-        self.screen.blit(self.shop.fond, (self.shop.inv.pos_x, self.shop.inv.pos_y))
+        self.screen.blit(
+            self.shop.fond, (self.shop.inv.pos_x, self.shop.inv.pos_y))
         self.shop.inv.draw(self.screen)
         self.player_inventory.draw(self.screen)
 
@@ -35,11 +37,12 @@ class Screen_shop(Mother_screen):
     def run(self, background, player_inventory):
         self.running = True
         self.player_inventory = player_inventory
-        self.player_inventory.pos_x = 500
+        self.player_inventory.shift(500)
+
         while self.running:
             self.print_background(background)
             self.events()
             self.update()
-            player_inventory.draw(self.screen)
+            # player_inventory.draw(self.screen)
             self.draw()
             pg.display.update()

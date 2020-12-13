@@ -8,6 +8,9 @@ class Mother_screen():
     def __init__(self):
         self.running = False
         self.fond = pg.Surface((WIDTH, HEIGHT)).convert_alpha()
+        self.liberty = True
+        # self.egality
+        # self.fratenity
 
     def print_background(self, background):
         self.screen.blit(background, (0, 0))

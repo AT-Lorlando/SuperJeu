@@ -78,10 +78,6 @@ while run:
     elif var == 'game_launch':
         g.draw_instance(g.hub)
         g.run()
-    elif screen_shop.running:
-        screen_shop.run(screen.copy())
-    elif screen_cara.running:
-        screen_cara.run(screen.copy())
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -90,9 +86,9 @@ while run:
             if event.key == pg.K_ESCAPE:
                 run = False
             if event.key == pg.K_s:
-                screen_shop.running = True
+                screen_shop.run(screen.copy())
             if event.key == pg.K_c:
-                screen_cara.running = True
+                screen_cara.run(screen.copy())
 
     pg.display.update()
 

@@ -12,13 +12,13 @@ class Shop():
         self.fond.fill((0, 0, 0))
         self.inv = Inventory()
 
-    def update(self):
-        pass
+    def update(self, mouse, pos_mouse):
+        return self.inv.update(mouse, pos_mouse)
 
 
 def create_shop():
     shop = Shop()
-    shop.inv.add(Sword("epee"))
-    shop.inv.add(Sword("bite"))
-    shop.inv.add(Sword("cul"))
+    shop.inv.add(Sword("shop1"))
+    shop.inv.add(Sword("shop2"))
+    shop.inv.add(Sword("shop3"))
     return shop
