@@ -15,10 +15,19 @@ class Shop():
     def update(self, mouse, pos_mouse):
         return self.inv.update(mouse, pos_mouse)
 
+    def draw(self, screen):
+        self.inv.draw(screen)
+
 
 def create_shop():
     shop = Shop()
     shop.inv.add(Sword("shop1"))
     shop.inv.add(Sword("shop2"))
     shop.inv.add(Sword("shop3"))
+    shop.inv.add(Sword("shop4"))
+    shop.inv.add(Sword("shop1"))
+    shop.inv.add(Sword("shop2"))
+    shop.inv.add(Sword("shop3"))
+    shop.inv.add(Sword("shop4"))
+    shop.inv.add(Sword("shop4"))
     return shop

@@ -27,9 +27,9 @@ class Screen_shop(Mother_screen):
 
     def draw(self):
         self.screen.blit(
-            self.shop.fond, (self.shop.inv.pos_x, self.shop.inv.pos_y))
-        self.shop.inv.draw(self.screen)
-        self.player_inventory.draw(self.screen)
+            self.shop.fond, (self.shop.inv.pos_x, self.shop.inv.pos_y))  # fond
+        self.shop.draw(self.screen)  # shop
+        self.player_inventory.draw(self.screen)  # player inv
 
     def is_over(self, target):
         return target.inv.pos_x < self.pos_mouse[0] < target.inv.pos_x + target.rect[0] and target.inv.pos_y < self.pos_mouse[1] < target.inv.pos_y + target.rect[1]
