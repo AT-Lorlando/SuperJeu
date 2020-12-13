@@ -17,7 +17,7 @@ def resize(img, size):
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.frontLayer.all_sprites
+        self.groups = game.frontLayer
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((24, 48))
@@ -101,8 +101,6 @@ class Player(pg.sprite.Sprite):
         self.isPlaying = True
 
     def collide_with_obstacle(self, dir):
-        # self.game.interactif_dialogue(0)
-
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
             if hits:
@@ -124,6 +122,25 @@ class Player(pg.sprite.Sprite):
                 self.vel.y = 0
                 self.rect.y = self.pos.y
 
+    def collide_with_interactif(self):
+        hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
+        if hits:
+            self.collide_interaction(hits[0])
+            if self.vel.x > 0:
+                self.pos.x = hits[0].rect.left - self.rect.width
+            if self.vel.x < 0:
+                self.pos.x = hits[0].rect.right
+            self.vel.x = 0
+            self.rect.x = self.pos.x
+        if hits:
+            self.collide_interaction(hits[0])
+            if self.vel.y > 0:
+                self.pos.y = hits[0].rect.top - self.rect.height
+            if self.vel.y < 0:
+                self.pos.y = hits[0].rect.bottom
+            self.vel.y = 0
+            self.rect.y = self.pos.y
+
     def collide_interaction(self, sprite):
         if sprite in self.game.doors:
             self.vel = vec(0, 0)
@@ -135,7 +152,7 @@ class Player(pg.sprite.Sprite):
             self.go_upstair()
         elif isinstance(sprite, Shoper):
             self.game.interactif_dialogue(sprite)
-            sprite.shop.run(self.game.screen.copy(), self.inv)
+            # sprite.shop.run(self.game.screen.copy(), self.inv)
         else:
             self.game.interactif_dialogue(0)
 

@@ -15,7 +15,7 @@ def resize(img, size):
 
 # class Player(pg.sprite.Sprite):
 #     def __init__(self, game, x, y):
-#         self.groups = game.frontLayer.all_sprites
+#         self.groups = game.frontLayer
 #         pg.sprite.Sprite.__init__(self, self.groups)
 #         self.game = game
 #         self.image = pg.Surface((100, 100))
@@ -176,12 +176,12 @@ def resize(img, size):
 
 
 class Floor(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.backLayer.all_sprites
+    def __init__(self, game, x, y, tile):
+        self.groups = game.backLayer
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = resize(pg.image.load(
-            path.join(room_folder, "room-floor.png")).convert_alpha(), TILESIZE)
+            path.join(wall_folder, f'{tile}.png')).convert_alpha(), TILESIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -190,14 +190,17 @@ class Floor(pg.sprite.Sprite):
 
 
 class Wall(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.backLayer.all_sprites, game.obstacle, game.walls
+    def __init__(self, game, x, y, tile):
+        self.groups = game.backLayer, game.obstacle, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.x = x
         self.y = y
-        self.image = resize(pg.image.load(
-            path.join(wall_folder, "w (7).png")).convert_alpha(), TILESIZE)
+        if(tile):
+            self.image = resize(pg.image.load(
+                path.join(wall_folder, f'{tile}.png')).convert_alpha(), TILESIZE)
+        else:
+            self.image = pg.Surface((TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
@@ -205,12 +208,12 @@ class Wall(pg.sprite.Sprite):
 
 class Door(pg.sprite.Sprite):
     def __init__(self, game, x, y, door_type, instance_behind):
-        self.groups = game.backLayer.all_sprites, game.obstacle, game.doors
+        self.groups = game.backLayer, game.obstacle, game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.door_type = door_type
         self.instance_behind = (floor(instance_behind %
-                                      1000/100), floor(instance_behind % 100/10))
+                                      10000/1000), floor(instance_behind % 1000/100))
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.x = x
@@ -235,7 +238,7 @@ class Door(pg.sprite.Sprite):
 
 class Stair(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.backLayer.all_sprites, game.obstacle, game.stairs
+        self.groups = game.backLayer, game.obstacle, game.stairs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -262,14 +265,19 @@ class Stair(pg.sprite.Sprite):
 
 class Shoper(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.frontLayer.all_sprites, game.obstacle
+        self.groups = game.midLayer, game.interactif
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE*2, TILESIZE*2))
+        self.image = pg.Surface((TILESIZE*2, TILESIZE*3))
         self.image.fill(ORANGE)
         self.rect = self.image.get_rect()
+        self.key = pg.K_e
         self.x = x
         self.y = y
         self.rect.x = (x) * TILESIZE
         self.rect.y = (y) * TILESIZE
         self.shop = Screen_shop(game.screen)
+        Wall(self.game, self.x, self.y, 0)
+        Wall(self.game, self.x+1, self.y, 0)
+        Wall(self.game, self.x+1, self.y+1, 0)
+        Wall(self.game, self.x, self.y+1, 0)

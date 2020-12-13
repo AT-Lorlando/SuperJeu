@@ -30,6 +30,7 @@ class Champion():
                 self.image = self.walk_top[self.actual_frame]
             elif(self.player.looking_at == 'Bot'):
                 self.image = self.walk_bot[self.actual_frame]
+        self.image = pg.transform.scale(self.image, (50,50))
 
 class Dark_Wizard(Champion):
     def __init__(self, player):
