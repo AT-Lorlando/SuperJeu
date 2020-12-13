@@ -2,17 +2,18 @@ import pygame
 
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, image, pos_x, pos_y, name):
+    def __init__(self):  # , image, pos_x, pos_y, name
         super(Item, self).__init__()
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.rect = image.get_size()
-        self.centerx = pos_x + self.rect[0]/2
-        self.centery = pos_y + self.rect[1]/2
-        self.image = image
-        self.print = image
-        self.name = name
-        self.quantity = 1 
+        self.pos_x = 10
+        self.pos_y = 10
+        # self.rect = image.get_size()
+        # self.centerx = pos_x + self.rect[0]/2
+        # self.centery = pos_y + self.rect[1]/2
+        self.image = pygame.Surface((9, 9))
+        self.image.fill((255, 255, 0))
+        self.print = self.image
+        # self.name = name
+        self.quantity = 1
 
     # Is true if the mouse is over the sprite
     def is_over(self, pos_mouse):
@@ -38,17 +39,24 @@ class Item(pygame.sprite.Sprite):
 
 
 class Stuff(Item):
-    def __init__(self, STR, DEX, CON, INT, WIS, CHA):
+    def __init__(self):  # , STR, DEX, CON, INT, WIS, CHA
         super(Stuff, self).__init__()
-        self.STR = STR
-        self.DEX = DEX
-        self.CON = CON
-        self.INT = INT
-        self.WIS = WIS
-        self.CHA = CHA
+        self.STR = 0
+        # self.DEX = DEX
+        # self.CON = CON
+        # self.INT = INT
+        # self.WIS = WIS
+        # self.CHA = CHA
 
 
 class Consumable(Item):
     def __init__(self, health):
         super(Stuff, self).__init__()
         self.health = health
+
+
+class Sword(Stuff):
+    def __init__(self, name):
+        super(Sword, self).__init__()
+        self.STR = 5
+        self.name = name

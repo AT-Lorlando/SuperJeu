@@ -2,26 +2,17 @@ from item import *
 
 
 class Inventory():
-    def __init__(self, size, width, x, y):
-        self.inventory = [size]
-        for i in range((size)):
-            self.inventory[i] = None
-        self.width = width
-        self.x = x
-        self.y = y
+    def __init__(self):  # width, x, y
+        self.inventory = []
+        # for i in range(len(self.inventory)):
+        #     self.inventory.append()
 
-    def add(self, pos, item):
-        if self.inventory[pos] == None:
-            self.inventory[pos] = item
-            return 1
-        else:
-            if item.name == self.inventory[pos].name:
-                self.inventory[pos].quantity += 1
-                return 1
-            else:
-                var = self.inventory[pos]
-                self.inventory[pos] = item
-                return var
+        self.width = 9
+        self.x = 10
+        self.y = 10
+
+    def add(self, item):
+        self.inventory.append(item)
 
     def remove(self, item):
         for i in len(self.inventory):

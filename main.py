@@ -10,6 +10,7 @@ from Dungeon import *
 #from shop import *
 from screen_shop import *
 from screen_cara import *
+from shop import *
 
 pg.init()
 
@@ -61,6 +62,7 @@ game_launch = False
 var = ""
 g = Game()
 screen_shop = Screen_shop(screen)
+screen_shop.shop = create_shop()
 screen_cara = Screen_cara(screen)
 
 while run:
