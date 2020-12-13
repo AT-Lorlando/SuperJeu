@@ -29,14 +29,12 @@ class Item(pygame.sprite.Sprite):
 
     def update(self, mouse, pos_mouse, liberty):
         # If you click on the item, it will follows the cursor and becomes bigger
-        # print("dans item", self.name, "pos :", self.pos_x, self.pos_x)
 
         if self.is_clicked(mouse, pos_mouse) and liberty:
             self.clicked = True
             return 0
         elif not mouse[0] and not liberty:
             self.clicked = False
-            print("hope")
             return 1
         if self.clicked:
             self.pos_x = pos_mouse[0] - self.rect[0]/2 - 5
@@ -47,7 +45,6 @@ class Item(pygame.sprite.Sprite):
         else:
             self.print = self.image
             return 1
-        # print("self.clicked :", self.clicked)
 
     # Draw the image at the position given
 
@@ -74,8 +71,9 @@ class Consumable(Item):
 
 
 class Sword(Stuff):
-    def __init__(self, name):  # , pos_x, pos_y
+    def __init__(self, name, inv="player"):  # , pos_x, pos_y
         Item.__init__(self)
         super(Sword, self).__init__()
         self.STR = 5
         self.name = name
+        self.inclued_in = inv

@@ -4,7 +4,7 @@ import pygame as pg
 
 
 class Inventory():
-    def __init__(self):  # width, x, y
+    def __init__(self, name="player"):  # width, x, y
         self.inventory = []
         # for i in range(len(self.inventory)):
         #     self.inventory.append()
@@ -16,12 +16,18 @@ class Inventory():
         self.pos_y = 50
         self.index = -1
         # self.dragged = False
+        self.copyx = 0
+        self.copyy = 0
+        self.shifted = False
+        self.name = name
 
     def shift(self, x):  # shift the positions of all the items of the inventory
-        self.pos_x += x
-        for item in self.inventory:
-            item.pos_x += x
-            item.image.fill((255, 0, 255))
+        if not self.shifted:
+            self.pos_x += x
+            for item in self.inventory:
+                item.pos_x += x
+                item.image.fill((255, 0, 255))
+            self.shifted = True
 
     def add(self, item):  # add an item of the inventory
         item.pos_x = self.pos_x + (len(self.inventory) % self.width) * 103 + 10
@@ -68,7 +74,14 @@ class Inventory():
             tab.append(item.update(mouse, pos_mouse, liberty))
         for i in range(len(tab)):
             if tab[i] == 0:
+                if self.index == -1 and self.name == self.inventory[i].inclued_in and self.inventory[i].is_clicked(mouse, pos_mouse):
+                    self.copyx = self.inventory[i].pos_x
+                    self.copyy = self.inventory[i].pos_y
+                    print("enregistrement", self.copyx,
+                          self.copyy, self.inventory[i].inclued_in)
+                    self.index = i
                 self.index = i  # bring back the index of the item moved
+
         if liberty == 1 and self.index != -1:  # test when the item is dropped
             lines = []
             col = []
@@ -84,16 +97,24 @@ class Inventory():
             i = 0
             while pos_mouse[0] > col[i] + self.pos_x:
                 i += 1
-            self.inventory[self.index].pos_x = col[i-1] + self.pos_x
-            i = 0
-            while pos_mouse[1] > lines[i] + self.pos_y:
-                i += 1
-                if i > len(lines):
+
+            j = 0
+            while pos_mouse[1] > lines[j] + self.pos_y:
+                j += 1
+                if j > len(lines):
                     break
-            self.inventory[self.index].pos_y = lines[i-1] + self.pos_y
+            for item in self.inventory:
+                # detect if there is an item at the place
+                if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name:
+                    print("avant", item.pos_x, item.pos_y)
+                    item.pos_x = self.copyx
+                    item.pos_y = self.copyy
+                    print("apres", item.pos_x, item.pos_y)
+                self.inventory[self.index].pos_x = col[i-1] + self.pos_x
+                self.inventory[self.index].pos_y = lines[j-1] + self.pos_y
 
             # reset
             self.index = -1
 
-        print(self.index)
+        # print(self.index)
         return not (0 in tab)
