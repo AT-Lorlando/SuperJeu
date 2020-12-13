@@ -68,19 +68,6 @@ class Inventory():
         pg.draw.line(self.fond, (0, 0, 0), (endx, starty), (endx, endy))
 
     def update(self, mouse, pos_mouse, liberty):
-        tab = []
-        for item in self.inventory:
-            # update the item
-            tab.append(item.update(mouse, pos_mouse, liberty))
-        for i in range(len(tab)):
-            if tab[i] == 0:
-                if self.index == -1 and self.name == self.inventory[i].inclued_in and self.inventory[i].is_clicked(mouse, pos_mouse):
-                    self.copyx = self.inventory[i].pos_x
-                    self.copyy = self.inventory[i].pos_y
-                    print("enregistrement", self.copyx,
-                          self.copyy, self.inventory[i].inclued_in)
-                    self.index = i
-                self.index = i  # bring back the index of the item moved
 
         if liberty == 1 and self.index != -1:  # test when the item is dropped
             lines = []
@@ -115,6 +102,21 @@ class Inventory():
 
             # reset
             self.index = -1
+            print("reset")
 
-        # print(self.index)
+        tab = []
+        for item in self.inventory:
+            # update the item
+            tab.append(item.update(mouse, pos_mouse, liberty))
+        for i in range(len(tab)):
+            if tab[i] == 0:
+                print("index :", self.index)
+                if self.index == -1 and self.name == self.inventory[i].inclued_in and self.inventory[i].is_clicked(mouse, pos_mouse):
+                    self.index = i
+                    self.copyx = self.inventory[i].pos_x
+                    self.copyy = self.inventory[i].pos_y
+                    print("enregistrement", self.copyx,
+                          self.copyy, self.inventory[i].inclued_in, "i :", i)
+                self.index = i  # bring back the index of the item moved
+
         return not (0 in tab)
