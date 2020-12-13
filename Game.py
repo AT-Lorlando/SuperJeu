@@ -38,6 +38,7 @@ class Game:
         self.player = Player(self, 0, 0)
         self.known_tiles = []
         self.interactif_sentence = None
+        self.interactif_sprite = None
 
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
@@ -113,9 +114,11 @@ class Game:
 
     def interactif_dialogue(self, sprite):
         if(sprite):
+            self.interactif_sprite = sprite
             self.interactif_sentence = f'Press {sprite.key} to interact with {sprite}'
         else:
             self.interactif_sentence = None
+            self.interactif_key = None
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -162,6 +165,10 @@ class Game:
 
             elif event.type == MOUSEWHEEL:
                 self.minimap.event_zoom(event.y)
+            if(self.interactif_sprite):
+                if event.key == self.interactif_sprite.key:
+                    self.interactif_sprite.interaction(self.player)
+
 
     def show_start_screen(self):
         pass

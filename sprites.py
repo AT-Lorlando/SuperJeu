@@ -281,3 +281,6 @@ class Shoper(pg.sprite.Sprite):
         Wall(self.game, self.x+1, self.y, 0)
         Wall(self.game, self.x+1, self.y+1, 0)
         Wall(self.game, self.x, self.y+1, 0)
+
+    def interaction(self, player):
+        self.shop.run(self.game.screen.copy(), player.inv)
