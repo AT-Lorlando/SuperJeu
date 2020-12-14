@@ -68,48 +68,57 @@ class Inventory():
         pg.draw.line(self.fond, (0, 0, 0), (endx, starty), (endx, endy))
 
     def update(self, mouse, pos_mouse, liberty):
+        flag = False
+        lines = []
+        col = []
+        startx = 5
+        starty = 5
+        endx = self.rect[0]-5
+        endy = self.rect[1]-5
+        for i in range(self.width + 1):
+            col.append(startx + i*(endx//self.width))
+        for i in range(4):
+            lines.append(starty + i*(endx//self.width))
 
         if liberty != 0 and self.index != -1:  # test when the item is dropped
-            lines = []
-            col = []
-            startx = 5
-            starty = 5
-            endx = self.rect[0]-5
-            endy = self.rect[1]-5
-            for i in range(self.width + 1):
-                col.append(startx + i*(endx//self.width))
-            for i in range(4):
-                lines.append(starty + i*(endx//self.width))
 
-            # replace the item
+            # find the case where we dropped the item // start
             i = 0
+            # find if the mouse is out the inventory
             if pos_mouse[0] < self.pos_x or pos_mouse[0] > self.pos_x + self.rect[0]:
                 i = -1
+                print("mouse out i")
             else:
-                while pos_mouse[0] > col[i] + self.pos_x:
+                while pos_mouse[0] > col[i] + self.pos_x:  # find the column of the drop
                     i += 1
                     if i >= len(lines):
                         break
             j = 0
             if pos_mouse[1] < self.pos_y or pos_mouse[1] > self.pos_y + self.rect[1]:
                 j = -1
+                # print("mouse out j")
             else:
                 while pos_mouse[1] > lines[j] + self.pos_y:
                     j += 1
                     if j >= len(lines):
                         break
+            # find the case where we dropped the item // end
 
             for item in self.inventory:
                 # detect if there is an item at the place
                 if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name:
+                    # print("collision, index :", self.index, "i :", i, "j :", j)
                     item.pos_x = self.copyx
                     item.pos_y = self.copyy
 
                 if i == -1 or j == -1:  # check if the player dropped the item in a correct place
+                    # print("invalid place, index :", self.index)
                     self.inventory[self.index].pos_x = self.copyx
                     self.inventory[self.index].pos_y = self.copyy
+                    flag = True
                     # return self.index
                 else:  # put the item at the rigth place
+                    # print("correct place, index :", self.index)
                     self.inventory[self.index].pos_x = col[i-1] + self.pos_x
                     self.inventory[self.index].pos_y = lines[j-1] + self.pos_y
 
@@ -132,5 +141,14 @@ class Inventory():
                     # print("enregistrement", self.copyx,
                     #       self.copyy, self.inventory[i].inclued_in, "i :", i)
                 self.index = i  # bring back the index of the item moved
+        if flag:
+            # print("flag works")
+            return self.inventory[self.index]
 
         return not (0 in tab)
+
+    # def collide(self,pos_mouse):
+    #     return (pos_mouse[0] > self.pos_y and pos_mouse[0] < self.pos_y + self.rect[0]) and (pos_mouse[1] > self.pos_y and pos_mouse[1] < self.pos_y + self.rect[1])
+
+    # def switch(self, mouse, pos_mouse, liberty):
+    #     if liberty.inclued_in != self.name and self.collide(pos_mouse) :
