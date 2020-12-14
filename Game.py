@@ -13,6 +13,8 @@ from Minimap import *
 
 #from Dungeon import *
 
+def get_id(tile):
+    return (tile%100) // 10
 
 class Game:
     def __init__(self):
@@ -27,14 +29,16 @@ class Game:
         self.actual_stage = 0
         self.actual_dungeon = 0
         self.hub = Instance('Hub')
+        # self.hub.save()
+        self.hub.open("Instance_Hub.csv")
         self.frontLayer = pg.sprite.Group()
-        self.frontLayer.all_sprites = pg.sprite.Group()
+        self.midLayer = pg.sprite.Group()
         self.backLayer = pg.sprite.Group()
-        self.backLayer.all_sprites = pg.sprite.Group()
         self.interactif = pg.sprite.Group()
         self.player = Player(self, 0, 0)
         self.known_tiles = []
         self.interactif_sentence = None
+        self.interactif_sprite = None
 
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
@@ -48,35 +52,37 @@ class Game:
 
     def draw_instance(self, instance):
         self.obstacle = pg.sprite.Group()
-        self.obstacle.interactif = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
         self.backLayer = pg.sprite.Group()
-        self.backLayer.all_sprites = pg.sprite.Group()
+        self.interactif = pg.sprite.Group()
         self.map_data = instance.data
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
-                if tile % 10 == FLOOR_ID:
-                    Floor(self, col, row)
-                elif tile % 10 == WALL_ID:
-                    Wall(self, col, row)
-                elif tile % 10 == SPAWN_ID:
-                    Floor(self, col, row)
+                if get_id(tile) == FLOOR_ID:
+                    Floor(self, col, row, tile)
+                elif get_id(tile) == WALL_ID:    
+                    Floor(self, col, row, 1)
+                    Wall(self, col, row, tile%100)
+                elif get_id(tile) == SPAWN_ID:
+                    Floor(self, col, row, 1)
                     self.player.set_pos(col*TILESIZE, row*TILESIZE)
-                    print('Set player to', col, row)
-                elif tile % 10 == DOOR_ID:
-                    Floor(self, col, row)
+                elif get_id(tile) == DOOR_ID:
+                    Floor(self, col, row, 1)
                     Door(self, col, row, instance.door_type, tile)
-                elif tile % 10 == SHOP_ID:
-                    Floor(self, col, row)
+                elif get_id(tile) == SHOP_ID:
+                    Floor(self, col, row, 1)
                     Shoper(self, col, row)
-                elif tile % 10 == STAIR_ID:
-                    Floor(self, col, row)
+                elif get_id(tile) == STAIR_ID:
+                    Floor(self, col, row, 1)
                     Stair(self, col, row)
+                else:
+                    Floor(self, col, row, 1)
         self.camera = Camera(WIDTH, HEIGHT)
-        self.backLayer.all_sprites.update()
-        self.frontLayer.all_sprites.update()
+        self.backLayer.update()
+        self.midLayer.update()
+        self.frontLayer.update()
         self.minimap.data_update(self.map_data)
         print('Stage:', self.actual_stage)
         self.player.isPlaying = True
@@ -99,19 +105,20 @@ class Game:
 
     def update(self):
         # update portion of the game loop
-        self.backLayer.all_sprites.update()
-        self.frontLayer.all_sprites.update()
+        self.backLayer.update()
+        self.midLayer.update()
+        self.frontLayer.update()
         self.add_to_known_tiles()
         self.camera.update(self.player)
         self.minimap.update()
 
     def interactif_dialogue(self, sprite):
         if(sprite):
-            # print('2')
-            self.interactif_sentence = f'Press sprite.key to interact with {sprite}'
+            self.interactif_sprite = sprite
+            self.interactif_sentence = f'Press {sprite.key} to interact with {sprite}'
         else:
             self.interactif_sentence = None
-            # print('3')
+            self.interactif_key = None
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -120,10 +127,11 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        self.screen.fill(DARKGREY)
-        for sprite in self.backLayer.all_sprites:
+        for sprite in self.backLayer:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
-        for sprite in self.frontLayer.all_sprites:
+        for sprite in self.midLayer:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        for sprite in self.frontLayer:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if(self.interactif_sentence):
             font_surface = pg.font.SysFont("Blue Eyes.otf", 30).render(
@@ -157,6 +165,10 @@ class Game:
 
             elif event.type == MOUSEWHEEL:
                 self.minimap.event_zoom(event.y)
+            if(self.interactif_sprite):
+                if event.key == self.interactif_sprite.key:
+                    self.interactif_sprite.interaction(self.player)
+
 
     def show_start_screen(self):
         pass
