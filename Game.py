@@ -63,7 +63,6 @@ class Game:
         self.map_data = instance.data
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
-                print(tile)
                 if get_id(tile) == FLOOR_ID:
                     Floor(self, col, row, get_header(self, tile))
                 elif get_id(tile) == WALL_ID:   
