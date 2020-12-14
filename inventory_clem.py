@@ -86,13 +86,10 @@ class Inventory():
                 i += 1
                 if i >= len(lines):
                     break
-
             j = 0
             while pos_mouse[1] > lines[j] + self.pos_y:
                 j += 1
-                print(j)
                 if j >= len(lines):
-                    print("break")
                     break
             for item in self.inventory:
                 # detect if there is an item at the place
@@ -112,6 +109,7 @@ class Inventory():
             # update the item
             tab.append(item.update(mouse, pos_mouse, liberty))
         for i in range(len(tab)):
+            # check if an item is handled
             if tab[i] == 0:
                 if self.index == -1 and self.name == self.inventory[i].inclued_in and self.inventory[i].is_clicked(mouse, pos_mouse):
                     # use the copy of the last state to replace the item
