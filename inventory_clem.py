@@ -84,25 +84,28 @@ class Inventory():
             i = 0
             while pos_mouse[0] > col[i] + self.pos_x:
                 i += 1
+                if i >= len(lines):
+                    break
 
             j = 0
             while pos_mouse[1] > lines[j] + self.pos_y:
                 j += 1
-                if j > len(lines):
+                print(j)
+                if j >= len(lines):
+                    print("break")
                     break
             for item in self.inventory:
                 # detect if there is an item at the place
                 if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name:
-                    print("avant", item.pos_x, item.pos_y)
                     item.pos_x = self.copyx
                     item.pos_y = self.copyy
-                    print("apres", item.pos_x, item.pos_y)
+                # put the item at the rigth place
                 self.inventory[self.index].pos_x = col[i-1] + self.pos_x
                 self.inventory[self.index].pos_y = lines[j-1] + self.pos_y
 
             # reset
             self.index = -1
-            print("reset")
+            # print("reset")
 
         tab = []
         for item in self.inventory:
@@ -110,13 +113,13 @@ class Inventory():
             tab.append(item.update(mouse, pos_mouse, liberty))
         for i in range(len(tab)):
             if tab[i] == 0:
-                print("index :", self.index)
                 if self.index == -1 and self.name == self.inventory[i].inclued_in and self.inventory[i].is_clicked(mouse, pos_mouse):
+                    # use the copy of the last state to replace the item
                     self.index = i
                     self.copyx = self.inventory[i].pos_x
                     self.copyy = self.inventory[i].pos_y
-                    print("enregistrement", self.copyx,
-                          self.copyy, self.inventory[i].inclued_in, "i :", i)
+                    # print("enregistrement", self.copyx,
+                    #       self.copyy, self.inventory[i].inclued_in, "i :", i)
                 self.index = i  # bring back the index of the item moved
 
         return not (0 in tab)
