@@ -16,8 +16,8 @@ from Minimap import *
 def get_id(tile):
     return (tile%100)
 
-def get_header(tile):
-    return tile//100
+def get_header(game, tile):
+    return tile//100 if game.actual_stage == 0 else 1
 
 class Game:
     def __init__(self):
@@ -64,9 +64,9 @@ class Game:
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if get_id(tile) == FLOOR_ID:
-                    Floor(self, col, row, get_header(tile))
+                    Floor(self, col, row, get_header(self, tile))
                 elif get_id(tile) == WALL_ID:   
-                    Wall(self, col, row, get_header(tile))
+                    Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
                     self.player.set_pos(col*TILESIZE, row*TILESIZE)
@@ -82,10 +82,10 @@ class Game:
                 else:
                     if get_id(tile) == NPC_ID:
                         Floor(self, col, row, 0)
-                        NPC(self, col, row, get_header(tile))
+                        NPC(self, col, row, get_header(self, tile))
                     elif get_id(tile) == HOUSE_ID:
                         Floor(self, col, row, 0)
-                        House(self, col, row, get_header(tile))
+                        House(self, col, row, get_header(self, tile))
                     elif(tile>0):
                         Floor(self, col, row, 0)
                         Decoration(self, col, row, tile)

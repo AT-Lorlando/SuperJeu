@@ -175,13 +175,13 @@ class Room:
         assert(self.tile != 0)
         thisX = random.randint(2, self.tile.Width-2)
         thisY = random.randint(2, self.tile.Height-2)
-        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + 10*SPAWN_ID
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + SPAWN_ID
     
     def add_stair(self):
         assert(self.tile != 0)
         thisX = random.randint(2, self.tile.Width-2)
         thisY = random.randint(2, self.tile.Height-2)
-        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + 10*STAIR_ID
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + STAIR_ID
 
 class Stage:
     def __init__(self, ID, Final_size, Room_size):
