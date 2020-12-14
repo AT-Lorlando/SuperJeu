@@ -22,7 +22,7 @@ class Map(Mother_screen):
         super(Map, self).__init__()
         self.game = game   
         self.zoom = 2
-        self.zoom_index = 12 
+        self.zoom_index = 5 
         self.square_size = floor(TILESIZE/40)
         self.range = 20
         self.map_data = []
@@ -36,8 +36,9 @@ class Map(Mother_screen):
         self.sprites = pg.sprite.Group()
 
     def event_zoom(self, y):
-        self.zoom_index = (self.zoom_index + y)%len(ZOOM_VALUE)
+        self.zoom_index = (self.zoom_index + y) if 0 < (self.zoom_index + y) < len(ZOOM_VALUE) else len(ZOOM_VALUE)-1 if (self.zoom_index + y) >= len(ZOOM_VALUE) else 0
         self.zoom = ZOOM_VALUE[self.zoom_index]
+        print(self.zoom)
     
     def data_update(self, data):
         self.map_data = data

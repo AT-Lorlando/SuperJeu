@@ -99,30 +99,40 @@ class Stair(pg.sprite.Sprite):
         self.turn()
 
 
-class Shoper(pg.sprite.Sprite):
+class Interactif(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.interactif
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        # self.image = pg.Surface((TILESIZE*2, TILESIZE*3))
-        # self.image.fill(ORANGE)
-        self.rect = pg.Rect((x) * TILESIZE, (y) * TILESIZE, TILESIZE*2, TILESIZE*3)
-        self.key = pg.K_e
+        self.rect = pg.Rect((x) * TILESIZE, (y) * TILESIZE, TILESIZE*4, TILESIZE)
         self.x = x
         self.y = y
+class Shop_area(Interactif):
+    def __init__(self, game, x, y):
+        super(Shop_area,self).__init__(game, x, y)
+        self.key = pg.K_e
         self.shop = Screen_shop(game.screen)
 
     def interaction(self, player):
         self.shop.run(self.game.screen.copy(), player.inv)
 
+class Quest_area(Interactif):
+    def __init__(self, game, x, y):
+        super(Quest_area,self).__init__(game, x, y)
+        self.key = pg.K_e
+
+    def interaction(self, player):
+        print('Interact')
+
 
 class NPC(pg.sprite.Sprite):
-    def __init__(self, game, x, y, ID):
-        self.groups = game.midLayer
+    def __init__(self, game, x, y, tile):
+        self.groups = game.midLayer, game.obstacle
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((CHARACTER_SIZE, CHARACTER_SIZE))
-        self.image.fill(RED)
+        self.img = tile//10
+        self.image = resize(pg.image.load(
+            path.join(npc_folder, f'{self.img}.png')),CHARACTER_SIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -130,11 +140,12 @@ class NPC(pg.sprite.Sprite):
         self.rect.y = (y) * TILESIZE
 
 class House(pg.sprite.Sprite):
-    def __init__(self, game, x, y, ID):
+    def __init__(self, game, x, y, tile):
         self.groups = game.midLayer, game.obstacle
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = resize(pg.image.load(path.join(house_folder, f'1.png')),4*TILESIZE,3*TILESIZE)
+        self.image = resize(pg.image.load(
+            path.join(house_folder, f'{tile}.png')),4*TILESIZE,3*TILESIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

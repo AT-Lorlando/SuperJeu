@@ -1,3 +1,4 @@
+from numpy.lib.twodim_base import tril_indices
 from pygame.constants import MOUSEWHEEL
 from Dungeon import New_Stage
 import pygame as pg
@@ -72,6 +73,7 @@ class Game:
 
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
+                # print(tile, get_id(tile))
                 if get_id(tile) == FLOOR_ID:
                     Floor(self, col, row, get_header(self, tile))
                 elif get_id(tile) == WALL_ID:   
@@ -82,22 +84,27 @@ class Game:
                 elif get_id(tile) == DOOR_ID:
                     Floor(self, col, row, 0)
                     Door(self, col, row, instance.door_type, tile)
-                elif get_id(tile) == SHOP_ID:
-                    Floor(self, col, row, 0)
-                    Shoper(self, col, row)
                 elif get_id(tile) == STAIR_ID:
                     Floor(self, col, row, 0)
                     Stair(self, col, row)
-                else:
-                    if get_id(tile) == NPC_ID:
+                #HUB Features
+                elif get_id(tile) == NPC_ID:
+                    Floor(self, col, row, 0)
+                    NPC(self, col, row, get_header(self, tile))
+                    if tile%1000 == SHOP_ID:
+                        print('shop')
                         Floor(self, col, row, 0)
-                        NPC(self, col, row, get_header(self, tile))
-                    elif get_id(tile) == HOUSE_ID:
+                        Shop_area(self, col-1, row)
+                    elif tile%1000 == QUEST_ID:
+                        print("Quest")
                         Floor(self, col, row, 0)
-                        House(self, col, row, get_header(self, tile))
-                    elif(tile>0):
-                        Floor(self, col, row, 0)
-                        Decoration(self, col, row, tile)
+                        Quest_area(self, col-1, row)
+                elif get_id(tile) == HOUSE_ID:
+                    Floor(self, col, row, 0)
+                    House(self, col, row, get_header(self, tile))
+                elif(tile>0):
+                    Floor(self, col, row, 0)
+                    Decoration(self, col, row, tile)
 
         self.camera = Camera(WIDTH, HEIGHT)
         self.backLayer.update()
@@ -139,17 +146,14 @@ class Game:
     def interactif_dialogue(self, sprite):
         if(sprite):
             self.interactif_sprite = sprite
-            self.interactif_sentence = f'Press {sprite.key} to interact with {sprite}'
+            self.interactif_sentence = pg.font.SysFont("Blue Eyes.otf", 30).render(f'Press {sprite.key} to interact with {sprite}', True, (255, 255, 255))
+            font_size = [self.interactif_sentence.get_rect()[2], self.interactif_sentence.get_rect()[3]]
+            self.dialogue = pg.transform.scale(pg.image.load(path.join(
+                assets_folder, "dialogue.png")).convert_alpha(), (font_size[0]+15, font_size[1]+20))
         else:
             self.interactif_sprite = None
             self.interactif_sentence = None
             self.interactif_key = None
-
-    def draw_grid(self):
-        for x in range(0, WIDTH, TILESIZE):
-            pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
-        for y in range(0, HEIGHT, TILESIZE):
-            pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
         for sprite in self.backLayer:
@@ -159,14 +163,8 @@ class Game:
         for sprite in self.frontLayer:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if(self.interactif_sentence):
-            font_surface = pg.font.SysFont("Blue Eyes.otf", 30).render(
-                self.interactif_sentence, True, (255, 255, 255))
-            font_size = [font_surface.get_rect(
-            )[2], font_surface.get_rect()[3]]
-            dialogue = pg.transform.scale(pg.image.load(path.join(
-                assets_folder, "dialogue.png")).convert_alpha(), (font_size[0]+15, font_size[1]+20))
-            self.screen.blit(dialogue, (WIDTH/2-60, HEIGHT/1.3))
-            self.screen.blit(font_surface, (WIDTH/2-60, HEIGHT/1.3+20))
+            self.screen.blit(self.dialogue, (WIDTH/2-60, HEIGHT/1.3))
+            self.screen.blit(self.interactif_sentence, (WIDTH/2-60, HEIGHT/1.3+20))
         # for scr in self.HUD:
         #     self.screen.blit(scr.image, self.camera.apply(self))
         pg.display.update()

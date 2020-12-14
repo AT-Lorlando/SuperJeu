@@ -42,6 +42,8 @@ class Player(pg.sprite.Sprite):
         self.looking_at = 'Bot'
         self.is_moving = False
 
+        self.pause = 0
+
     def set_pos(self, x, y):
         self.pos.x = x
         self.pos.y = y
@@ -132,11 +134,15 @@ class Player(pg.sprite.Sprite):
                 self.rect.y = self.pos.y
 
     def collide_with_interactif(self):
-        hits = pg.sprite.spritecollide(self, self.game.interactif, False)
-        if hits:
-            self.game.interactif_dialogue(hits[0])
-        else:
-            self.game.interactif_dialogue(0)
+        self.time = pg.time.get_ticks()
+        if(self.time > self.pause + 250):
+            self.pause = self.time
+            hits = pg.sprite.spritecollide(self, self.game.interactif, False)
+            
+            if hits:
+                self.game.interactif_dialogue(hits[0])
+            else:
+                self.game.interactif_dialogue(None)
 
     def collide_interaction(self, sprite):
         if sprite in self.game.doors:
@@ -170,8 +176,6 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.main_champ.animation()
         self.image = self.main_champ.image
-        hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
-        self.collide_interaction(hits)
         if(self.isPlaying):
             self.get_keys()
             self.pos += 2*self.vel * self.game.clock.tick(FPS) / 1000
