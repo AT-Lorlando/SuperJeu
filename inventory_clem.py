@@ -87,7 +87,7 @@ class Inventory():
             # find if the mouse is out the inventory
             if pos_mouse[0] < self.pos_x or pos_mouse[0] > self.pos_x + self.rect[0]:
                 i = -1
-                print("mouse out i")
+                # print("mouse out i")
             else:
                 while pos_mouse[0] > col[i] + self.pos_x:  # find the column of the drop
                     i += 1
@@ -106,7 +106,7 @@ class Inventory():
 
             for item in self.inventory:
                 # detect if there is an item at the place
-                if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name:
+                if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name and j != -1 and i != -1:
                     # print("collision, index :", self.index, "i :", i, "j :", j)
                     item.pos_x = self.copyx
                     item.pos_y = self.copyy
