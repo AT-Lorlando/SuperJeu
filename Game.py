@@ -141,6 +141,7 @@ class Game:
             self.interactif_sprite = sprite
             self.interactif_sentence = f'Press {sprite.key} to interact with {sprite}'
         else:
+            self.interactif_sprite = None
             self.interactif_sentence = None
             self.interactif_key = None
 
@@ -168,7 +169,7 @@ class Game:
             self.screen.blit(font_surface, (WIDTH/2-60, HEIGHT/1.3+20))
         # for scr in self.HUD:
         #     self.screen.blit(scr.image, self.camera.apply(self))
-        pg.display.flip()
+        pg.display.update()
 
     def events(self):
         # catch all events here

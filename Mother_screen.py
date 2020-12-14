@@ -13,21 +13,10 @@ class Mother_screen():
         # self.fratenity
 
     def print_background(self, background):
-        if(not self.running):
-            self.screen.blit(background, (0, 0))
-            self.screen.blit(self.fond, (0, 0))
-            if(self.image):
-                for img in self.image:
-                    self.screen.blit(background, (0, 0))
-                    self.screen.blit(self.fond, (0, 0))
-                    self.screen.blit(img, self.image_pos)
-                    pg.display.flip()
-                    time.sleep(.03)
-        else:
-            if(self.image):
-                self.screen.blit(self.image[len(self.image)-1], self.image_pos)
-            
-              
+        self.screen.blit(background, (0, 0))
+        self.screen.blit(self.fond, (0, 0))
+        if(self.image):
+            self.screen.blit(self.image if type(self.image) != list else self.image[len(self.image)-1], self.image_pos)          
 
     def events(self):
         # catch all events here
@@ -42,10 +31,17 @@ class Mother_screen():
     def draw(self):
         pass
 
-    def run(self, background):
-        self.print_background(background)
+    def run(self, background=None):
+        if self.animation:
+            for img in self.animation:
+                self.screen.blit(background, (0, 0))
+                self.screen.blit(self.fond, (0, 0))
+                self.screen.blit(img, self.image_pos)
+                pg.display.flip()
+                time.sleep(.03)
         self.running = True
         while self.running:
+            self.print_background(background)
             self.events()
             self.update()
             self.draw()

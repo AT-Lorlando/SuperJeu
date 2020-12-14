@@ -12,8 +12,8 @@ class Inventory():
         self.fond = pg.Surface(self.rect)
         self.fond.fill((0, 255, 255))
         self.width = 4
-        self.pos_x = 50
-        self.pos_y = 50
+        self.pos_x = 0
+        self.pos_y = 0
         self.index = -1
         # self.dragged = False
         self.copyx = 0

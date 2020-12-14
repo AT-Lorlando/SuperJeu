@@ -31,14 +31,13 @@ class Map(Mother_screen):
         self.rect = pg.Rect(self.x, self.y, TILESIZE, TILESIZE)
         self.fond.fill((0, 0, 0, 100))
         self.image_pos = (floor(WIDTH*0.1), floor(HEIGHT*0.1))
-        self.image = [pg.transform.scale(pg.image.load(path.join(map_folder, f'{x}.png')), (floor(WIDTH*0.8), floor(HEIGHT*0.8))) for x in range(1,9)]
+        self.animation = [pg.transform.scale(pg.image.load(path.join(map_folder, f'{x}.png')), (floor(WIDTH*0.8), floor(HEIGHT*0.8))) for x in range(1,9)]
+        self.image = pg.transform.scale(pg.image.load(path.join(map_folder, '8.png')), (floor(WIDTH*0.8), floor(HEIGHT*0.8)))
         self.sprites = pg.sprite.Group()
 
     def event_zoom(self, y):
         self.zoom_index = (self.zoom_index + y)%len(ZOOM_VALUE)
         self.zoom = ZOOM_VALUE[self.zoom_index]
-        # self.square_size = floor(TILESIZE/40 * zoom)
-        self.print_background(self.screen.copy())
     
     def data_update(self, data):
         self.map_data = data
