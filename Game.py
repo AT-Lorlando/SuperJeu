@@ -14,7 +14,10 @@ from Minimap import *
 #from Dungeon import *
 
 def get_id(tile):
-    return (tile%100) // 10
+    return (tile%100)
+
+def get_header(tile):
+    return tile//100
 
 class Game:
     def __init__(self):
@@ -61,24 +64,31 @@ class Game:
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if get_id(tile) == FLOOR_ID:
-                    Floor(self, col, row, tile)
-                elif get_id(tile) == WALL_ID:    
-                    Floor(self, col, row, 1)
-                    Wall(self, col, row, tile%100)
+                    Floor(self, col, row, get_header(tile))
+                elif get_id(tile) == WALL_ID:   
+                    Wall(self, col, row, get_header(tile))
                 elif get_id(tile) == SPAWN_ID:
-                    Floor(self, col, row, 1)
+                    Floor(self, col, row, 0)
                     self.player.set_pos(col*TILESIZE, row*TILESIZE)
                 elif get_id(tile) == DOOR_ID:
-                    Floor(self, col, row, 1)
+                    Floor(self, col, row, 0)
                     Door(self, col, row, instance.door_type, tile)
                 elif get_id(tile) == SHOP_ID:
-                    Floor(self, col, row, 1)
+                    Floor(self, col, row, 0)
                     Shoper(self, col, row)
                 elif get_id(tile) == STAIR_ID:
-                    Floor(self, col, row, 1)
+                    Floor(self, col, row, 0)
                     Stair(self, col, row)
                 else:
-                    Floor(self, col, row, 1)
+                    if get_id(tile) == NPC_ID:
+                        Floor(self, col, row, 0)
+                        NPC(self, col, row, get_header(tile))
+                    elif get_id(tile) == HOUSE_ID:
+                        Floor(self, col, row, 0)
+                        House(self, col, row, get_header(tile))
+                    elif(tile>0):
+                        Floor(self, col, row, 0)
+                        Decoration(self, col, row, tile)
         self.camera = Camera(WIDTH, HEIGHT)
         self.backLayer.update()
         self.midLayer.update()
@@ -162,12 +172,13 @@ class Game:
                     self.HUD[0] = (self.HUD[0]+1) % 2
                     if(self.HUD[0]):
                         self.print_minimap()
+                if(self.interactif_sprite):
+                    if event.key == self.interactif_sprite.key:
+                        self.interactif_sprite.interaction(self.player)
 
             elif event.type == MOUSEWHEEL:
                 self.minimap.event_zoom(event.y)
-            if(self.interactif_sprite):
-                if event.key == self.interactif_sprite.key:
-                    self.interactif_sprite.interaction(self.player)
+           
 
 
     def show_start_screen(self):

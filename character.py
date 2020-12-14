@@ -3,15 +3,12 @@ from settings import *
 from os import path
 from player import *
 
-def resize(img, size):
-    return pg.transform.scale(img, (size+2, size+2))
-
 class Champion():
     def __init__(self, player):
         self.player = player
         self.actual_frame = 1
         self.time_since_anime = 0
-        self.image = pg.Surface((100, 100))
+        self.image = pg.Surface((CHARACTER_SIZE, CHARACTER_SIZE))
         self.rect = self.image.get_rect()
 
     def animation(self):
@@ -21,7 +18,7 @@ class Champion():
             if(self.player.is_moving == True):
                 self.actual_frame = (self.actual_frame + 1) % 3
             else:
-                self.actual_frame = 0
+                self.actual_frame = 1
             if(self.player.looking_at == 'Right'):
                 self.image = self.walk_right[self.actual_frame]
             elif(self.player.looking_at == 'Left'):
@@ -30,7 +27,8 @@ class Champion():
                 self.image = self.walk_top[self.actual_frame]
             elif(self.player.looking_at == 'Bot'):
                 self.image = self.walk_bot[self.actual_frame]
-        self.image = pg.transform.scale(self.image, (50,50))
+        self.image = pg.transform.scale(self.image, (CHARACTER_SIZE,CHARACTER_SIZE))
+        self.rect = self.image.get_rect()
 
 class Dark_Wizard(Champion):
     def __init__(self, player):

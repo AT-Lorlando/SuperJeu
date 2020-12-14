@@ -81,10 +81,10 @@ class Tile:
         self.Width = random_lenght(Room_size)
         self.Height = random_lenght(Room_size)
         self.data = np.full( (self.Height, self.Width), self.header + FLOOR_ID)
-        self.data[:,0] = np.full_like(1, self.header + 10*WALL_ID)
-        self.data[:,-1] = np.full_like(1, self.header + 10*WALL_ID)
-        self.data[0] = np.full_like(1, self.header + 10*WALL_ID)
-        self.data[-1] = np.full_like(1, self.header + 10*WALL_ID)
+        self.data[:,0] = np.full_like(1, self.header + WALL_ID)
+        self.data[:,-1] = np.full_like(1, self.header + WALL_ID)
+        self.data[0] = np.full_like(1, self.header + WALL_ID)
+        self.data[-1] = np.full_like(1, self.header + WALL_ID)
 
     def set_pos(self, x, y):
         self.x = x
@@ -222,16 +222,16 @@ class Stage:
         for i in range(1,corridor.lenght):
             for j in [-1,1]:
                 if(corridor.side == 'LEFT'):
-                    self.data[y+j][x+i] = corridor.header + 10*WALL_ID
+                    self.data[y+j][x+i] = corridor.header + WALL_ID
                     self.data[y][x+i] = corridor.header + FLOOR_ID
                 elif(corridor.side == 'RIGHT'):
-                    self.data[y+j][x-i] = corridor.header + 10*WALL_ID
+                    self.data[y+j][x-i] = corridor.header + WALL_ID
                     self.data[y][x-i] = corridor.header + FLOOR_ID
                 elif(corridor.side == 'TOP'):
-                    self.data[y+i][x+j] = corridor.header + 10*WALL_ID
+                    self.data[y+i][x+j] = corridor.header + WALL_ID
                     self.data[y+i][x] = corridor.header + FLOOR_ID
                 elif(corridor.side == 'BOT'):  
-                    self.data[y-i][x+j] = corridor.header + 10*WALL_ID
+                    self.data[y-i][x+j] = corridor.header + WALL_ID
                     self.data[y-i][x] = corridor.header + FLOOR_ID
 
     def connect_corridor(self, room1, room2):
@@ -260,21 +260,21 @@ class Stage:
                 #ID*(space-1) + interate / (ID+1)*(space-1) + wall & floor
                 for y in range(secondCorridor.y-1, firstCorridor.y+2):
                     for x in [-1, 1]:
-                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = firstCorridor.header +10*WALL_ID
+                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = firstCorridor.header +WALL_ID
                         self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)] = firstCorridor.header +FLOOR_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +10*WALL_ID
-                self.data[thisY*(self.room_size-1)+secondCorridor.y-1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +10*WALL_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +WALL_ID
+                self.data[thisY*(self.room_size-1)+secondCorridor.y-1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +WALL_ID
             elif(firstCorridor.y < secondCorridor.y):
                 for y in range(firstCorridor.y-1, secondCorridor.y+2):
                     for x in [-1, 1]:
-                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = firstCorridor.header +10*WALL_ID
+                        self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)+x] = firstCorridor.header +WALL_ID
                         self.data[thisY*(self.room_size-1)+y][(thisX+1)*(self.room_size-1)] = firstCorridor.header +FLOOR_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +10*WALL_ID
-                self.data[thisY*(self.room_size-1)+secondCorridor.y+1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +10*WALL_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +WALL_ID
+                self.data[thisY*(self.room_size-1)+secondCorridor.y+1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +WALL_ID
             elif(firstCorridor.y == secondCorridor.y):
-                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +10*WALL_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y+1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +WALL_ID
                 self.data[thisY*(self.room_size-1)+firstCorridor.y][(thisX+1)*(self.room_size-1)] = firstCorridor.header +FLOOR_ID
-                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +10*WALL_ID
+                self.data[thisY*(self.room_size-1)+firstCorridor.y-1][(thisX+1)*(self.room_size-1)] = firstCorridor.header +WALL_ID
             #Picking the corridor in the Final room tab
             for cor in self.corridor_tab:
                 if(firstCorridor.ID == cor.ID):
@@ -301,21 +301,21 @@ class Stage:
                 #ID*(space-1) + interate / (ID+1)*(space-1) + wall & floor
                 for x in range(secondCorridor.x-1, firstCorridor.x+2):
                     for y in [-1, 1]:
-                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = firstCorridor.header +10*WALL_ID
+                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = firstCorridor.header +WALL_ID
                         self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+x] = firstCorridor.header +FLOOR_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = firstCorridor.header +10*WALL_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x-1] = firstCorridor.header +10*WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = firstCorridor.header +WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x-1] = firstCorridor.header +WALL_ID
             elif(firstCorridor.x < secondCorridor.x):
                 for x in range(firstCorridor.x-1, secondCorridor.x+2):
                     for y in [-1, 1]:
-                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = firstCorridor.header +10*WALL_ID
+                        self.data[(thisY+1)*(self.room_size-1)+y][thisX*(self.room_size-1)+x] = firstCorridor.header +WALL_ID
                         self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+x] = firstCorridor.header +FLOOR_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = firstCorridor.header +10*WALL_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x+1] = firstCorridor.header +10*WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = firstCorridor.header +WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+secondCorridor.x+1] = firstCorridor.header +WALL_ID
             elif(firstCorridor.x == secondCorridor.x):
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = firstCorridor.header +10*WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x+1] = firstCorridor.header +WALL_ID
                 self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x] = firstCorridor.header +FLOOR_ID
-                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = firstCorridor.header +10*WALL_ID
+                self.data[(thisY+1)*(self.room_size-1)][thisX*(self.room_size-1)+firstCorridor.x-1] = firstCorridor.header +WALL_ID
             #Picking the corridor in the Final room tab
             for cor in self.corridor_tab:
                 if(firstCorridor.ID == cor.ID):

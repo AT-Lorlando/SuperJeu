@@ -13,14 +13,14 @@ vec = pg.math.Vector2
 
 
 def resize(img, size):
-    return pg.transform.scale(img, (size+2, size+2))
+    return pg.transform.scale(img, (size, size))
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.frontLayer
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((24, 48))
+        self.image = pg.Surface((CHARACTER_SIZE, CHARACTER_SIZE))
         self.rect = self.image.get_rect()
         self.vel = vec(0, 0)
         self.pos = vec(x, y) * TILESIZE
@@ -99,6 +99,7 @@ class Player(pg.sprite.Sprite):
             pg.display.flip()
             time.sleep(.02)
         self.isPlaying = True
+        self.rect = self.image.get_rect()
 
     def collide_with_obstacle(self, dir):
         if dir == 'x':
