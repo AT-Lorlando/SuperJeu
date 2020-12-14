@@ -11,6 +11,7 @@ class Screen_cara(Mother_screen):
     def __init__(self, screen):
         super(Screen_cara, self).__init__()
         self.screen = screen
+        self.image = None
         self.fond.fill((0, 0, 0, 0))
         self.STR = Slider(0, 120, "STR")
         self.DEX = Slider(0, 240, "DEX")

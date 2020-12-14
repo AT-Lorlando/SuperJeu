@@ -23,6 +23,7 @@ hunter_folder = path.join(champ_folder, 'archer')
 explode_folder = path.join(champ_folder, 'explode')
 
 button_folder = path.join(assets_folder, 'buttons_img')
+map_folder = path.join(assets_folder, 'map_background')
 
 # wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
@@ -44,7 +45,7 @@ wall_folder = path.join(tile_folder, 'wall')
 # game settings
 WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 1080  # 16 * 48 or 32 * 24 or 64 * 12
-FPS = 120
+FPS = 200
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY
 
@@ -69,4 +70,4 @@ WATER_ID = 53
 PLAYER_SPEED = 600
 RANGE = 25
 
-ZOOM_VALUE = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3.5, 5]
+ZOOM_VALUE = [0.1,0.2,0.3,0.4,0.5,0.6,0.8,1,1.2,1.4,1.6,1.8,2,2.2,2.4,2.6,2.8,3,3.5,5]

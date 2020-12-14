@@ -50,43 +50,51 @@ class Player(pg.sprite.Sprite):
         self.champion_pool.add(champion)
 
     def get_keys(self):
-        self.vel = vec(0, 0)
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] or keys[pg.K_a]:
-            if keys[pg.K_RIGHT] or keys[pg.K_d]:
-                self.is_moving = False
-            else:
-                self.looking_at = 'Left'
-                self.vel.x = -PLAYER_SPEED
+        if(self.isPlaying):
+            keys = pg.key.get_pressed()
+            if keys[pg.K_LEFT] or keys[pg.K_a]:
+                if keys[pg.K_RIGHT] or keys[pg.K_d]:
+                    self.is_moving = False
+                else:
+                    self.looking_at = 'Left'
+                    self.vel.x = -PLAYER_SPEED
+                    self.is_moving = True
+            elif keys[pg.K_RIGHT] or keys[pg.K_d]:
+                self.looking_at = 'Right'
+                self.vel.x = PLAYER_SPEED
                 self.is_moving = True
-        elif keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.looking_at = 'Right'
-            self.vel.x = PLAYER_SPEED
-            self.is_moving = True
-        if keys[pg.K_UP] or keys[pg.K_w]:
-            if keys[pg.K_DOWN] or keys[pg.K_s]:
-                self.is_moving = False
-            else:
-                self.looking_at = 'Top'
-                self.vel.y = -PLAYER_SPEED
+            if keys[pg.K_UP] or keys[pg.K_w]:
+                if keys[pg.K_DOWN] or keys[pg.K_s]:
+                    self.is_moving = False
+                else:
+                    self.looking_at = 'Top'
+                    self.vel.y = -PLAYER_SPEED
+                    self.is_moving = True
+            elif keys[pg.K_DOWN] or keys[pg.K_s]:
+                self.looking_at = 'Bot'
+                self.vel.y = PLAYER_SPEED
                 self.is_moving = True
-        elif keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.looking_at = 'Bot'
-            self.vel.y = PLAYER_SPEED
-            self.is_moving = True
-        if self.vel.x != 0 and self.vel.y != 0:
-            self.vel *= 0.7071
-        if keys[pg.K_0]:
-            print((self.pos[0],self.pos[1]))
-            print(self.game.camera.apply(self))
-            print(self.rect)
-            # print(self.main_champ)
-        elif keys[pg.K_1]:
-            self.switch(0)
-        elif keys[pg.K_2]:
-            self.switch(1)
-        elif keys[pg.K_3]:
-            self.switch(2)
+            if -10 < self.vel.x < 10: 
+                self.vel.x = 0
+            else:
+                self.vel.x *= 0.7071
+            if -10 < self.vel.y < 10:
+                self.vel.y = 0
+            else:
+                self.vel.y *= 0.7071
+            if self.vel.x != 0 and self.vel.y != 0:
+                self.vel *= 0.7071
+            if keys[pg.K_0]:
+                print((self.pos[0],self.pos[1]))
+                print(self.game.camera.apply(self))
+                print(self.rect)
+                # print(self.main_champ)
+            elif keys[pg.K_1]:
+                self.switch(0)
+            elif keys[pg.K_2]:
+                self.switch(1)
+            elif keys[pg.K_3]:
+                self.switch(2)
 
     def switch(self, x):
         self.vel = vec(0, 0)

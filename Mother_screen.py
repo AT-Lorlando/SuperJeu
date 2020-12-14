@@ -1,8 +1,8 @@
 import pygame as pg
 import sys
 from os import path
-from settings import HEIGHT, WIDTH
-
+from settings import *
+import time
 
 class Mother_screen():
     def __init__(self):
@@ -15,6 +15,8 @@ class Mother_screen():
     def print_background(self, background):
         self.screen.blit(background, (0, 0))
         self.screen.blit(self.fond, (0, 0))
+        if(self.image):
+            self.screen.blit(self.image if type(self.image) != list else self.image[len(self.image)-1], self.image_pos)          
 
     def events(self):
         # catch all events here
@@ -29,7 +31,14 @@ class Mother_screen():
     def draw(self):
         pass
 
-    def run(self, background):
+    def run(self, background=None):
+        if self.animation:
+            for img in self.animation:
+                self.screen.blit(background, (0, 0))
+                self.screen.blit(self.fond, (0, 0))
+                self.screen.blit(img, self.image_pos)
+                pg.display.flip()
+                time.sleep(.03)
         self.running = True
         while self.running:
             self.print_background(background)
