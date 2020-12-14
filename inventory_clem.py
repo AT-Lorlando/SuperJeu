@@ -30,9 +30,9 @@ class Inventory():
             self.shifted = True
 
     def add(self, item):  # add an item of the inventory
-        item.pos_x = self.pos_x + (len(self.inventory) % self.width) * 103 + 10
+        item.pos_x = self.pos_x + (len(self.inventory) % self.width) * 103 + 5
         item.pos_y = self.pos_y + \
-            (len(self.inventory) // self.width) * 103 + 10
+            (len(self.inventory) // self.width) * 103 + 5
         self.inventory.append(item)
         # print("inventaire", item.pos_x, item.pos_y, item.name)
 
@@ -69,7 +69,7 @@ class Inventory():
 
     def update(self, mouse, pos_mouse, liberty):
 
-        if liberty == 1 and self.index != -1:  # test when the item is dropped
+        if liberty != 0 and self.index != -1:  # test when the item is dropped
             lines = []
             col = []
             startx = 5
@@ -80,38 +80,36 @@ class Inventory():
                 col.append(startx + i*(endx//self.width))
             for i in range(4):
                 lines.append(starty + i*(endx//self.width))
-            # replace the item
 
+            # replace the item
             i = 0
             if pos_mouse[0] < self.pos_x or pos_mouse[0] > self.pos_x + self.rect[0]:
-                # print("dans le pass x")
                 i = -1
             else:
                 while pos_mouse[0] > col[i] + self.pos_x:
                     i += 1
                     if i >= len(lines):
                         break
-            # print(i)
             j = 0
             if pos_mouse[1] < self.pos_y or pos_mouse[1] > self.pos_y + self.rect[1]:
-                # print("dans le pass y")
                 j = -1
             else:
                 while pos_mouse[1] > lines[j] + self.pos_y:
                     j += 1
                     if j >= len(lines):
                         break
+
             for item in self.inventory:
                 # detect if there is an item at the place
                 if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name:
                     item.pos_x = self.copyx
                     item.pos_y = self.copyy
 
-                # put the item at the rigth place
                 if i == -1 or j == -1:  # check if the player dropped the item in a correct place
                     self.inventory[self.index].pos_x = self.copyx
                     self.inventory[self.index].pos_y = self.copyy
-                else:
+                    # return self.index
+                else:  # put the item at the rigth place
                     self.inventory[self.index].pos_x = col[i-1] + self.pos_x
                     self.inventory[self.index].pos_y = lines[j-1] + self.pos_y
 

@@ -30,10 +30,10 @@ class Item(pygame.sprite.Sprite):
     def update(self, mouse, pos_mouse, liberty):
         # If you click on the item, it will follows the cursor and becomes bigger
 
-        if self.is_clicked(mouse, pos_mouse) and liberty:
+        if self.is_clicked(mouse, pos_mouse) and liberty != 0:
             self.clicked = True
             return 0
-        elif not mouse[0] and not liberty:
+        elif not mouse[0] and not (liberty != 0):
             self.clicked = False
             return 1
         if self.clicked:
