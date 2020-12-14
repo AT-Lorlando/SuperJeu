@@ -23,6 +23,7 @@ hunter_folder = path.join(champ_folder, 'archer')
 explode_folder = path.join(champ_folder, 'explode')
 
 button_folder = path.join(assets_folder, 'buttons_img')
+map_folder = path.join(assets_folder, 'map_background')
 
 # wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')

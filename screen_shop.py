@@ -38,9 +38,9 @@ class Screen_shop(Mother_screen):
         self.running = True
         self.player_inventory = player_inventory
         self.player_inventory.shift(500)
-
+        self.print_background(background)
         while self.running:
-            self.print_background(background)
+            
             self.events()
             self.update()
             # player_inventory.draw(self.screen)

@@ -9,7 +9,8 @@ from settings import *
 from player import *
 from sprites import *
 from tilemap import *
-from Minimap import *
+from Map import *
+import time
 
 #from Dungeon import *
 
@@ -27,8 +28,8 @@ class Game:
         self.game_folder = path.dirname('.')
         self.clock = pg.time.Clock()
         self.map_data = []
-        self.minimap = Minimap(self)
-        self.HUD = [1, 1, 1, 1, 1, 1, 1, 1]  # HUD list: Minimap, Life, etc
+        self.map = Map(self)
+        self.HUD = []  # HUD list: Map, Life, etc
         self.actual_stage = 0
         self.actual_dungeon = 0
         self.hub = Instance('Hub')
@@ -59,6 +60,7 @@ class Game:
         self.doors = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
         self.backLayer = pg.sprite.Group()
+        self.midLayer = pg.sprite.Group()
         self.interactif = pg.sprite.Group()
         self.map_data = instance.data
         for row, tiles in enumerate(self.map_data):
@@ -93,7 +95,7 @@ class Game:
         self.backLayer.update()
         self.midLayer.update()
         self.frontLayer.update()
-        self.minimap.data_update(self.map_data)
+        self.map.data_update(self.map_data)
         print('Stage:', self.actual_stage)
         self.player.isPlaying = True
 
@@ -120,7 +122,6 @@ class Game:
         self.frontLayer.update()
         self.add_to_known_tiles()
         self.camera.update(self.player)
-        self.minimap.update()
 
     def interactif_dialogue(self, sprite):
         if(sprite):
@@ -152,13 +153,9 @@ class Game:
                 assets_folder, "dialogue.png")).convert_alpha(), (font_size[0]+15, font_size[1]+20))
             self.screen.blit(dialogue, (WIDTH/2-60, HEIGHT/1.3))
             self.screen.blit(font_surface, (WIDTH/2-60, HEIGHT/1.3+20))
+        # for scr in self.HUD:
+        #     self.screen.blit(scr.image, self.camera.apply(self))
         pg.display.flip()
-
-    def print_minimap(self):
-        while self.HUD[0]:
-            self.minimap.draw()
-            pg.display.flip()
-            self.events()
 
     def events(self):
         # catch all events here
@@ -169,15 +166,10 @@ class Game:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 elif event.key == pg.K_m:
-                    self.HUD[0] = (self.HUD[0]+1) % 2
-                    if(self.HUD[0]):
-                        self.print_minimap()
+                    self.map.display(self.screen, self.known_tiles)
                 if(self.interactif_sprite):
                     if event.key == self.interactif_sprite.key:
                         self.interactif_sprite.interaction(self.player)
-
-            elif event.type == MOUSEWHEEL:
-                self.minimap.event_zoom(event.y)
            
 
 
