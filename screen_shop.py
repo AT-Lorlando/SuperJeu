@@ -34,7 +34,9 @@ class Screen_shop(Mother_screen):
             self.handled = save_player
             self.liberty = False
             if (self.shop.inv.pos_x < self.pos_mouse[0] < self.shop.inv.pos_x + self.shop.inv.rect[0]) and (self.shop.inv.pos_y < self.pos_mouse[1] < self.shop.inv.pos_y + self.shop.inv.rect[1]):
+                print("player dans shop", self.handled.name)
                 if not self.mouse[0]:
+                    # print("player dans shop apres", self.handled.name)
                     self.shop.inv.add_clem(self.handled, self.pos_mouse)
                     self.player_inventory.remove(self.handled)
                     print("shop", self.handled.name)
@@ -43,11 +45,13 @@ class Screen_shop(Mother_screen):
             self.handled = save_shop
             self.liberty = False
             if (self.player_inventory.pos_x < self.pos_mouse[0] < self.player_inventory.pos_x + self.player_inventory.rect[0]) and (self.player_inventory.pos_y < self.pos_mouse[1] < self.player_inventory.pos_y + self.player_inventory.rect[1]):
+                print("shop dans player", self.handled.name)
                 if not self.mouse[0]:
+                    # print("shop dans player apres", self.handled.name)
                     self.player_inventory.add_clem(
                         self.handled, self.pos_mouse)
                     self.shop.inv.remove(self.handled)
-                    print("player", self.handled.name)
+                    # print("player", self.handled.name)
                     self.handled = None
         # test if the player handled an item
         else:

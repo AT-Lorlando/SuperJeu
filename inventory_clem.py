@@ -146,14 +146,17 @@ class Inventory():
                     # print("enregistrement", self.copyx,
                     #       self.copyy, self.inventory[i].inclued_in, "i :", i)
                 self.index = i  # bring back the index of the item moved
+
         if flag:
             # print("flag works")
+            print(self.index)
             return self.inventory[self.index]
 
         return not (0 in tab)
 
     def add_clem(self, item, pos_mouse):
         self.inventory.append(item)
+        # print("append", item.name)
         lines = []
         col = []
         startx = 5
