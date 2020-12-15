@@ -20,6 +20,7 @@ class Inventory():
         self.copyy = 0
         self.shifted = False
         self.name = name
+        self.stranger = None
 
     def shift(self, x):  # shift the positions of all the items of the inventory
         if not self.shifted:
@@ -79,6 +80,10 @@ class Inventory():
             col.append(startx + i*(endx//self.width))
         for i in range(4):
             lines.append(starty + i*(endx//self.width))
+        if isinstance(liberty, Item):
+            print("l'inventaire reconnait un item etranger")
+            self.stranger = liberty
+            liberty = False
 
         if liberty != 0 and self.index != -1:  # test when the item is dropped
 

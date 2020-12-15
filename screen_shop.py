@@ -45,9 +45,11 @@ class Screen_shop(Mother_screen):
         # the player is handling an item and we check if he want to transfer his item
         else:
             if self.is_over_inv(self.shop.inv) and self.shop.inv.name != self.handled.inclued_in:
-                print("we are over")
+                self.liberty = self.handled
+                # print("we are over")
             if self.is_over_inv(self.player_inventory) and self.player_inventory.name != self.handled.inclued_in:
-                print("we are over")
+                self.liberty = self.handled
+                # print("we are over")
 
         if self.is_over(self.shop):
             self.shop.fond.fill((255, 255, 255))

@@ -10,7 +10,7 @@ RED = (255, 0, 0)
 ORANGE = (170, 110, 0)
 YELLOW = (255, 255, 0)
 
-#Folder
+# Folder
 game_folder = path.dirname('.')
 dungeon_folder = path.join(game_folder, 'dungeon')
 assets_folder = path.join(game_folder, 'assets')
@@ -30,7 +30,7 @@ sprite_folder = path.join(assets_folder, 'img_sprite')
 # portal_folder = path.join(assets_folder, 'portal')
 # room_folder = path.join(assets_folder, 'room')
 
-#Tiles Folder
+# Tiles Folder
 tile_folder = path.join(assets_folder, 'tiles')
 deco_folder = path.join(tile_folder, 'deco')
 floor_folder = path.join(tile_folder, 'floor')
@@ -40,18 +40,16 @@ portal_folder = path.join(tile_folder, 'portal')
 wall_folder = path.join(tile_folder, 'wall')
 
 
-
-
 # game settings
-WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16
-HEIGHT = 1080  # 16 * 48 or 32 * 24 or 64 * 12
+WIDTH = 1280   # 16 * 64 or 32 * 32 or 64 * 16
+HEIGHT = 720  # 16 * 48 or 32 * 24 or 64 * 12
 FPS = 200
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY
 
 TILESIZE = 96
 CHARACTER_SIZE = 60
-    
+
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
@@ -74,4 +72,4 @@ WATER_ID = 53
 PLAYER_SPEED = 600
 RANGE = 25
 
-ZOOM_VALUE = [1,1.2,1.4,1.6,1.8,2,2.2,2.4,2.6,2.8,3,3.5,5]
+ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]
