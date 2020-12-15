@@ -33,23 +33,28 @@ class Screen_shop(Mother_screen):
         if isinstance(save_player, Item):
             self.handled = save_player
             self.liberty = False
+            if (self.shop.inv.pos_x < self.pos_mouse[0] < self.shop.inv.pos_x + self.shop.inv.rect[0]) and (self.shop.inv.pos_y < self.pos_mouse[1] < self.shop.inv.pos_y + self.shop.inv.rect[1]):
+                if not self.mouse[0]:
+                    self.shop.inv.add_clem(self.handled, self.pos_mouse)
+                    self.player_inventory.remove(self.handled)
+                    print("shop", self.handled.name)
+                    self.handled = None
         elif isinstance(save_shop, Item):
             self.handled = save_shop
             self.liberty = False
+            if (self.player_inventory.pos_x < self.pos_mouse[0] < self.player_inventory.pos_x + self.player_inventory.rect[0]) and (self.player_inventory.pos_y < self.pos_mouse[1] < self.player_inventory.pos_y + self.player_inventory.rect[1]):
+                if not self.mouse[0]:
+                    self.player_inventory.add_clem(
+                        self.handled, self.pos_mouse)
+                    self.shop.inv.remove(self.handled)
+                    print("player", self.handled.name)
+                    self.handled = None
         # test if the player handled an item
         else:
             self.liberty = save_player and save_shop
         # reset
         if self.liberty:
             self.handled = None
-        # the player is handling an item and we check if he want to transfer his item
-        else:
-            if self.is_over_inv(self.shop.inv) and self.shop.inv.name != self.handled.inclued_in:
-                # the player want to transfer
-                self.liberty = self.handled
-            if self.is_over_inv(self.player_inventory) and self.player_inventory.name != self.handled.inclued_in:
-                # the player want to transfer
-                self.liberty = self.handled
 
         if self.is_over(self.shop):
             self.shop.fond.fill((255, 255, 255))

@@ -14,7 +14,7 @@ class Inventory():
         self.width = 4
         self.pos_x = 0
         self.pos_y = 0
-        self.index = -1
+        self.index = -1  # no item is handled
         # self.dragged = False
         self.copyx = 0
         self.copyy = 0
@@ -38,9 +38,14 @@ class Inventory():
         # print("inventaire", item.pos_x, item.pos_y, item.name)
 
     def remove(self, item):
-        for i in len(self.inventory):
+        i = 0
+        copy = []
+        for i in range(len(self.inventory)):
             if self.inventory[i] == item:
-                self.inventory[i] = None
+                pass
+            else:
+                copy.append(self.inventory[i])
+        self.inventory = copy
 
     def draw(self, screen):
         screen.blit(self.fond, (self.pos_x, self.pos_y))
@@ -81,11 +86,10 @@ class Inventory():
         for i in range(4):
             lines.append(starty + i*(endx//self.width))
         if isinstance(liberty, Item):
-            print("l'inventaire reconnait un item etranger")
             self.stranger = liberty
             liberty = False
 
-        if liberty != 0 and self.index != -1:  # test when the item is dropped
+        if liberty != 0 and self.index != -1:  # test when the item is dropped in the same inventory
 
             # find the case where we dropped the item // start
             i = 0
@@ -110,12 +114,10 @@ class Inventory():
             for item in self.inventory:
                 # detect if there is an item at the place
                 if item.pos_x == col[i-1] + self.pos_x and item.pos_y == lines[j-1] + self.pos_y and item.name != self.inventory[self.index].name and j != -1 and i != -1:
-                    # print("collision, index :", self.index, "i :", i, "j :", j)
                     item.pos_x = self.copyx
                     item.pos_y = self.copyy
 
                 if i == -1 or j == -1:  # check if the player dropped the item in a correct place
-                    # print("invalid place, index :", self.index)
                     self.inventory[self.index].pos_x = self.copyx
                     self.inventory[self.index].pos_y = self.copyy
                     flag = True
@@ -150,5 +152,28 @@ class Inventory():
 
         return not (0 in tab)
 
-    # def collide(self,pos_mouse):
-    #     return (pos_mouse[0] > self.pos_y and pos_mouse[0] < self.pos_y + self.rect[0]) and (pos_mouse[1] > self.pos_y and pos_mouse[1] < self.pos_y + self.rect[1])
+    def add_clem(self, item, pos_mouse):
+        self.inventory.append(item)
+        lines = []
+        col = []
+        startx = 5
+        starty = 5
+        endx = self.rect[0]-5
+        endy = self.rect[1]-5
+        for i in range(self.width + 1):
+            col.append(startx + i*(endx//self.width))
+        for i in range(4):
+            lines.append(starty + i*(endx//self.width))
+        i = 0
+        # find if the mouse is out the inventory
+        while pos_mouse[0] > col[i] + self.pos_x:  # find the column of the drop
+            i += 1
+            if i >= len(col):
+                break
+        j = 0
+        while pos_mouse[1] > lines[j] + self.pos_y:
+            j += 1
+            if j >= len(lines):
+                break
+        item.pos_x = col[i-1] + self.pos_x
+        item.pos_y = lines[j-1] + self.pos_y

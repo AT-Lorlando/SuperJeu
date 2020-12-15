@@ -15,6 +15,7 @@ vec = pg.math.Vector2
 def resize(img, size):
     return pg.transform.scale(img, (size, size))
 
+
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.frontLayer
@@ -26,12 +27,13 @@ class Player(pg.sprite.Sprite):
         self.pos = vec(x, y) * TILESIZE
         self.playerpos = ([floor(pos/TILESIZE) for pos in self.pos])
         self.isPlaying = False
-        self.explode = [(pg.image.load(path.join(explode_folder, f'f ({x}).gif'))) for x in range(1, 23)]
+        self.explode = [
+            (pg.image.load(path.join(explode_folder, f'f ({x}).gif'))) for x in range(1, 23)]
 
         self.inv = Inventory()
-        self.inv.add(Sword("sprite1"))
-        self.inv.add(Sword("sprite2"))
-        self.inv.add(Sword("sprite3"))
+        self.inv.add(Sword("player1"))
+        self.inv.add(Sword("player2"))
+        self.inv.add(Sword("player3"))
         self.level = 1
         self.champion_pool = []
         self.champion_pool.append(Dark_Wizard(self))
@@ -76,7 +78,7 @@ class Player(pg.sprite.Sprite):
                 self.looking_at = 'Bot'
                 self.vel.y = PLAYER_SPEED
                 self.is_moving = True
-            if -10 < self.vel.x < 10: 
+            if -10 < self.vel.x < 10:
                 self.vel.x = 0
             else:
                 self.vel.x *= 0.7071
@@ -87,7 +89,7 @@ class Player(pg.sprite.Sprite):
             if self.vel.x != 0 and self.vel.y != 0:
                 self.vel *= 0.7071
             if keys[pg.K_0]:
-                print((self.pos[0],self.pos[1]))
+                print((self.pos[0], self.pos[1]))
                 print(self.game.camera.apply(self))
                 print(self.rect)
                 # print(self.main_champ)
@@ -104,8 +106,9 @@ class Player(pg.sprite.Sprite):
         self.main_champ = self.champion_pool[x]
         bg = self.game.screen.copy()
         for img in self.explode:
-            self.game.screen.blit(bg,(0,0))
-            self.game.screen.blit(pg.transform.scale(img,(150,150)), (WIDTH/2 - 50, HEIGHT/2 - 85, 100, 100))
+            self.game.screen.blit(bg, (0, 0))
+            self.game.screen.blit(pg.transform.scale(
+                img, (150, 150)), (WIDTH/2 - 50, HEIGHT/2 - 85, 100, 100))
             pg.display.flip()
             time.sleep(.02)
         self.isPlaying = True
@@ -138,7 +141,7 @@ class Player(pg.sprite.Sprite):
         if(self.time > self.pause + 250):
             self.pause = self.time
             hits = pg.sprite.spritecollide(self, self.game.interactif, False)
-            
+
             if hits:
                 self.game.interactif_dialogue(hits[0])
             else:
