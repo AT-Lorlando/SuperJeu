@@ -133,6 +133,7 @@ class Inventory():
         for i in range(len(tab)):
             # check if an item is handled
             if tab[i] == 0:
+                flag = True
                 if self.index == -1 and self.name == self.inventory[i].inclued_in and self.inventory[i].is_clicked(mouse, pos_mouse):
                     # use the copy of the last state to replace the item
                     self.index = i
