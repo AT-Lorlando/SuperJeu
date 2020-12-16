@@ -86,6 +86,7 @@ class Inventory():
         for i in range(4):
             lines.append(starty + i*(endx//self.width))
         if isinstance(liberty, Item):
+            # print("l'inventaire reconnait un item etranger")
             self.stranger = liberty
             liberty = False
 

@@ -8,8 +8,8 @@ import json
 
 
 class Screen_cara(Mother_screen):
-    def __init__(self, screen):
-        super(Screen_cara, self).__init__()
+    def __init__(self, screen, game):
+        super(Screen_cara, self).__init__(game)
         self.screen = screen
         self.image = None
         self.fond.fill((0, 0, 0, 0))
@@ -48,7 +48,6 @@ class Screen_cara(Mother_screen):
             json.dump(new, f)
 
     def run(self, background):
-
         self.running = True
         # set the coor of center of the hex of attributs
         self.coord((400, 1000), 250)

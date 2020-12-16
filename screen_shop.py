@@ -7,8 +7,8 @@ from Mother_screen import *
 
 
 class Screen_shop(Mother_screen):
-    def __init__(self, screen):
-        super(Screen_shop, self).__init__()
+    def __init__(self, screen, game):
+        super(Screen_shop, self).__init__(game)
         self.screen = screen
         # 180 is the argument to change the blur
         self.fond.fill((0, 0, 0, 180))
@@ -79,20 +79,7 @@ class Screen_shop(Mother_screen):
     def is_over_inv(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
 
-    def run(self, background, player_inventory):
-        if self.animation:
-            for img in self.animation:
-                self.screen.blit(background, (0, 0))
-                self.screen.blit(self.fond, (0, 0))
-                self.screen.blit(img, self.image_pos)
-                pg.display.flip()
-                time.sleep(.03)
-        self.running = True
+    def display(self, background, player_inventory):
         self.player_inventory = player_inventory
         self.player_inventory.shift(500)
-        while self.running:
-            self.print_background(background)
-            self.events()
-            self.update()            # player_inventory.draw(self.screen)
-            self.draw()
-            pg.display.update()
+        self.run(background)

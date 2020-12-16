@@ -10,6 +10,7 @@ class Champion():
         self.time_since_anime = 0
         self.image = pg.Surface((CHARACTER_SIZE, CHARACTER_SIZE))
         self.rect = self.image.get_rect()
+        self.spell = pg.sprite.Group()
 
     def animation(self):
         self.time = pg.time.get_ticks()
@@ -37,7 +38,6 @@ class Dark_Wizard(Champion):
         self.walk_left = [(pg.image.load(path.join(dark_wizard_folder, f'l{x}.png'))) for x in range(0, 3)]
         self.walk_top = [(pg.image.load(path.join(dark_wizard_folder, f't{x}.png'))) for x in range(0, 3)]
         self.walk_bot = [(pg.image.load(path.join(dark_wizard_folder, f'b{x}.png'))) for x in range(0, 3)]
-        self.spell = []
 
 class Sun_Wizard(Champion):
     def __init__(self, player):
@@ -46,7 +46,6 @@ class Sun_Wizard(Champion):
         self.walk_left = [(pg.image.load(path.join(sun_wizard_folder, f'l{x}.png'))) for x in range(0, 3)]
         self.walk_top = [(pg.image.load(path.join(sun_wizard_folder, f't{x}.png'))) for x in range(0, 3)]
         self.walk_bot = [(pg.image.load(path.join(sun_wizard_folder, f'b{x}.png'))) for x in range(0, 3)]
-        self.spell = []
 
 class Hunter(Champion):
     def __init__(self, player):
@@ -55,6 +54,5 @@ class Hunter(Champion):
         self.walk_left = [(pg.image.load(path.join(hunter_folder, f'l{x}.png'))) for x in range(0, 3)]
         self.walk_top = [(pg.image.load(path.join(hunter_folder, f't{x}.png'))) for x in range(0, 3)]
         self.walk_bot = [(pg.image.load(path.join(hunter_folder, f'b{x}.png'))) for x in range(0, 3)]
-        self.spell = []
 
     

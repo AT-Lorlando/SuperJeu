@@ -125,10 +125,13 @@ class Game:
         # game loop - set self.playing = False to end the game
         self.playing = True
         while self.playing:
-            self.dt = self.clock.tick(FPS) / 1000
+            self.dt_update()
             self.events()
             self.update()
             self.draw()
+
+    def dt_update(self):
+        self.dt = self.clock.tick(FPS) / 1000
 
     def quit(self):
         pg.quit()
@@ -170,17 +173,20 @@ class Game:
         pg.display.update()
 
     def events(self):
+        # print("Catch")
         # catch all events here
         for event in pg.event.get():
+            # print(event.type)
             if event.type == pg.QUIT:
                 self.quit()
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
-                elif event.key == pg.K_m:
-                    self.map.display(self.screen)
+                elif not self.player.is_moving:
+                    if event.key == pg.K_m:
+                        self.map.display(self.screen)
                 if(self.interactif_sprite):
-                    if event.key == self.interactif_sprite.key:
+                    if event.key == self.interactif_sprite.key and not self.player.is_moving:
                         self.interactif_sprite.interaction(self.player)
            
 
