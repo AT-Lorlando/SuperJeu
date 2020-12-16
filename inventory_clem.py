@@ -111,6 +111,9 @@ class Case(pygame.sprite.Sprite):
         screen.blit(self.fond, (self.pos_x, self.pos_y))
         if self.item != None:
             self.item.draw(screen)
+    
+    def add(self,item):
+        self.item = item
 
     def remove(self):
         self.item = None

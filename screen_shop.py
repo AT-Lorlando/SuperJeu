@@ -18,6 +18,7 @@ class Screen_shop(Mother_screen):
         self.image = None
         self.image_pos = (0, 0)
         self.handled = None
+        self.copy = None
 
     def update(self):
         self.mouse = pg.mouse.get_pressed()
@@ -33,7 +34,20 @@ class Screen_shop(Mother_screen):
             self.handled.pos_y = self.pos_mouse[1] - self.handled.rect[1]/2 - 5
             self.handled.update(self.mouse, self.pos_mouse)
         if not self.mouse[0] and self.handled:
-            self.player_inventory.add_without_case(self.handled)
+            # find the case clicked
+            over_case = None
+            for case in self.player_inventory.inventory + self.shop.inv.inventory:
+                if self.is_over(case):
+                    over_case = case
+                    break
+            if self.is_over(self.player_inventory) and over_case != None and over_case.item == None:
+                self.player_inventory.add(over_case, self.handled)
+            elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
+                self.shop.inv.add(over_case, self.handled)
+            else:
+                self.copy.item = self.handled
+                self.handled = None
+
         if not self.mouse[0]:
             self.handled = None
 
@@ -51,6 +65,7 @@ class Screen_shop(Mother_screen):
                 if case.item != None:
                     if case.item.is_clicked(self.mouse, self.pos_mouse):
                         self.handled = case.item
+                        self.copy = case
                         case.remove()
 
     def is_over(self, target):
