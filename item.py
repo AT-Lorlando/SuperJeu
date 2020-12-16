@@ -9,7 +9,7 @@ class Item(pygame.sprite.Sprite):
         super(Item, self).__init__()
         self.pos_x = 0
         self.pos_y = 0
-        self.image = pygame.Surface((90, 90))
+        self.image = pygame.Surface((50, 50))
         self.image.fill((255, 255, 0))
         self.print = self.image
         self.rect = self.image.get_size()
@@ -27,27 +27,18 @@ class Item(pygame.sprite.Sprite):
     def is_clicked(self, mouse, pos_mouse):
         return (mouse[0] and self.pos_x < pos_mouse[0] < self.pos_x + self.rect[0] and self.pos_y < pos_mouse[1] < self.pos_y + self.rect[1])
 
-    def update(self, mouse, pos_mouse, liberty):
+    def update(self, mouse, pos_mouse):
         # If you click on the item, it will follows the cursor and becomes bigger
-
-        if self.is_clicked(mouse, pos_mouse) and liberty != 0:
-            self.clicked = True
-            return 0
-        elif not mouse[0] and not (liberty != 0):
-            self.clicked = False
-            return 1
-        if self.clicked:
+        if self.is_clicked(mouse, pos_mouse):
+            # print("clicked in item")
             self.pos_x = pos_mouse[0] - self.rect[0]/2 - 5
             self.pos_y = pos_mouse[1] - self.rect[1]/2 - 5
             self.print = pygame.transform.scale(
                 self.image, (self.rect[0]+10, self.rect[1]+10))
-            return 0
         else:
             self.print = self.image
-            return 1
 
     # Draw the image at the position given
-
     def draw(self, screen):
         screen.blit(self.print, (self.pos_x, self.pos_y))
 
