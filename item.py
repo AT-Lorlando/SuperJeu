@@ -18,6 +18,7 @@ class Item(pygame.sprite.Sprite):
         # self.name = name
         self.quantity = 1
         self.clicked = False
+        self.price = 100
 
     # Is true if the mouse is over the sprite
     def is_over(self, pos_mouse):

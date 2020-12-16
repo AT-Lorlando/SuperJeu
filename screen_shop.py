@@ -24,6 +24,7 @@ class Screen_shop(Mother_screen):
         self.fond_coin = pg.image.load(
             path.join(assets_folder, "coin.png"))
         self.fond_coin = pygame.transform.scale(self.fond_coin, (30, 30))
+        self.origin = None
 
     def update(self):
         self.mouse = pg.mouse.get_pressed()
@@ -47,9 +48,12 @@ class Screen_shop(Mother_screen):
                     break
             if self.is_over(self.player_inventory) and over_case != None and over_case.item == None:
                 self.player_inventory.add(over_case, self.handled)
-                self.buy()
+                if self.origin != self.player_inventory.name:
+                    self.buy(self.handled)
             elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
                 self.shop.inv.add(over_case, self.handled)
+                if self.origin != self.shop.inv.name:
+                    self.sell(self.handled)
             else:
                 self.copy.item = self.handled
                 self.handled = None
@@ -79,10 +83,14 @@ class Screen_shop(Mother_screen):
                     if case.item.is_clicked(self.mouse, self.pos_mouse):
                         self.handled = case.item
                         self.copy = case
+                        self.origin = inv.name
                         case.remove()
 
-    def buy(self):
-        self.money -= 100
+    def buy(self, item):
+        self.money -= item.price
+
+    def sell(self, item):
+        self.money += item.price
 
     def is_over(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
