@@ -81,10 +81,10 @@ def rounding_hex(q, r, s):
 
 class Tile(Hex) :
     object=None
-    
+
     def __repr__(self):
         return f"{self.q} {self.r} {self.s} ({self.object})"
-    
+
     def set_object(self, object) :
         self.object = object
         return self
@@ -93,6 +93,19 @@ class Tile(Hex) :
         obj = self.object
         self.object= None
         return obj
+
+def hex_circle(hex,r, fill=False) :
+    res=[]
+    for x in range(-r+1,r) :
+        for y in range(max(-r,-x-r)+1,min(r,-x+r)):
+            z=-x-y
+            res.append(hex+Hex(x,y,z))
+    if not fill:
+        resp = hex_circle(hex,r-1, True)
+        for h in resp :
+            res.remove(h)
+    return res
+
 
 
 class Orientation:
@@ -263,10 +276,11 @@ if __name__ == "__main__":
     print(hex_corner(layout, a))
     cellulle = cell(Tile(0, 0))
     print(cellulle.hex.neighbors())
-    assert Tile(0,0).object == None
-    assert Tile(0,0).set_object("Object properly initialised").object == "Object properly initialised"
+    assert Tile().object == None
+    assert Tile().set_object("Object properly initialised").object == "Object properly initialised"
     gr= initgrid(2,2)
     print(gr)
     update_grid(gr,Tile(0,0).set_object("Test"))
     print(gr)
     print(pathfinding(Tile(1,1),Tile(1,0),gr))
+    print(hex_circle(Hex(1,1),2,True))
