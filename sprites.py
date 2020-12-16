@@ -13,6 +13,7 @@ vec = pg.math.Vector2
 def resize(img, size, y=0):
     return pg.transform.scale(img, (size, y)) if y else pg.transform.scale(img, (size, size))
 
+
 class Floor(pg.sprite.Sprite):
     def __init__(self, game, x, y, tile):
         self.groups = game.backLayer
@@ -52,7 +53,8 @@ class Door(pg.sprite.Sprite):
         self.door_type = door_type
         self.instance_behind = (floor(instance_behind %
                                       10000/1000), floor(instance_behind % 1000/100))
-        self.image = resize(pg.image.load(path.join(portal_folder, 'portal.png')), TILESIZE)
+        self.image = resize(pg.image.load(
+            path.join(portal_folder, 'portal.png')), TILESIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -60,14 +62,12 @@ class Door(pg.sprite.Sprite):
         self.rect.y = (y) * TILESIZE
         self.actual_frame = 1
         self.time_since_anime = 0
-        
 
     def turn(self):
         self.time = pg.time.get_ticks()
         if(self.time > self.time_since_anime + 150):
             self.time_since_anime = self.time
-            self.image = pg.transform.rotate(self.image,90)
-            
+            self.image = pg.transform.rotate(self.image, 90)
 
     def update(self):
         self.turn()
@@ -78,7 +78,8 @@ class Stair(pg.sprite.Sprite):
         self.groups = game.backLayer, game.obstacle, game.stairs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = resize(pg.image.load(path.join(portal_folder, 'portal.png')), TILESIZE)
+        self.image = resize(pg.image.load(
+            path.join(portal_folder, 'portal.png')), TILESIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -90,10 +91,10 @@ class Stair(pg.sprite.Sprite):
             path.join(portal_folder, f'{i}.png'))) for i in range(1, 4)]
 
     def turn(self):
-            self.time = pg.time.get_ticks()
-            if(self.time > self.time_since_anime + 150):
-                self.time_since_anime = self.time
-                self.image = pg.transform.rotate(self.image,90)
+        self.time = pg.time.get_ticks()
+        if(self.time > self.time_since_anime + 150):
+            self.time_since_anime = self.time
+            self.image = pg.transform.rotate(self.image, 90)
 
     def update(self):
         self.turn()
@@ -104,21 +105,25 @@ class Interactif(pg.sprite.Sprite):
         self.groups = game.interactif
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.rect = pg.Rect((x) * TILESIZE, (y) * TILESIZE, TILESIZE*4, TILESIZE)
+        self.rect = pg.Rect((x) * TILESIZE, (y) *
+                            TILESIZE, TILESIZE*4, TILESIZE)
         self.x = x
         self.y = y
+
+
 class Shop_area(Interactif):
     def __init__(self, game, x, y):
-        super(Shop_area,self).__init__(game, x, y)
+        super(Shop_area, self).__init__(game, x, y)
         self.key = pg.K_e
         self.shop = Screen_shop(game.screen)
 
     def interaction(self, player):
-        self.shop.run(self.game.screen.copy(), player.inv)
+        self.shop.run(self.game.screen.copy(), player)
+
 
 class Quest_area(Interactif):
     def __init__(self, game, x, y):
-        super(Quest_area,self).__init__(game, x, y)
+        super(Quest_area, self).__init__(game, x, y)
         self.key = pg.K_e
 
     def interaction(self, player):
@@ -132,12 +137,13 @@ class NPC(pg.sprite.Sprite):
         self.game = game
         self.img = tile//10
         self.image = resize(pg.image.load(
-            path.join(npc_folder, f'{self.img}.png')),CHARACTER_SIZE)
+            path.join(npc_folder, f'{self.img}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = (x) * TILESIZE
         self.rect.y = (y) * TILESIZE
+
 
 class House(pg.sprite.Sprite):
     def __init__(self, game, x, y, tile):
@@ -145,12 +151,13 @@ class House(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = resize(pg.image.load(
-            path.join(house_folder, f'{tile}.png')),4*TILESIZE,3*TILESIZE)
+            path.join(house_folder, f'{tile}.png')), 4*TILESIZE, 3*TILESIZE)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = (x) * TILESIZE
         self.rect.y = (y) * TILESIZE
+
 
 class Decoration(pg.sprite.Sprite):
     def __init__(self, game, x, y, tile):

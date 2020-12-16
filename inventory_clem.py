@@ -8,10 +8,10 @@ class Inventory(pygame.sprite.Sprite):
     def __init__(self, name="player"):  # width, x, y
         self.inventory = []
         super(Inventory, self).__init__()
+        self.width = 4
         self.rect = (420, 400)
         self.fond = pg.Surface(self.rect)
         self.fond.fill((0, 255, 255))
-        self.width = 4
         self.pos_x = 0
         self.pos_y = 0
         self.index = -1  # no item is handled
@@ -111,8 +111,8 @@ class Case(pygame.sprite.Sprite):
         screen.blit(self.fond, (self.pos_x, self.pos_y))
         if self.item != None:
             self.item.draw(screen)
-    
-    def add(self,item):
+
+    def add(self, item):
         self.item = item
 
     def remove(self):

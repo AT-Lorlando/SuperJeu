@@ -40,6 +40,7 @@ class Player(pg.sprite.Sprite):
         self.champion_pool.append(Sun_Wizard(self))
         self.champion_pool.append(Hunter(self))
         self.main_champ = self.champion_pool[0]
+        self.money = 1000
 
         self.looking_at = 'Bot'
         self.is_moving = False

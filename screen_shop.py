@@ -2,7 +2,7 @@ import pygame as pg
 import sys
 from os import path
 from shop import *
-from settings import HEIGHT, WIDTH
+from settings import HEIGHT, WIDTH, assets_folder
 from Mother_screen import *
 
 
@@ -19,6 +19,11 @@ class Screen_shop(Mother_screen):
         self.image_pos = (0, 0)
         self.handled = None
         self.copy = None
+        self.money = 0
+        self.main_font = pg.font.SysFont("Blue Eyes.otf", 50)
+        self.fond_coin = pg.image.load(
+            path.join(assets_folder, "coin.png"))
+        self.fond_coin = pygame.transform.scale(self.fond_coin, (30, 30))
 
     def update(self):
         self.mouse = pg.mouse.get_pressed()
@@ -42,6 +47,7 @@ class Screen_shop(Mother_screen):
                     break
             if self.is_over(self.player_inventory) and over_case != None and over_case.item == None:
                 self.player_inventory.add(over_case, self.handled)
+                self.buy()
             elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
                 self.shop.inv.add(over_case, self.handled)
             else:
@@ -58,6 +64,13 @@ class Screen_shop(Mother_screen):
             self.screen)  # player inv
         if self.handled != None:
             self.handled.draw(self.screen)
+        font_surface = self.main_font.render(
+            str(self.money), True, (255, 255, 255))
+        # WIDTH - font_surface.get_size()[1])
+        self.screen.blit(
+            font_surface, (WIDTH - font_surface.get_size()[0], 0))
+        self.screen.blit(
+            self.fond_coin, (WIDTH - (font_surface.get_size()[0] + self.fond_coin.get_size()[0] + 5), 0))
 
     def take_item(self, inv):
         if not self.handled:
@@ -68,10 +81,13 @@ class Screen_shop(Mother_screen):
                         self.copy = case
                         case.remove()
 
+    def buy(self):
+        self.money -= 100
+
     def is_over(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
 
-    def run(self, background, player_inventory):
+    def run(self, background, player):
 
         if self.animation:
             for img in self.animation:
@@ -81,7 +97,8 @@ class Screen_shop(Mother_screen):
                 pg.display.flip()
                 time.sleep(.03)
         self.running = True
-        self.player_inventory = player_inventory
+        self.player_inventory = player.inv
+        self.money = player.money
         while self.running:
             self.print_background(background)
             self.events()
