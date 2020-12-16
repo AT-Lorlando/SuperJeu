@@ -85,8 +85,6 @@ while run:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 run = False
-            if event.key == pg.K_s:
-                screen_shop.run(screen.copy())
             if event.key == pg.K_c:
                 screen_cara.run(screen.copy())
 

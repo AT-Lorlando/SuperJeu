@@ -24,20 +24,16 @@ class Screen_shop(Mother_screen):
         self.pos_mouse = pg.mouse.get_pos()
         self.player_inventory.update(self.mouse, self.pos_mouse)
         self.shop.inv.update(self.mouse, self.pos_mouse)
-        for case in self.player_inventory.inventory:
-            if case.item != None:
-                if case.item.is_clicked(self.mouse, self.pos_mouse):
-                    self.handled = case.item
-                    case.remove()
-        for case in self.shop.inv.inventory:
-            if case.item != None:
-                if case.item.is_clicked(self.mouse, self.pos_mouse):
-                    self.handled = case.item
-                    case.remove()
+
+        self.take_item(self.player_inventory)
+        self.take_item(self.shop.inv)
+
         if self.handled != None:
             self.handled.pos_x = self.pos_mouse[0] - self.handled.rect[0]/2 - 5
             self.handled.pos_y = self.pos_mouse[1] - self.handled.rect[1]/2 - 5
             self.handled.update(self.mouse, self.pos_mouse)
+        if not self.mouse[0] and self.handled:
+            self.player_inventory.add_without_case(self.handled)
         if not self.mouse[0]:
             self.handled = None
 
@@ -49,10 +45,19 @@ class Screen_shop(Mother_screen):
         if self.handled != None:
             self.handled.draw(self.screen)
 
+    def take_item(self, inv):
+        if not self.handled:
+            for case in inv.inventory:
+                if case.item != None:
+                    if case.item.is_clicked(self.mouse, self.pos_mouse):
+                        self.handled = case.item
+                        case.remove()
+
     def is_over(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
 
     def run(self, background, player_inventory):
+
         if self.animation:
             for img in self.animation:
                 self.screen.blit(background, (0, 0))
