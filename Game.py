@@ -11,6 +11,7 @@ from enemy import *
 from sprites import *
 from tilemap import *
 from Minimap import *
+from music import *
 
 #from Dungeon import *
 
@@ -43,6 +44,9 @@ class Game:
         self.known_tiles = []
         self.interactif_sentence = None
         self.dt = self.clock.tick(FPS) / 1000
+
+        #MUSIC
+        swap_music("assets/music/dungeon.mp3")
 
     '''    
     def generate_enemy(self, num):
