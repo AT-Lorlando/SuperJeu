@@ -79,6 +79,21 @@ def rounding_hex(q, r, s):
         rs = -rq - rr
     return Hex(rq, rr, rs)
 
+class Tile(Hex) :
+    object=None
+    
+    def __repr__(self):
+        return f"{self.q} {self.r} {self.s} ({self.object})"
+    
+    def set_object(self, object) :
+        self.object = object
+        return self
+
+    def remove_object(self) :
+        obj = self.object
+        self.object= None
+        return obj
+
 
 class Orientation:
     """
@@ -166,9 +181,14 @@ def initgrid(x, y):
     for i in range(x):
         k += (i) % 2 - 1
         for j in range(k, y + k):
-            Grid.append(Hex(j, i))
+            Grid.append(Tile(j, i))
     return Grid
 
+def update_grid(Grid, Tile) :
+    elem = next(tiles for tiles in Grid if tiles==Tile)
+    i=Grid.index(elem)
+    Grid[i]=Tile
+    return elem
 
 class cell:
     def __init__(self, hex):
@@ -189,13 +209,20 @@ class cell:
         return self.hex.__repr__()
 
 
-def pathfinding(hexstart, hexgoal, Grid):
-    start = cell(hexstart)
-    goal = cell(hexgoal)
+def pathfinding(tilestart, tilegoal, Grid):
+    if tilestart not in Grid or tilegoal not in Grid :
+        print("Error : Tiles not in grid")
+        exit(-1)
+    start = cell(tilestart)
+    goal = cell(tilegoal)
 
     discovered = [start]
     explored = []
     start.f = start.g + distance_hex(start.hex, goal.hex)
+
+    for tiles in Grid :
+        if tiles.object != None :
+            Grid.remove(tiles)
 
     while (discovered != []):
         min = discovered[0].f
@@ -234,5 +261,12 @@ if __name__ == "__main__":
     layout = Layout(orientation_pointy, (758, 876),
                     (758 / 2, 876 / 2))  #layout bizarre
     print(hex_corner(layout, a))
-    cellulle = cell(Hex(0, 0))
+    cellulle = cell(Tile(0, 0))
     print(cellulle.hex.neighbors())
+    assert Tile(0,0).object == None
+    assert Tile(0,0).set_object("Object properly initialised").object == "Object properly initialised"
+    gr= initgrid(2,2)
+    print(gr)
+    update_grid(gr,Tile(0,0).set_object("Test"))
+    print(gr)
+    print(pathfinding(Tile(1,1),Tile(1,0),gr))
