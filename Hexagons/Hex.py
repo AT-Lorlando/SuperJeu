@@ -109,7 +109,7 @@ def hex_circle(hex,r, fill=False) :
 def lerp(a,b,t) :
     return a+(b-a)*t
 
-def lerp_hex(hex1,hex2,t)
+def lerp_hex(hex1,hex2,t) :
     return Hex(lerp(hex1.x,hex2.x,t),lerp(hex1.y,hex2.y,t),lerp(hex1.z,hex2.z,t))
 
 def hex_linedraw(hex1,hex2) :
