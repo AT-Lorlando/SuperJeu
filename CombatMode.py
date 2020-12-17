@@ -121,9 +121,9 @@ FPS = 30
 clock = pygame.time.Clock()
 
 
-def goto(tobechangedelmt):
+def goto(elmt,KeepRight,KeepLeft):
     #x,y=tup[0]-man.width/2,tup[1]-man.heigth/2-8
-    if tobechangedelmt == Hex(1, 0):  #Hex to right
+    if elmt == Hex(1, 0):  #Hex to right
         man.right = True
         stepnumber = int((2 * largeurHex) // man.change)
         horizon_step = man.change
@@ -136,9 +136,9 @@ def goto(tobechangedelmt):
         man.playerX += 2 * largeurHex - stepnumber * horizon_step
         redraw_window()
         pygame.display.update()
-        man.right = False
+        if not(KeepRight):man.right = False
 
-    if tobechangedelmt == Hex(0, 1):  #Hex down right
+    if elmt == Hex(0, 1):  #Hex down right
         man.right = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
@@ -160,9 +160,9 @@ def goto(tobechangedelmt):
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        man.right = False
+        if not(KeepRight):man.right = False
 
-    if tobechangedelmt == Hex(-1, 1):  #Hex down left
+    if elmt == Hex(-1, 1):  #Hex down left
         man.left = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
@@ -183,7 +183,7 @@ def goto(tobechangedelmt):
         pygame.display.update()
         man.left = False
 
-    if tobechangedelmt == Hex(-1, 0):  #Hex to left
+    if elmt == Hex(-1, 0):  #Hex to left
         man.left = True
         stepnumber = int((2 * largeurHex) // man.change)
         horizon_step = man.change
@@ -198,7 +198,7 @@ def goto(tobechangedelmt):
         pygame.display.update()
         man.left = False
 
-    if tobechangedelmt == Hex(0, -1):  #Hex up left
+    if elmt == Hex(0, -1):  #Hex up left
         man.left = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
@@ -219,7 +219,7 @@ def goto(tobechangedelmt):
         pygame.display.update()
         man.left = False
 
-    if tobechangedelmt == Hex(1, -1):  #Hex up right
+    if elmt == Hex(1, -1):  #Hex up right
         man.right = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
@@ -241,7 +241,7 @@ def goto(tobechangedelmt):
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        man.right = False
+        if not(KeepRight):man.right = False
     #man.playerX = int(x)
     #man.playerY = int(y)
     redraw_window()
@@ -273,26 +273,36 @@ while run:
     #pygame.draw.polygon(screen,(0,0,0),hex_corner(layout,pixel_to_hex(layout,(x,y))))
 
     if mouse[2] and listecase == []:  #Right click
-        print(x, y)
+        #print(x, y)
         hextogo = pixel_to_hex(layout, (x, y))
 
         #print(poshex)
-        print(hextogo)
+        #print(hextogo)
         if hextogo in Grid:
             listecase = pathfinding(poshex, hextogo, Grid)
             print(listecase)
 
-    if i != len(listecase):
-        goto(listecase[i] - poshex)
+    if i < (len(listecase)-1) and listecase!=[]:
+        if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
+            KeepRight=True
+        elif listecase[i+1]-listecase[i] in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)] and listecase[i]-poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
+            KeepLeft=True
+        else:
+            KeepRight,KeepLeft=False,False
+        
+
+        goto(listecase[i] - poshex,KeepRight,KeepLeft)
         poshex = listecase[i]
         i += 1
-        clock.tick(5)
+        #clock.tick(5)
+    elif i == (len(listecase)-1) and listecase!=[]:
+        goto(listecase[i] - poshex,False,False)
+        poshex = listecase[i]
+        i += 1
     else:
         listecase = []
         i = 0
 
-    if keys[8]:
-        print(8)
     """
     if keys[pygame.K_LEFT] and man.playerX > man.change:
         man.playerX -= man.change
