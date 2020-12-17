@@ -106,7 +106,19 @@ def hex_circle(hex,r, fill=False) :
             res.remove(h)
     return res
 
+def lerp(a,b,t) :
+    return a+(b-a)*t
 
+def lerp_hex(hex1,hex2,t)
+    return Hex(lerp(hex1.x,hex2.x,t),lerp(hex1.y,hex2.y,t),lerp(hex1.z,hex2.z,t))
+
+def hex_linedraw(hex1,hex2) :
+    l = distance_hex(hex1,hex2)
+    hex1+= Hex(1e-6,1e-6)#We "deviate" hex1 so we never have points on the limite between two hexs
+    res=[]
+    for i in range(0,N+1) :
+        res.append(rounding_hex(a,b,1.0/l * i))
+    return res
 
 class Orientation:
     """
