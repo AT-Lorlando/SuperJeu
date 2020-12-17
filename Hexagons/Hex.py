@@ -116,8 +116,8 @@ def hex_linedraw(hex1,hex2) :
     l = distance_hex(hex1,hex2)
     hex1+= Hex(1e-6,1e-6)#We "deviate" hex1 so we never have points on the limite between two hexs
     res=[]
-    for i in range(0,N+1) :
-        res.append(rounding_hex(a,b,1.0/l * i))
+    for i in range(0,l+1) :
+        res.append(rounding_hex(hex1,hex2,1.0/l * i))
     return res
 
 class Orientation:
@@ -210,10 +210,10 @@ def initgrid(x, y):
     return Grid
 
 def update_grid(Grid, Tile) :
-    elem = next(tiles for tiles in Grid if tiles==Tile)
-    i=Grid.index(elem)
-    Grid[i]=Tile
-    return elem
+    if Tile in Grid :
+        e = Grid[Grid.index(Tile)]
+        Grid[Grid.index(Tile)] = Tile
+        return e
 
 class cell:
     def __init__(self, hex):
@@ -296,3 +296,4 @@ if __name__ == "__main__":
     print(gr)
     print(pathfinding(Tile(1,1),Tile(1,0),gr))
     print(hex_circle(Hex(1,1),2,True))
+    print(Tile()==Tile().set_object("test"))
