@@ -15,11 +15,14 @@ import time
 
 #from Dungeon import *
 
+
 def get_id(tile):
-    return (tile%100)
+    return (tile % 100)
+
 
 def get_header(game, tile):
     return tile//100 if game.actual_stage == 0 else 1
+
 
 class Game:
     def __init__(self):
@@ -41,16 +44,14 @@ class Game:
         self.HUD = []  # HUD list: Map, Life, etc
         self.interactif_sentence = None
         self.interactif_sprite = None
-        
-        
+
         self.frontLayer = pg.sprite.Group()
         self.midLayer = pg.sprite.Group()
         self.backLayer = pg.sprite.Group()
         self.interactif = pg.sprite.Group()
 
         self.player = Player(self, 0, 0)
-        
-        
+
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
         PlayerY = floor(self.player.pos[1]/TILESIZE)
@@ -76,7 +77,7 @@ class Game:
                 # print(tile, get_id(tile))
                 if get_id(tile) == FLOOR_ID:
                     Floor(self, col, row, get_header(self, tile))
-                elif get_id(tile) == WALL_ID:   
+                elif get_id(tile) == WALL_ID:
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
@@ -87,22 +88,22 @@ class Game:
                 elif get_id(tile) == STAIR_ID:
                     Floor(self, col, row, 0)
                     Stair(self, col, row)
-                #HUB Features
+                # HUB Features
                 elif get_id(tile) == NPC_ID:
                     Floor(self, col, row, 0)
                     NPC(self, col, row, get_header(self, tile))
-                    if tile%1000 == SHOP_ID:
+                    if tile % 1000 == SHOP_ID:
                         print('shop')
                         Floor(self, col, row, 0)
                         Shop_area(self, col-1, row)
-                    elif tile%1000 == QUEST_ID:
+                    elif tile % 1000 == QUEST_ID:
                         print("Quest")
                         Floor(self, col, row, 0)
                         Quest_area(self, col-1, row)
                 elif get_id(tile) == HOUSE_ID:
                     Floor(self, col, row, 0)
                     House(self, col, row, get_header(self, tile))
-                elif(tile>0):
+                elif(tile > 0):
                     Floor(self, col, row, 0)
                     Decoration(self, col, row, tile)
 
@@ -111,7 +112,7 @@ class Game:
         self.midLayer.update()
         self.frontLayer.update()
         self.map.data_update(self.map_data)
-        if(self.actual_stage==0):
+        if(self.actual_stage == 0):
             for tiles in self.map_data:
                 for tile in tiles:
                     if(tile//100 not in self.known_tiles):
@@ -142,15 +143,17 @@ class Game:
         self.backLayer.update()
         self.midLayer.update()
         self.frontLayer.update()
-        if(self.actual_stage>0):
+        if(self.actual_stage > 0):
             self.add_to_known_tiles()
         self.camera.update(self.player)
 
     def interactif_dialogue(self, sprite):
         if(sprite):
             self.interactif_sprite = sprite
-            self.interactif_sentence = pg.font.SysFont("Blue Eyes.otf", 30).render(f'Press {sprite.key} to interact with {sprite}', True, (255, 255, 255))
-            font_size = [self.interactif_sentence.get_rect()[2], self.interactif_sentence.get_rect()[3]]
+            self.interactif_sentence = pg.font.SysFont("Blue Eyes.otf", 30).render(
+                f'Press {sprite.key} to interact with {sprite}', True, (255, 255, 255))
+            font_size = [self.interactif_sentence.get_rect(
+            )[2], self.interactif_sentence.get_rect()[3]]
             self.dialogue = pg.transform.scale(pg.image.load(path.join(
                 assets_folder, "dialogue.png")).convert_alpha(), (font_size[0]+15, font_size[1]+20))
         else:
@@ -167,7 +170,8 @@ class Game:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if(self.interactif_sentence):
             self.screen.blit(self.dialogue, (WIDTH/2-60, HEIGHT/1.3))
-            self.screen.blit(self.interactif_sentence, (WIDTH/2-60, HEIGHT/1.3+20))
+            self.screen.blit(self.interactif_sentence,
+                             (WIDTH/2-60, HEIGHT/1.3+20))
         # for scr in self.HUD:
         #     self.screen.blit(scr.image, self.camera.apply(self))
         pg.display.update()
@@ -188,7 +192,6 @@ class Game:
                 if(self.interactif_sprite):
                     if event.key == self.interactif_sprite.key and not self.player.is_moving:
                         self.interactif_sprite.interaction(self.player)
-           
 
     def show_start_screen(self):
         pass

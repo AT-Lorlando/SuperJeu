@@ -31,16 +31,16 @@ class Player(pg.sprite.Sprite):
             (pg.image.load(path.join(explode_folder, f'f ({x}).gif'))) for x in range(1, 23)]
 
         self.inv = Inventory()
-        self.inv.add(Sword("sprite1"))
-        self.inv.add(Sword("sprite2"))
-        self.inv.add(Sword("sprite3"))
-
+        self.inv.add_without_case(Sword("player1"))
+        self.inv.add_without_case(Sword("player2"))
+        self.inv.add_without_case(Sword("player3"))
         self.level = 1
         self.champion_pool = []
         self.champion_pool.append(Dark_Wizard(self))
         self.champion_pool.append(Sun_Wizard(self))
         self.champion_pool.append(Hunter(self))
         self.main_champ = self.champion_pool[0]
+        self.money = 1000
 
         self.looking_at = 'Bot'
         self.is_moving = False
