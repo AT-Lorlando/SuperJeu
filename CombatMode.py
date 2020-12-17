@@ -24,10 +24,11 @@ class player(object):
         self.CenterY = self.heigth // 2 + 8
 
     def draw(self, screen):
-        relativeX = self.playerX - combathorizontalshit
-        relativeY = self.playerY - combatverticalshit
-        if self.walkCount + 1 >= 30:
+        relativeX = self.playerX - combathorizontalshift
+        relativeY = self.playerY - combatverticalshift
+        if self.walkCount + 1 > 30:
             self.walkCount = 0
+        
         if man.left:
             screen.blit(walkLeft[self.walkCount%9],
                         (relativeX, relativeY))
@@ -257,6 +258,7 @@ man.right = False
 redraw_window()
 listecase = []
 i = 0
+Try=[]
 
 while run:
     clock.tick(FPS)
@@ -271,6 +273,15 @@ while run:
 
     ###############################################DANGER###########################################
     #pygame.draw.polygon(screen,(0,0,0),hex_corner(layout,pixel_to_hex(layout,(x,y))))
+
+    if mouse[0]:
+        if pixel_to_hex(layout, (x, y)) not in Try:
+            Try.append(pixel_to_hex(layout, (x, y)))
+            print(Try)
+            print(hex_circle(Try[0],100))
+            clock.tick(10000)
+
+    
 
     if mouse[2] and listecase == []:  #Right click
         #print(x, y)
@@ -294,7 +305,6 @@ while run:
         goto(listecase[i] - poshex,KeepRight,KeepLeft)
         poshex = listecase[i]
         i += 1
-        #clock.tick(5)
     elif i == (len(listecase)-1) and listecase!=[]:
         goto(listecase[i] - poshex,False,False)
         poshex = listecase[i]
