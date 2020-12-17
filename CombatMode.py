@@ -1,12 +1,11 @@
 import pygame
-import os
+from os import path
 import random
-import sys
+
 from math import ceil, sqrt, pi, cos, sin
-path = os.getcwd()
-sys.path.append(path.removesuffix("Jeu exemple") + '/Hexagons')
 from Hex import *
-pygame.init()
+from settings import *
+
 
 
 class player(object):
@@ -25,16 +24,16 @@ class player(object):
         self.CenterY = self.heigth // 2 + 8
 
     def draw(self, screen):
-        relativeX = self.playerX - 32
-        relativeY = self.playerY - 40
+        relativeX = self.playerX - combathorizontalshit
+        relativeY = self.playerY - combatverticalshit
         if self.walkCount + 1 >= 30:
             self.walkCount = 0
         if man.left:
-            screen.blit(walkLeft[(self.walkCount // 3) % 9],
+            screen.blit(walkLeft[self.walkCount%9],
                         (relativeX, relativeY))
             self.walkCount += 1
         elif self.right:
-            screen.blit(walkRight[(self.walkCount // 3) % 9],
+            screen.blit(walkRight[self.walkCount%9],
                         (relativeX, relativeY))
             self.walkCount += 1
         else:
@@ -44,36 +43,37 @@ class player(object):
 WIDTH, HEIGTH = 1097, 720
 
 RED = (255, 0, 0)
-main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
+#main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
 screen = pygame.display.set_mode((WIDTH, HEIGTH))
-pygame.display.set_caption("Sprite and Animation")
+pygame.display.set_caption("Combat mode")
 
 #IMAGE
 walkRight = [
-    pygame.image.load('assets/img_sprite/R1.png'),
-    pygame.image.load('assets/img_sprite/R2.png'),
-    pygame.image.load('assets/img_sprite/R3.png'),
-    pygame.image.load('assets/img_sprite/R4.png'),
-    pygame.image.load('assets/img_sprite/R5.png'),
-    pygame.image.load('assets/img_sprite/R6.png'),
-    pygame.image.load('assets/img_sprite/R7.png'),
-    pygame.image.load('assets/img_sprite/R8.png'),
-    pygame.image.load('assets/img_sprite/R9.png')
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),
+    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale)
+    
 ]
 walkLeft = [
-    pygame.image.load('assets/img_sprite/L1.png'),
-    pygame.image.load('assets/img_sprite/L2.png'),
-    pygame.image.load('assets/img_sprite/L3.png'),
-    pygame.image.load('assets/img_sprite/L4.png'),
-    pygame.image.load('assets/img_sprite/L5.png'),
-    pygame.image.load('assets/img_sprite/L6.png'),
-    pygame.image.load('assets/img_sprite/L7.png'),
-    pygame.image.load('assets/img_sprite/L8.png'),
-    pygame.image.load('assets/img_sprite/L9.png')
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),True,False),
+    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),True,False)
 ]
-char = pygame.image.load('assets/img_sprite/standing.png')
+char = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),scale)
 #BACKGROUND
-bg = pygame.image.load(os.path.join("assets", "map.png"))
+bg = pygame.image.load(path.join(assets_folder,'map.png'))
 
 largeurHex = 35
 hauteurHex = 40
@@ -291,7 +291,7 @@ while run:
         listecase = []
         i = 0
 
-    if keys[K_i]:
+    if keys[8]:
         print(8)
     """
     if keys[pygame.K_LEFT] and man.playerX > man.change:

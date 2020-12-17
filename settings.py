@@ -63,3 +63,7 @@ BULLET_LIFETIME = 1000
 BULLET_RATE = 150
 GUN_SPREAD = 5
 
+#Combat Settings
+scale = (46,64)
+combathorizontalshit=24
+combatverticalshit=32
