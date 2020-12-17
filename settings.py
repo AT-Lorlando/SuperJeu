@@ -65,5 +65,5 @@ GUN_SPREAD = 5
 
 #Combat Settings
 scale = (46,64)
-combathorizontalshit=24
-combatverticalshit=32
+combathorizontalshift=24
+combatverticalshift=32
