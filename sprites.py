@@ -1,5 +1,4 @@
 from pygame.constants import K_y
-from Dungeon import New_Stage
 import pygame as pg
 from settings import *
 from os import path
@@ -115,7 +114,7 @@ class Shop_area(Interactif):
     def __init__(self, game, x, y):
         super(Shop_area, self).__init__(game, x, y)
         self.key = pg.K_e
-        self.shop = Screen_shop(game.screen)
+        self.shop = Screen_shop(game.screen, game)
 
     def interaction(self, player):
         self.shop.run(self.game.screen.copy(), player)

@@ -61,9 +61,9 @@ pg.display.flip()
 game_launch = False
 var = ""
 g = Game()
-screen_shop = Screen_shop(screen)
+screen_shop = Screen_shop(screen, g)
 screen_shop.shop = create_shop()
-screen_cara = Screen_cara(screen)
+screen_cara = Screen_cara(screen, g)
 
 while run:
     clock.tick(FPS)

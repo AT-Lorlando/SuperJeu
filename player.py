@@ -52,12 +52,12 @@ class Player(pg.sprite.Sprite):
         self.pos.y = y
 
     def add_to_pool(self, champion):
-        self.champion_pool.add(champion)
+        self.champion_pool.append(champion)
 
     def get_keys(self):
         if(self.isPlaying):
             keys = pg.key.get_pressed()
-            if keys[pg.K_LEFT] or keys[pg.K_a]:
+            if keys[pg.K_LEFT] or keys[pg.K_q]:
                 if keys[pg.K_RIGHT] or keys[pg.K_d]:
                     self.is_moving = False
                 else:
@@ -68,7 +68,7 @@ class Player(pg.sprite.Sprite):
                 self.looking_at = 'Right'
                 self.vel.x = PLAYER_SPEED
                 self.is_moving = True
-            if keys[pg.K_UP] or keys[pg.K_w]:
+            if keys[pg.K_UP] or keys[pg.K_z]:
                 if keys[pg.K_DOWN] or keys[pg.K_s]:
                     self.is_moving = False
                 else:
@@ -79,16 +79,17 @@ class Player(pg.sprite.Sprite):
                 self.looking_at = 'Bot'
                 self.vel.y = PLAYER_SPEED
                 self.is_moving = True
-            if -10 < self.vel.x < 10:
-                self.vel.x = 0
-            else:
-                self.vel.x *= 0.7071
-            if -10 < self.vel.y < 10:
-                self.vel.y = 0
-            else:
-                self.vel.y *= 0.7071
-            if self.vel.x != 0 and self.vel.y != 0:
-                self.vel *= 0.7071
+            if(self.is_moving):
+                if -10 < self.vel.x < 10: 
+                    self.vel.x = 0
+                else:
+                    self.vel.x *= 0.7071
+                if -10 < self.vel.y < 10:
+                    self.vel.y = 0
+                else:
+                    self.vel.y *= 0.7071
+                if self.vel.x != 0 and self.vel.y != 0:
+                    self.vel *= 0.7071
             if keys[pg.K_0]:
                 print((self.pos[0], self.pos[1]))
                 print(self.game.camera.apply(self))
@@ -182,7 +183,7 @@ class Player(pg.sprite.Sprite):
         self.image = self.main_champ.image
         if(self.isPlaying):
             self.get_keys()
-            self.pos += 2*self.vel * self.game.clock.tick(FPS) / 1000
+            self.pos += self.vel * self.game.dt
             self.rect.x = self.pos.x
             self.collide_with_obstacle('x')
             self.rect.y = self.pos.y

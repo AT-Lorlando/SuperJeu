@@ -5,7 +5,8 @@ from settings import *
 import time
 
 class Mother_screen():
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.running = False
         self.fond = pg.Surface((WIDTH, HEIGHT)).convert_alpha()
         self.liberty = True
@@ -41,6 +42,7 @@ class Mother_screen():
                 time.sleep(.03)
         self.running = True
         while self.running:
+            self.game.dt_update()
             self.print_background(background)
             self.events()
             self.update()

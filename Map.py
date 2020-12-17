@@ -19,8 +19,7 @@ class Square(pg.sprite.Sprite):
 
 class Map(Mother_screen):
     def __init__(self, game):
-        super(Map, self).__init__()
-        self.game = game   
+        super(Map, self).__init__(game)
         self.zoom = 2
         self.zoom_index = 5 
         self.square_size = floor(TILESIZE/40)
@@ -58,7 +57,7 @@ class Map(Mother_screen):
     def events(self):       
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
+                if event.key == pg.K_m or pg.K_ESCAPE:
                     self.running = False
             elif event.type == MOUSEWHEEL:
                 self.event_zoom(event.y)
