@@ -94,7 +94,7 @@ class Tile(Hex) :
         self.object= None
         return obj
 
-def hex_circle(hex,r, fill=False) :
+def hex_circle(hex,r, fill=True) :
     res=[]
     for x in range(-r+1,r) :
         for y in range(max(-r,-x-r)+1,min(r,-x+r)):
@@ -159,7 +159,7 @@ class Layout:
         self.originy = tupleorigin[1]
 
 
-def hex_to_pixel(layout, hex):
+def hex_to_pixel(layout, hex):#return center (in px) of hex
     orientation = layout.orientation
     x = (orientation.f0 * hex.q +
          orientation.f1 * hex.r) * layout.sizex + layout.originx
@@ -234,7 +234,7 @@ class cell:
         return self.hex.__repr__()
 
 
-def pathfinding(tilestart, tilegoal, Grid):
+def pathfinding(tilestart, tilegoal, Grid):#TO BE FIXED problem of grid pointer
     if tilestart not in Grid or tilegoal not in Grid :
         print("Error : Tiles not in grid")
         exit(-1)
@@ -297,3 +297,11 @@ if __name__ == "__main__":
     print(pathfinding(Tile(1,1),Tile(1,0),gr))
     print(hex_circle(Hex(1,1),2,True))
     print(Tile()==Tile().set_object("test"))
+    print("test grid")
+    grid = [Tile(), Tile(1, 1).set_object("Clément2"), Tile(1, 2)]
+    print(grid)
+    print(
+        pathfinding(
+            Tile(), Tile(1,2),
+            grid))
+    print(grid)
