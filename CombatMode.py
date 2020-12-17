@@ -181,7 +181,7 @@ def goto(elmt,KeepRight,KeepLeft):
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        man.left = False
+        if not(KeepLeft):man.left = False
 
     if elmt == Hex(-1, 0):  #Hex to left
         man.left = True
@@ -196,7 +196,7 @@ def goto(elmt,KeepRight,KeepLeft):
         man.playerX -= 2 * largeurHex - stepnumber * horizon_step
         redraw_window()
         pygame.display.update()
-        man.left = False
+        if not(KeepLeft):man.left = False
 
     if elmt == Hex(0, -1):  #Hex up left
         man.left = True
@@ -217,7 +217,7 @@ def goto(elmt,KeepRight,KeepLeft):
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        man.left = False
+        if not(KeepLeft):man.left = False
 
     if elmt == Hex(1, -1):  #Hex up right
         man.right = True
