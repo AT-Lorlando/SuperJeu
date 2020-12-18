@@ -27,6 +27,7 @@ class Spell (pg.sprite.Sprite):
 
         self.time_since_anime = 0
         self.actual_frame = 0
+        self.angle = 0
         self.traveling = False
         self.hiting = False
 
@@ -37,12 +38,16 @@ class Spell (pg.sprite.Sprite):
         if self.range:
             if(self.player.looking_at == "Right"):
                 self.vel = vec(300,0)
+                self.angle = 0
             elif(self.player.looking_at == "Left"):
                 self.vel = vec(-300,0)
+                self.angle = 180
             elif(self.player.looking_at == "Top"):
                 self.vel = vec(0,-300)
+                self.angle = 90
             elif(self.player.looking_at == "Bot"):
                 self.vel = vec(0,300)
+                self.angle = 270
         self.traveling = True
     
     def collide(self):
@@ -75,7 +80,7 @@ class Spell (pg.sprite.Sprite):
             self.time_since_anime = now
             self.actual_frame = (self.actual_frame + 1) % 8
         if self.traveling:
-            self.image = self.traveling_images[self.actual_frame]
+            self.image = pg.transform.rotate(self.traveling_images[self.actual_frame],self.angle)
             self.rect = self.image.get_rect()
             self.hit_rect = self.rect
         if self.hiting:

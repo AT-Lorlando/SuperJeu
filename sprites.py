@@ -124,8 +124,8 @@ class Door(MySprite):
 
 
 class Stair(MySprite):
-    def __init__(self, game, x, y, tile):
-        super(Stair,self).__init__(game, x, y, tile)
+    def __init__(self, game, x, y):
+        super(Stair,self).__init__(game, x, y)
         self.groups = game.Layers[4], game.obstacle, game.stairs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game

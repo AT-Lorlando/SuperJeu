@@ -37,7 +37,7 @@ class Map(Mother_screen):
     def event_zoom(self, y):
         self.zoom_index = (self.zoom_index + y) if 0 < (self.zoom_index + y) < len(ZOOM_VALUE) else len(ZOOM_VALUE)-1 if (self.zoom_index + y) >= len(ZOOM_VALUE) else 0
         self.zoom = ZOOM_VALUE[self.zoom_index]
-        print(self.zoom)
+        # print(self.zoom)
     
     def data_update(self, data):
         self.map_data = data
