@@ -1,4 +1,5 @@
 from numpy.lib.twodim_base import tril_indices
+from pygame import image
 from pygame.constants import MOUSEWHEEL
 from Dungeon import New_Stage
 import pygame as pg
@@ -31,6 +32,8 @@ class Game:
         pg.display.set_caption(TITLE)
         self.game_folder = path.dirname('.')
         self.clock = pg.time.Clock()
+        
+        self.dt = self.clock.tick(FPS) / 1000
 
         self.hub = Instance('Hub')
         self.hub.open("Instance_Hub.csv")
@@ -44,11 +47,16 @@ class Game:
         self.HUD = []  # HUD list: Map, Life, etc
         self.interactif_sentence = None
         self.interactif_sprite = None
+        
+        #Layer:
+        self.Layers = [pg.sprite.Group() for _ in range(LAYER_NUMBER)]
+        # print(self.Layers)
+        # self.frontLayer = pg.sprite.Group()
+        # self.midLayer = pg.sprite.Group()
+        # self.backLayer = pg.sprite.Group()
+        # self.interactif = pg.sprite.Group()
 
-        self.frontLayer = pg.sprite.Group()
-        self.midLayer = pg.sprite.Group()
-        self.backLayer = pg.sprite.Group()
-        self.interactif = pg.sprite.Group()
+        self.animation_tab = []
 
         self.player = Player(self, 0, 0)
 
@@ -62,12 +70,15 @@ class Game:
                     self.known_tiles.append(tile//100)
 
     def draw_instance(self, instance):
+        for layer in self.Layers[LAYER_NUMBER:]:
+            layer = pg.sprite.Group()
+        print(self.Layers)
         self.obstacle = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
+        # self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
-        self.backLayer = pg.sprite.Group()
-        self.midLayer = pg.sprite.Group()
+        # self.backLayer = pg.sprite.Group()
+        # self.midLayer = pg.sprite.Group()
         self.interactif = pg.sprite.Group()
         self.map_data = instance.data
         self.known_tiles = []
@@ -84,7 +95,7 @@ class Game:
                     self.player.set_pos(col*TILESIZE, row*TILESIZE)
                 elif get_id(tile) == DOOR_ID:
                     Floor(self, col, row, 0)
-                    Door(self, col, row, instance.door_type, tile)
+                    Door(self, col, row, get_header(self, tile))
                 elif get_id(tile) == STAIR_ID:
                     Floor(self, col, row, 0)
                     Stair(self, col, row)
@@ -108,9 +119,12 @@ class Game:
                     Decoration(self, col, row, tile)
 
         self.camera = Camera(WIDTH, HEIGHT)
-        self.backLayer.update()
-        self.midLayer.update()
-        self.frontLayer.update()
+        for layer in self.Layers:
+            layer.update()
+        # self.backLayer.update()
+        # self.midLayer.update()
+        # self.frontLayer.update()
+        print(self.Layers)
         self.map.data_update(self.map_data)
         if(self.actual_stage == 0):
             for tiles in self.map_data:
@@ -122,6 +136,9 @@ class Game:
     def load_dungeon(self, dungeon_type, dungeon_difficulty):
         self.actual_dungeon = Dungeon(dungeon_type, dungeon_difficulty)
 
+    def animation_add(self, sprite, image_tab):
+        self.animation_tab.append(Animation(self, self.camera.apply(sprite), image_tab))
+        
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
@@ -140,9 +157,13 @@ class Game:
 
     def update(self):
         # update portion of the game loop
-        self.backLayer.update()
-        self.midLayer.update()
-        self.frontLayer.update()
+        # self.backLayer.update()
+        # self.midLayer.update()
+        for layer in self.Layers:
+            layer.update()
+        for animation in self.animation_tab:
+            animation.update()
+        # self.frontLayer.update()
         if(self.actual_stage > 0):
             self.add_to_known_tiles()
         self.camera.update(self.player)
@@ -162,12 +183,11 @@ class Game:
             self.interactif_key = None
 
     def draw(self):
-        for sprite in self.backLayer:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
-        for sprite in self.midLayer:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
-        for sprite in self.frontLayer:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+        for layer in self.Layers:
+            for sprite in layer:
+                self.screen.blit(sprite.image, self.camera.apply(sprite))
+        for animation in self.animation_tab:
+            animation.draw()
         if(self.interactif_sentence):
             self.screen.blit(self.dialogue, (WIDTH/2-60, HEIGHT/1.3))
             self.screen.blit(self.interactif_sentence,
@@ -195,3 +215,29 @@ class Game:
 
     def show_start_screen(self):
         pass
+
+class Animation():
+    def __init__(self, game, pos, tab):
+        self.game = game
+        self.frame_rate = 50
+        self.time_since_anime = 0
+        self.actual_frame = 0
+        self.pos = pos
+        # self.rect = pg.Rect(0,0,pos)
+        self.image_tab = tab
+        self.to_kill = False
+
+    def draw(self):
+        this_image = self.image_tab[self.actual_frame]
+        this_image.set_colorkey((223,222,223))
+        self.game.screen.blit(this_image, self.pos)
+
+    def update(self):
+        now = pg.time.get_ticks()
+        if(now> self.time_since_anime + self.frame_rate):
+            self.time_since_anime = now
+            self.actual_frame += 1
+            if self.actual_frame >= len(self.image_tab):
+                self.game.animation_tab.remove(self)
+                print("removed", len(self.game.animation_tab))
+        

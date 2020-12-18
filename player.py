@@ -6,8 +6,8 @@ from Dungeon import *
 from inventory_clem import *
 from shop import *
 from screen_shop import *
-from character import *
 from sprites import *
+from character import *
 import time
 vec = pg.math.Vector2
 
@@ -18,7 +18,7 @@ def resize(img, size):
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.frontLayer
+        self.groups = game.Layers[LAYER_NUMBER-1]
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((CHARACTER_SIZE, CHARACTER_SIZE))
@@ -40,12 +40,14 @@ class Player(pg.sprite.Sprite):
         self.champion_pool.append(Sun_Wizard(self))
         self.champion_pool.append(Hunter(self))
         self.main_champ = self.champion_pool[0]
+
         self.money = 1000
 
         self.looking_at = 'Bot'
         self.is_moving = False
 
         self.pause = 0
+        self.time_since_last_spell = 0
 
     def set_pos(self, x, y):
         self.pos.x = x
@@ -91,6 +93,8 @@ class Player(pg.sprite.Sprite):
                 if self.vel.x != 0 and self.vel.y != 0:
                     self.vel *= 0.7071
             if keys[pg.K_0]:
+                for sprite in self.game.frontLayer:
+                    print(sprite)
                 print((self.pos[0], self.pos[1]))
                 print(self.game.camera.apply(self))
                 print(self.rect)
@@ -101,17 +105,39 @@ class Player(pg.sprite.Sprite):
                 self.switch(1)
             elif keys[pg.K_3]:
                 self.switch(2)
+            elif keys[pg.K_a]:
+                self.use_spell(0)
+
+    def use_spell(self, spell):
+        now = pg.time.get_ticks()
+        if now - self.time_since_last_spell > 250:
+            self.time_since_last_spell = now 
+            Fireball(self)
+            print("FIRE")
 
     def switch(self, x):
         self.vel = vec(0, 0)
         self.isPlaying = False
         self.main_champ = self.champion_pool[x]
+        self.main_champ.animation()
+        self.image = self.main_champ.image
+        pg.display.update()
         bg = self.game.screen.copy()
-        for img in self.explode:
+        for img in self.explode[len(self.explode)//2:]:
             self.game.screen.blit(bg, (0, 0))
             self.game.screen.blit(pg.transform.scale(
-                img, (150, 150)), (WIDTH/2 - 50, HEIGHT/2 - 85, 100, 100))
+                img, (150, 150)), (WIDTH/2 - CHARACTER_SIZE+10, (HEIGHT)/2 - CHARACTER_SIZE-15, 90, 100))
             pg.display.flip()
+            self.game.dt_update()
+            time.sleep(.02)
+        self.game.draw()
+        bg = self.game.screen.copy()
+        for img in self.explode[:len(self.explode)-len(self.explode)//2]:
+            self.game.screen.blit(bg, (0, 0))
+            self.game.screen.blit(pg.transform.scale(
+                img, (150, 150)), (WIDTH/2 - CHARACTER_SIZE+10, (HEIGHT)/2 - CHARACTER_SIZE-15, 90, 100))
+            pg.display.flip()
+            self.game.dt_update()
             time.sleep(.02)
         self.isPlaying = True
         self.rect = self.image.get_rect()

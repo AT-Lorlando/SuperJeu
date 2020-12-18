@@ -16,6 +16,7 @@ dungeon_folder = path.join(game_folder, 'dungeon')
 assets_folder = path.join(game_folder, 'assets')
 
 champ_folder = path.join(assets_folder, 'character')
+spell_folder = path.join(assets_folder, 'spell')
 dark_wizard_folder = path.join(champ_folder, 'dark_wizard')
 sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
 hunter_folder = path.join(champ_folder, 'archer')
@@ -41,8 +42,8 @@ wall_folder = path.join(tile_folder, 'wall')
 
 
 # game settings
-WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16
-HEIGHT = 1080  # 16 * 48 or 32 * 24 or 64 * 12
+WIDTH = 1080   # 16 * 64 or 32 * 32 or 64 * 16
+HEIGHT = 720  # 16 * 48 or 32 * 24 or 64 * 12
 FPS = 200
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY
@@ -71,5 +72,6 @@ WATER_ID = 53
 # Player settings
 PLAYER_SPEED = 600
 RANGE = 25
+LAYER_NUMBER = 10
 
 ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]

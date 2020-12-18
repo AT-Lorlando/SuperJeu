@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import *
 from os import path
+from spell import *
 from player import *
 
 class Champion():
@@ -13,9 +14,9 @@ class Champion():
         self.spell = pg.sprite.Group()
 
     def animation(self):
-        self.time = pg.time.get_ticks()
-        if(self.time > self.time_since_anime + 150):
-            self.time_since_anime = self.time
+        now = pg.time.get_ticks()
+        if(now> self.time_since_anime + 150):
+            self.time_since_anime = now
             if(self.player.is_moving == True):
                 self.actual_frame = (self.actual_frame + 1) % 3
             else:
