@@ -67,3 +67,7 @@ GUN_SPREAD = 5
 scale = (46,64)
 combathorizontalshift=24
 combatverticalshift=32
+
+# Loading things modified by user :
+with open("assets/save/settings.txt") as options:
+    SETTINGS=[line for line in options]
