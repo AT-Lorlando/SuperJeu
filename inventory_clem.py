@@ -83,6 +83,9 @@ class Inventory(pygame.sprite.Sprite):
         for _case in self.inventory:
             if case == _case:
                 case.item = item
+        
+    def is_in(self, item):
+        return any([case.item == item for case in self.inventory])        
 
 
 class Case(pygame.sprite.Sprite):
@@ -117,3 +120,5 @@ class Case(pygame.sprite.Sprite):
 
     def remove(self):
         self.item = None
+
+

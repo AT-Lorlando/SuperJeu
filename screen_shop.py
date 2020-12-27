@@ -88,6 +88,7 @@ class Screen_shop(Mother_screen):
 
     def buy(self, item):
         self.money -= item.price
+        print("You buy", item.name)
 
     def sell(self, item):
         self.money += item.price

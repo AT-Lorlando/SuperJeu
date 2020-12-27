@@ -35,6 +35,7 @@ class Player(pg.sprite.Sprite):
         self.inv.add_without_case(Sword("player2"))
         self.inv.add_without_case(Sword("player3"))
         self.level = 1
+        self.xp = 0
         self.champion_pool = []
         self.champion_pool.append(Dark_Wizard(self))
         self.champion_pool.append(Sun_Wizard(self))
@@ -43,11 +44,19 @@ class Player(pg.sprite.Sprite):
 
         self.money = 1000
 
+        self.quest_list = []
+
         self.looking_at = 'Bot'
         self.is_moving = False
 
         self.pause = 0
         self.time_since_last_spell = 0
+    
+    def gain_xp(self, amount):
+        self.xp += amount
+
+    def gain_money(self, amount):
+        self.money += amount
 
     def set_pos(self, x, y):
         self.pos.x = x

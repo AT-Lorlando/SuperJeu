@@ -69,3 +69,14 @@ class Sword(Stuff):
         self.STR = 5
         self.name = name
         self.inclued_in = inv
+
+
+class Quest_Item(Item):
+    def __init__(self, ID):
+        super(Quest_Item, self).__init__()
+        self.ID = ID
+        self.image.fill((255, 100, 100))
+        self.price = 2
+        self.name = "The famous losted paper"
+
+Losted_Paper = Quest_Item(1)

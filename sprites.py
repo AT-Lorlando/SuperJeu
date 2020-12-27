@@ -146,10 +146,52 @@ class Quest_area(Interactif):
     def __init__(self, game, x, y):
         super(Quest_area, self).__init__(game, x, y)
         self.key = pg.K_e
+        self.quest = Losted_Paper_Quest
 
     def interaction(self, player):
-        print('Interact')
+        print("QUEST: ", self.quest.goal)
+        if self.quest in player.quest_list:
+            if self.quest.is_complete(player):
+                self.quest.give_rewards(player)
+                player.quest_list.remove(self.quest)
+                print("Congrats")
+            else:
+                print("The quest isn't finished yet")
+        else:
+            player.quest_list.append(self.quest)
+            print("New quest, rewards:")
+            for reward in self.quest.rewards:
+                print(reward.name)
 
+class Quest():
+    def __init__(self, ID):
+        self.ID = ID
+        self.rewards = []        
+        self.xp = 500
+        self.money = 500
+
+class Lost_Item_Quest(Quest):
+    def __init__(self, ID, item):
+        super(Lost_Item_Quest,self).__init__(ID)
+        self.item = item
+        this_sword = Sword("The great sword")
+        self.rewards.append(this_sword)
+        self.goal = "You have to find the Losted paper in the first dungeon."
+
+    def is_complete(self, player):
+        for case in player.inv.inventory:
+            if case.item:
+                print(case.item.name)
+                print(self.item in player.inv.inventory)
+        return player.inv.is_in(self.item)
+
+    def give_rewards(self, player):
+        for reward in self.rewards:
+            player.inv.add_without_case(reward)
+        player.gain_money(self.money)
+        player.gain_xp(self.xp)
+
+Losted_Paper_Quest = Lost_Item_Quest(1, Losted_Paper)
 
 
 

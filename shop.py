@@ -26,6 +26,7 @@ class Shop():
 
 def create_shop():
     shop = Shop()
+    shop.inv.add_without_case(Losted_Paper)
     shop.inv.add_without_case(Sword("shop1", shop.name))
     shop.inv.inventory[0].item.image.fill((255, 255, 255))
     shop.inv.add_without_case(Sword("shop2", shop.name))
