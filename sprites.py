@@ -149,11 +149,10 @@ class Quest_area(Interactif):
         self.quest = Losted_Paper_Quest
 
     def interaction(self, player):
-        print("QUEST: ", self.quest.goal)
+        print("QUEST: ", self.quest.goal, [item.name for item in self.quest.needed])
         if self.quest in player.quest_list:
             if self.quest.is_complete(player):
-                self.quest.give_rewards(player)
-                player.quest_list.remove(self.quest)
+                self.quest.congrats(player)
                 print("Congrats")
             else:
                 print("The quest isn't finished yet")
@@ -164,26 +163,11 @@ class Quest_area(Interactif):
                 print(reward.name)
 
 class Quest():
-    def __init__(self, ID):
+    def __init__(self, ID,rewards_tab):
         self.ID = ID
-        self.rewards = []        
+        self.rewards = rewards_tab    
         self.xp = 500
         self.money = 500
-
-class Lost_Item_Quest(Quest):
-    def __init__(self, ID, item):
-        super(Lost_Item_Quest,self).__init__(ID)
-        self.item = item
-        this_sword = Sword("The great sword")
-        self.rewards.append(this_sword)
-        self.goal = "You have to find the Losted paper in the first dungeon."
-
-    def is_complete(self, player):
-        for case in player.inv.inventory:
-            if case.item:
-                print(case.item.name)
-                print(self.item in player.inv.inventory)
-        return player.inv.is_in(self.item)
 
     def give_rewards(self, player):
         for reward in self.rewards:
@@ -191,7 +175,24 @@ class Lost_Item_Quest(Quest):
         player.gain_money(self.money)
         player.gain_xp(self.xp)
 
-Losted_Paper_Quest = Lost_Item_Quest(1, Losted_Paper)
+class Lost_Item_Quest(Quest):
+    def __init__(self, ID, rewards_tab, needed_tab):
+        super(Lost_Item_Quest,self).__init__(ID,rewards_tab)
+        self.needed = needed_tab
+        self.goal = "You have to find the Losted paper in the first dungeon."
+
+    def is_complete(self, player):
+        return any([player.inv.is_in(item) for item in self.needed])
+
+    def congrats(self, player):
+        self.give_rewards(player)
+        for item in self.needed:
+            player.inv.remove(item)
+        player.quest_list.remove(self)
+
+
+Asword = Sword("The great sword")
+Losted_Paper_Quest = Lost_Item_Quest(1, [Asword],[Losted_Paper])
 
 
 

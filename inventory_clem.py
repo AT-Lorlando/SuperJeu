@@ -32,12 +32,12 @@ class Inventory(pygame.sprite.Sprite):
         i = 0
         copy = []
         for i in range(len(self.inventory)):
-            if self.inventory[i] == item:
+            if self.inventory[i].item == item:
                 pass
             else:
                 copy.append(self.inventory[i])
         self.inventory = copy
-        print(item.name)
+        print(item.name, "removed")
 
     def draw(self, screen):
         screen.blit(self.fond, (self.pos_x, self.pos_y))
