@@ -15,13 +15,15 @@ vec = pg.math.Vector2
 
 def resize(img, size):
     return pg.transform.scale(img, (size+2, size+2))
-
+     
+        
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.frontLayer.all_sprites
+        self.groups = game.frontLayer.all_sprites, game.health_bar
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.image.load(path.join(dark_wizard_folder,'b0.png')).convert_alpha()
+    
         self.rect = self.image.get_rect()
         self.vel = vec(0, 0)
         self.pos = vec(x, y) * TILESIZE
@@ -33,6 +35,7 @@ class Player(pg.sprite.Sprite):
         self.inv.add(Sword("sprite1"))
         self.inv.add(Sword("sprite2"))
         self.inv.add(Sword("sprite3"))
+
         self.level = 1
         self.champion_pool = []
         self.champion_pool.append(Dark_Wizard(self))
@@ -42,8 +45,10 @@ class Player(pg.sprite.Sprite):
 
         self.looking_at = 'Bot'
         self.is_moving = False
-        self.health = 100
         self.last_shot =0
+
+        self.health = 5
+        
 
     def set_pos(self, x, y):
         self.pos.x = x
@@ -52,40 +57,12 @@ class Player(pg.sprite.Sprite):
     def add_to_pool(self, champion):
         self.champion_pool.add(champion)
 
-    def attacking(self):
-        img_rot=-90
-        dir =vec(1,0).rotate(90)
-        keys = pg.key.get_pressed()
+    def attacking(self):   
+        des = pg.mouse.get_pos()
         self.time = pg.time.get_ticks() #get the time in milliseconds
         if self.time - self.last_shot > BULLET_RATE:
             self.last_shot = self.time
-
-            #ROTATION OF BULLETS
-            if self.looking_at == 'Right': 
-                img_rot = 0
-                dir = vec(1,0).rotate(0)   
-            if self.looking_at == 'Left':
-                img_rot = 180
-                dir = vec(1,0).rotate(180)                   
-            if self.looking_at == 'Bot':
-                img_rot = -90
-                dir = vec(1,0).rotate(90)
-            if self.looking_at == 'Top':
-                img_rot = 90
-                dir = vec(1,0).rotate(-90)
-            if keys[pg.K_UP] and keys[pg.K_RIGHT]:
-                img_rot = 45
-                dir = vec(1,0).rotate(-45)
-            if keys[pg.K_UP] and keys[pg.K_LEFT]:
-                img_rot = 135
-                dir = vec(1,0).rotate(-135)
-            if keys[pg.K_DOWN] and keys[pg.K_RIGHT]:
-                img_rot = -45
-                dir = vec(1,0).rotate(45)
-            if keys[pg.K_DOWN] and keys[pg.K_LEFT]:
-                img_rot = -135
-                dir = vec(1,0).rotate(135)    
-            Bullet(self.game, (self.pos.x + 32, self.pos.y + 32), dir, img_rot) 
+            Bullet(self.game, (self.pos.x + 32, self.pos.y + 32),des) 
 
     def get_keys(self):
         self.vel = vec(0, 0)
@@ -112,15 +89,16 @@ class Player(pg.sprite.Sprite):
             self.looking_at = 'Bot'
             self.vel.y = PLAYER_SPEED
             self.is_moving = True
-        if keys[pg.K_SPACE] :
+        mouse = pg.mouse.get_pressed()
+        if mouse[0]:
             self.attacking()
         if self.vel.x != 0 and self.vel.y != 0:
             self.vel *= 0.7071
+
         if keys[pg.K_0]:
             print((self.pos[0],self.pos[1]))
             print(self.game.camera.apply(self))
             print(self.rect)
-            # print(self.main_champ)
         elif keys[pg.K_1]:
             self.switch(0)
         elif keys[pg.K_2]:
@@ -128,6 +106,7 @@ class Player(pg.sprite.Sprite):
         elif keys[pg.K_3]:
             self.switch(2)
 
+    #Change the character
     def switch(self, x):
         self.vel = vec(0, 0)
         self.isPlaying = False
