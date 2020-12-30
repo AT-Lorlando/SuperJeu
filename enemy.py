@@ -16,7 +16,7 @@ class Enemy(pg.sprite.Sprite):
         self.groups = game.frontLayer.all_sprites ,game.enemies
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((24, 48))
+        self.image = pg.Surface((32, 32))
 
         self.rect = self.image.get_rect()
         self.pos = vec(x,y)* TILESIZE #position of enemy
@@ -24,17 +24,20 @@ class Enemy(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.rot = 0 #rotation
 
-        self.health = 10
+        self.health = 5
         self.is_moving = True
         self.visible = True
 
         self.moveRight = [(pg.image.load(path.join(sprite_folder,f'R{x}E.png')).convert_alpha()) for x in range(1,9)]
         self.moveLeft = [(pg.image.load(path.join(sprite_folder,f'L{x}E.png')).convert_alpha()) for x in range(1,9)]
+        """ self.attackLeft = [(pg.image.load(path.join(sprite_folder,'goblin',f'attack{x}L.png')).convert_alpha()) for x in range(1,7)]
+        self.attackRight = [(pg.image.load(path.join(sprite_folder,'goblin',f'attack{x}R.png')).convert_alpha()) for x in range(1,7)] """
+
 
         self.walkCount = 0
         self.maxCount1 = len(self.moveRight)
         self.maxCount2 = len(self.moveLeft)
-
+    
     # COLLISION
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -55,20 +58,14 @@ class Enemy(pg.sprite.Sprite):
                     self.pos.y = hits[0].rect.bottom + self.rect.height / 2
                 self.vel.y = 0
                 self.rect.centery = self.pos.y 
-    '''            
-    def hit(self):
-        if self.health > 0:
-            self.health -= 1
-        else:
-            self.visible = False
-        print('hit')
-    '''
+  
     def collide_with_bullet(self):
         hited = pg.sprite.spritecollide(self, self.game.bullets, True)
         for hit in hited:
             if self.health > 0:
-                self.health -=2
-            else: 
+                self.health -=1
+            else:
+                self.visible = False
                 self.kill()
         
           
@@ -76,10 +73,11 @@ class Enemy(pg.sprite.Sprite):
     def move(self):
         if (self.pos.x < self.game.player.pos.x and self.is_moving):
             self.image = pg.transform.scale(self.moveRight[self.walkCount], (TILESIZE,TILESIZE))
-            self.walkCount = self.walkCount + 1 if self.walkCount <= self.maxCount2 - 2 else 0               
+            self.walkCount = self.walkCount + 1 if self.walkCount <= self.maxCount2 - 2 else 0          
         elif (self.pos.x > self.game.player.pos.x and self.is_moving) :
             self.image = pg.transform.scale(self.moveLeft[self.walkCount], (TILESIZE,TILESIZE))
             self.walkCount = self.walkCount + 1 if self.walkCount <= self.maxCount1 - 2 else 0 
+            
         
     def update(self):
         self.move()
