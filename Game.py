@@ -12,6 +12,7 @@ from sprites import *
 from tilemap import *
 from Minimap import *
 from music import *
+#from Login import *
 
 #from Dungeon import *
 
@@ -37,6 +38,7 @@ class Game:
         self.backLayer.all_sprites = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
+        self.health_bar = pg.sprite.Group()
 
         self.interactif = pg.sprite.Group()
         self.player = Player(self, 0, 0)
@@ -78,6 +80,7 @@ class Game:
 
     def draw_instance(self, instance):
         self.enemies = pg.sprite.Group()
+        self.health_bar = pg.sprite.Group()
         self.obstacle = pg.sprite.Group()
         self.obstacle.interactif = pg.sprite.Group()
         self.walls = pg.sprite.Group()
@@ -123,11 +126,11 @@ class Game:
             self.events()
             self.update()
             self.draw()
-
+    
     def quit(self):
         pg.quit()
         sys.exit()
-
+    
     def update(self):
         # update portion of the game loop
         self.backLayer.all_sprites.update()
@@ -156,6 +159,13 @@ class Game:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         for sprite in self.frontLayer.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+        #DRAW HEALTH_BAR 
+        pg.draw.rect(self.screen, RED, (WIDTH//2, HEIGHT//2 - 20, 50, 10))
+        pygame.draw.rect(self.screen, GREEN, (WIDTH//2, HEIGHT//2 - 20, 50 - (10 * (5 - self.player.health)), 10))
+        if (self.enemy.visible):
+            pg.draw.rect(self.screen, RED, (WIDTH//2 - (self.player.pos.x - self.enemy.pos.x) -20, HEIGHT//2 - 40 -(self.player.pos.y - self.enemy.pos.y), 50, 10))
+            pygame.draw.rect(self.screen, GREEN, (WIDTH//2 - (self.player.pos.x - self.enemy.pos.x) -20, HEIGHT//2 - 40 -(self.player.pos.y - self.enemy.pos.y), 50 - (10 * (5 - self.enemy.health)), 10))
+        
         if(self.interactif_sentence):
             font_surface = pg.font.SysFont("Blue Eyes.otf", 30).render(
                 self.interactif_sentence, True, (255, 255, 255))
