@@ -8,12 +8,12 @@ from shop import *
 from screen_shop import *
 from character import *
 from sprites import *
-import time
 from random import uniform
+import math
 vec = pg.math.Vector2
 
 class Bullet(pg.sprite.Sprite):
-    def __init__(self, game, pos, dir, img_rot=0):
+    def __init__(self, game, pos,des):
         self.groups = game.frontLayer.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -22,11 +22,18 @@ class Bullet(pg.sprite.Sprite):
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.pos = vec(pos)
+        self.des = des
         self.rect.center =pos
 
+        distance = math.hypot(des[0] - WIDTH//2,des[1] - HEIGHT//2)
+        if des[0] - WIDTH//2 > 0:
+            img_rot = math.asin((des[1] - HEIGHT//2)/distance)*180/math.pi
+        else: 
+            img_rot = 180 - math.asin((des[1] - HEIGHT//2)/distance)*180/math.pi
+        dir = vec(1,0).rotate(img_rot)
 
-        spread = uniform (-GUN_SPREAD,GUN_SPREAD)
-        self.vel = dir.rotate(spread) * BULLET_SPEED
+        #spread = uniform(-GUN_SPREAD,GUN_SPREAD)
+        self.vel = dir * BULLET_SPEED
         self.spawm_time = pg.time.get_ticks()
 
     def update(self):
