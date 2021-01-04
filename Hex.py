@@ -180,6 +180,10 @@ def pixel_to_hex(layout, coord):
     r = orientation.b2 * hexX + orientation.b3 * hexY
     return rounding_hex(q, r, -q - r)
 
+def hexpointed(tup, layout):
+    x, y = tup[0], tup[1]
+    return hex_to_pixel(layout, pixel_to_hex(layout, (x, y)))
+
 
 def corner_offset(layout, corner):
     corner = corner % 6

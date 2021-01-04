@@ -21,8 +21,6 @@ sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
 hunter_folder = path.join(champ_folder, 'archer')
 explode_folder = path.join(champ_folder, 'explode')
 skeleton_folder = path.join(champ_folder, 'skeleton')
-skeleton_attack = path.join(skeleton_folder, 'sk_attack')
-skeleton_dead = path.join(skeleton_folder, 'sk_dead')
 wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
 button_folder = path.join(assets_folder, 'buttons_img')
@@ -72,6 +70,10 @@ Playercombatverticalshift=32
 
 Skeletoncombathorizontalshift=24
 Skeletoncombatverticalshift=38
+
+
+largeurHex = 35
+hauteurHex = 40
 
 
 # Loading things modified by user :
