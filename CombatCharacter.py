@@ -66,8 +66,7 @@ class player(object):
                         (relativeX, relativeY))
             self.walkCount += 1
         else:
-            print(8)
-            #screen.blit(skeletonsprite, (relativeX, relativeY))
+            screen.blit(skeletonsprite, (relativeX, relativeY))
 
 layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
 poshex = Hex(0, 1)
