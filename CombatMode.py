@@ -49,14 +49,12 @@ class player(object):
             self.attack=False
             self.attackCount=0
         elif self.attack and self.attackCount<18:
-            print(self.attackCount)
             screen.blit(SkeletonAttack[self.attackCount],(relativeX, relativeY))
             self.attackCount += 1
         elif self.deadcount==28:
             self.dead=False
             self.deadcount=0
         elif self.dead and self.deadcount<28:
-            print(self.deadcount)
             screen.blit(SkeletonDead[self.deadcount],(relativeX, relativeY))
             self.deadcount += 1
         elif self.right:
@@ -75,15 +73,19 @@ screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Combat mode")
 
 #IMAGE
+HealthScale=(60,10)
+health =  [pygame.transform.scale(pygame.image.load(path.join(health_folder,str(k)+'.png')),HealthScale) for k in range(6)] 
 
+SkeletonScale=(64,64)
+skeletonsprite = pygame.transform.scale(pygame.image.load(path.join(skeleton_folder,'standing.png')),SkeletonScale)
 SkeletonAttack = [pygame.transform.scale(pygame.image.load(path.join(skeleton_attack,'Sk'+str(k)+'.png')),SkeletonScale) for k in range(18)]
 SkeletonDead = [pygame.transform.scale(pygame.image.load(path.join(skeleton_dead,str(k//2+1)+'.png')),SkeletonScale) for k in range(28)]
 
+PlayerScale = (46,64)
+char = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),PlayerScale)
 walkRight = [pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale) for k in range(9)]
 walkLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale),True,False) for k in range(9)]
 
-char = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),PlayerScale)
-skeletonsprite = pygame.transform.scale(pygame.image.load(path.join(skeleton_folder,'standing.png')),(64,64))
 #BACKGROUND
 bg = pygame.image.load(path.join(assets_folder,'map.png'))
 
@@ -107,16 +109,22 @@ def redraw_window():
     screen.blit(bg, (0, 0))  #Background
 
     for element in Grid:
-        pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),
-                            2)  #Grid layout
+        pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),1)  #Grid layout
     pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
 
     x, y = pygame.mouse.get_pos()
+
     if pixel_to_hex(layout, (x, y)) in Grid:
         pygame.draw.polygon(screen, (255, 0, 0, 255),
-                            hex_corner(layout, pixel_to_hex(layout, (x, y))),
-                            5)  #Mouse cap
+                            hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
 
+    for k in range(len(Characters)):
+        #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+            healtposx-=largeurHex-7
+            healtposy-=hauteurHex
+            screen.blit(health[5],(healtposx,healtposy) )
     man.drawPlayer(screen)
     skeleton.drawSkeleton(screen)
     #Player
@@ -269,7 +277,9 @@ pospix = hex_to_pixel(layout, poshex)
 man = player(pospix[0], pospix[1], 64, 64)
 skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],64,64)
 
-Characters=man,skeleton
+
+
+Characters=[man,skeleton]
 run = True
 man.left = False
 man.right = False

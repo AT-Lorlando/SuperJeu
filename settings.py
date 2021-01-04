@@ -18,16 +18,17 @@ room_folder = path.join(assets_folder, 'room')
 champ_folder = path.join(assets_folder, 'character')
 dark_wizard_folder = path.join(champ_folder, 'dark_wizard')
 sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
-skeleton_folder = path.join(champ_folder, 'skeleton')
 hunter_folder = path.join(champ_folder, 'archer')
 explode_folder = path.join(champ_folder, 'explode')
+skeleton_folder = path.join(champ_folder, 'skeleton')
+skeleton_attack = path.join(skeleton_folder, 'sk_attack')
+skeleton_dead = path.join(skeleton_folder, 'sk_dead')
 wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
 button_folder = path.join(assets_folder, 'buttons_img')
 portal_folder = path.join(assets_folder, 'portal')
 bullet_forder = path.join(assets_folder,'bullet_img')
-skeleton_attack = path.join(skeleton_folder, 'sk_attack')
-skeleton_dead = path.join(skeleton_folder, 'sk_dead')
+health_folder = path.join(assets_folder,"healthbar")
 
 # game settings
 WIDTH = 800  # 16 * 64 or 32 * 32 or 64 * 16
@@ -66,11 +67,9 @@ BULLET_RATE = 150
 GUN_SPREAD = 5
 
 #Combat Settings
-PlayerScale = (46,64)
 Playercombathorizontalshift=24
 Playercombatverticalshift=32
 
-SkeletonScale=(64,64)
 Skeletoncombathorizontalshift=24
 Skeletoncombatverticalshift=38
 
