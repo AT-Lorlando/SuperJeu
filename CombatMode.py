@@ -15,19 +15,20 @@ class player(object):
         self.width = width
         self.heigth = heigth
         self.change = 5
-        self.isJump = False
-        self.jumpCount = 10
+        self.attack=False
+        self.attackCount = 0
+        self.dead=False
+        self.deadcount = 0
+        
         self.left = False
         self.right = False
         self.walkCount = 0
         self.CenterX = self.width // 2
         self.CenterY = self.heigth // 2 + 8
 
-    def draw(self, screen):
-        relativeX = self.playerX - combathorizontalshift
-        relativeY = self.playerY - combatverticalshift
-        if self.walkCount + 1 > 30:
-            self.walkCount = 0
+    def drawPlayer(self, screen):
+        relativeX = self.playerX - Playercombathorizontalshift
+        relativeY = self.playerY - Playercombatverticalshift
         
         if man.left:
             screen.blit(walkLeft[self.walkCount%9],
@@ -40,6 +41,31 @@ class player(object):
         else:
             screen.blit(char, (relativeX, relativeY))
 
+    def drawSkeleton(self, screen):
+        relativeX = self.playerX - Skeletoncombathorizontalshift
+        relativeY = self.playerY - Skeletoncombatverticalshift
+        
+        if self.attackCount==18:
+            self.attack=False
+            self.attackCount=0
+        elif self.attack and self.attackCount<18:
+            print(self.attackCount)
+            screen.blit(SkeletonAttack[self.attackCount],(relativeX, relativeY))
+            self.attackCount += 1
+        elif self.deadcount==28:
+            self.dead=False
+            self.deadcount=0
+        elif self.dead and self.deadcount<28:
+            print(self.deadcount)
+            screen.blit(SkeletonDead[self.deadcount],(relativeX, relativeY))
+            self.deadcount += 1
+        elif self.right:
+            screen.blit(walkRight[self.walkCount%9],
+                        (relativeX, relativeY))
+            self.walkCount += 1
+        else:
+            screen.blit(skeletonsprite, (relativeX, relativeY))
+
 
 WIDTH, HEIGTH = 1097, 720
 
@@ -49,30 +75,15 @@ screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Combat mode")
 
 #IMAGE
-walkRight = [
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),
-    pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale)
-    
-]
-walkLeft = [
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R1.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R2.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),True,False),
-    pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R3.png')),scale),True,False)
-]
-char = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),scale)
+
+SkeletonAttack = [pygame.transform.scale(pygame.image.load(path.join(skeleton_attack,'Sk'+str(k)+'.png')),SkeletonScale) for k in range(18)]
+SkeletonDead = [pygame.transform.scale(pygame.image.load(path.join(skeleton_dead,str(k//2+1)+'.png')),SkeletonScale) for k in range(28)]
+
+walkRight = [pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale) for k in range(9)]
+walkLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale),True,False) for k in range(9)]
+
+char = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),PlayerScale)
+skeletonsprite = pygame.transform.scale(pygame.image.load(path.join(skeleton_folder,'standing.png')),(64,64))
 #BACKGROUND
 bg = pygame.image.load(path.join(assets_folder,'map.png'))
 
@@ -106,7 +117,8 @@ def redraw_window():
                             hex_corner(layout, pixel_to_hex(layout, (x, y))),
                             5)  #Mouse cap
 
-    man.draw(screen)
+    man.drawPlayer(screen)
+    skeleton.drawSkeleton(screen)
     #Player
     """Draw text:
     lives_label = main_font.render(f"LIVES: {lives}",1,RED)
@@ -120,6 +132,9 @@ def redraw_window():
 run = True
 FPS = 30
 clock = pygame.time.Clock()
+
+
+
 
 
 def goto(elmt,KeepRight,KeepLeft):
@@ -252,6 +267,9 @@ def goto(elmt,KeepRight,KeepLeft):
 poshex = Hex(0, 1)
 pospix = hex_to_pixel(layout, poshex)
 man = player(pospix[0], pospix[1], 64, 64)
+skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],64,64)
+
+Characters=man,skeleton
 run = True
 man.left = False
 man.right = False
@@ -271,10 +289,13 @@ while run:
 
     x, y = pygame.mouse.get_pos()
 
-    ###############################################DANGER###########################################
-    #pygame.draw.polygon(screen,(0,0,0),hex_corner(layout,pixel_to_hex(layout,(x,y))))
+    if keys[pygame.K_a] :
+        skeleton.attack=True
 
-    if mouse[0]:
+    if keys[pygame.K_d] :
+        skeleton.dead=True
+
+    if mouse[0]:                        #Left Click
         if pixel_to_hex(layout, (x, y)) not in Try:
             Try.append(pixel_to_hex(layout, (x, y)))
             print(Try)
@@ -283,7 +304,7 @@ while run:
 
     
 
-    if mouse[2] and listecase == []:  #Right click
+    if mouse[2] and listecase == []:    #Right click
         #print(x, y)
         hextogo = pixel_to_hex(layout, (x, y))
 
@@ -300,7 +321,6 @@ while run:
             KeepLeft=True
         else:
             KeepRight,KeepLeft=False,False
-        
 
         goto(listecase[i] - poshex,KeepRight,KeepLeft)
         poshex = listecase[i]
@@ -313,42 +333,6 @@ while run:
         listecase = []
         i = 0
 
-    """
-    if keys[pygame.K_LEFT] and man.playerX > man.change:
-        man.playerX -= man.change
-        man.left = True
-        man.right = False
-    elif keys[pygame.K_RIGHT] and man.playerX < WIDTH - man.change - man.width:
-        man.playerX += man.change
-        man.left = False
-        man.right = True
-    else:
-        man.left = False
-        man.right = False
-
-
-    if keys[pygame.K_UP] and man.playerY > man.change:
-        man.playerY -= man.change
-    if keys[pygame.K_DOWN] and man.playerY < HEIGTH - man.change - man.heigth:
-        man.playerY += man.change
-        
-    if not(man.isJump):
-        if keys[pygame.K_SPACE]:
-            man.isJump = True
-            man.right = False
-            man.left = False
-            man.walkCount = 0
-    else:
-        if man.jumpCount >= -10:
-            neg = 1
-            if man.jumpCount < 0:
-                neg = -1
-            man.playerY -= (man.jumpCount ** 2) * 0.5 * neg
-            man.jumpCount -= 1
-        else:
-            man.isJump = False
-            man.jumpCount = 10
-    """
     redraw_window()
     pygame.display.update()
 

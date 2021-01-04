@@ -72,10 +72,10 @@ class Enemy(pg.sprite.Sprite):
 
     def move(self):
         if (self.pos.x < self.game.player.pos.x and self.is_moving):
-            self.image = pg.transform.scale(self.moveRight[self.walkCount], (TILESIZE,TILESIZE))
+            self.image = pg.transform.(self.moveRight[self.walkCount], (TILESIZE,TILESIZE))
             self.walkCount = self.walkCount + 1 if self.walkCount <= self.maxCount2 - 2 else 0          
         elif (self.pos.x > self.game.player.pos.x and self.is_moving) :
-            self.image = pg.transform.scale(self.moveLeft[self.walkCount], (TILESIZE,TILESIZE))
+            self.image = pg.transform.(self.moveLeft[self.walkCount], (TILESIZE,TILESIZE))
             self.walkCount = self.walkCount + 1 if self.walkCount <= self.maxCount1 - 2 else 0 
             
         
