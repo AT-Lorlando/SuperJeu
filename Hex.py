@@ -259,6 +259,7 @@ def pathfinding(tilestart, tilegoal, Grid):
             gr.remove(tiles)
 
     while (discovered != []):
+        print('cc')
         min = discovered[0].f
         for cells in discovered:
             if cells.f <= min:
@@ -278,7 +279,7 @@ def pathfinding(tilestart, tilegoal, Grid):
             if (neigh in explored) or (neigh.tile not in gr):
                 continue
             gtest = current.g + distance_hex(current.tile, neigh.tile)
-            if (gtest < neigh.g) or (neigh not in discovered):
+            if (gtest < neigh.g) or (neigh not in discovered) and neigh.tile in gr:
                 neigh.camefrom = current
                 neigh.g = gtest
                 neigh.f = neigh.g + distance_hex(neigh.tile, goal.tile)

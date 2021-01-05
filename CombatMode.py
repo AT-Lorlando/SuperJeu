@@ -232,7 +232,9 @@ while run:
             if Grid[Grid.index(hextogo)].object == None :
                 listecase = pathfinding(currentchar.poshex, hextogo, Grid)
                 if listecase == -1 :
-                    pass
+                    print("baisé")
+                    pygame.time.delay(1000)
+                    continue
 
     if i < (len(listecase)-1) and listecase!=[]:
         if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
