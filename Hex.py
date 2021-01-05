@@ -237,6 +237,11 @@ class cell:
         else:
             return path
 
+    def __eq__(self, other) :
+        if other==None :
+            return False
+        self.tile==other.tile
+
     def __repr__(self):
         return self.tile.__repr__()
 
@@ -248,24 +253,22 @@ def pathfinding(tilestart, tilegoal, Grid):
         exit(-1)
     start = cell(tilestart)
     goal = cell(tilegoal)
-    gr = deepcopy(Grid)
-    print(gr)
+    gr = []
     discovered = [start]
     explored = []
     start.f = start.g + distance_hex(start.tile, goal.tile)
+    for tiles in Grid :
+        if tiles.object == None :
+            gr.append(tiles)
 
-    for tiles in gr :
-        if tiles.object != None :
-            gr.remove(tiles)
-
-    while (discovered != []):
-        print('cc')
+    i=0
+    while (discovered != [] and i<=int(sqrt(len(Grid)))*2):
+        
         min = discovered[0].f
         for cells in discovered:
             if cells.f <= min:
                 min = cells.f
                 current = cells
-
         if current.tile == goal.tile:
             path = []
             return current.reconstruct_path(path)
@@ -275,7 +278,7 @@ def pathfinding(tilestart, tilegoal, Grid):
         discovered.remove(current)
         explored.append(current)
 
-        for neigh in [cell(tile) for tile in [Tile(x) for x in current.tile.neighbors()]]:
+        for neigh in [cell(tile) for tile in [t for t in [Tile(x) for x in current.tile.neighbors()] if t in gr]]:
             if (neigh in explored) or (neigh.tile not in gr):
                 continue
             gtest = current.g + distance_hex(current.tile, neigh.tile)
@@ -285,7 +288,8 @@ def pathfinding(tilestart, tilegoal, Grid):
                 neigh.f = neigh.g + distance_hex(neigh.tile, goal.tile)
                 if neigh not in discovered:
                     discovered.append(neigh)
-    return -1
+        i+=1
+    return []
 
 
 if __name__ == "__main__":
