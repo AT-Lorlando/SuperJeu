@@ -22,20 +22,23 @@ def redraw_window():
     pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
 
     x, y = pygame.mouse.get_pos()
+    pygame.draw.rect(screen, BLACK,(0,0,100,100),2)  
+    if pixel_to_hex(layout, (x, y)) in Grid and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range(len(Characters))]):
 
-    if pixel_to_hex(layout, (x, y)) in Grid:
-        pygame.draw.polygon(screen, (255, 0, 0, 255),
+        pygame.draw.polygon(screen, RED,
                             hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
 
     for k in range(len(Characters)):
-        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+        #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
             healtposx-=largeurHex-7
             healtposy-=hauteurHex
-            screen.blit(health[hp],(healtposx,healtposy) )
+            if not Characters[k].dead:
+                screen.blit(health[Characters[k].healthpoint],(healtposx,healtposy) )
     man.drawPlayer(screen)
     skeleton.drawSkeleton(screen)
+    gobelin.drawGobelin(screen)
     #Player
     """Draw text:
     lives_label = main_font.render(f"LIVES: {lives}",1,RED)
@@ -54,122 +57,122 @@ listecase = []
 i = 0
 Try=[]
 
-def goto(elmt,KeepRight,KeepLeft):
+def goto(whoitis,elmt,KeepRight,KeepLeft):
     if elmt == Hex(1, 0):  #Hex to right
-        man.right = True
-        stepnumber = int((2 * largeurHex) // man.change)
-        horizon_step = man.change
+        whoitis.right = True
+        stepnumber = int((2 * largeurHex) // whoitis.change)
+        horizon_step = whoitis.change
         for k in range(stepnumber):
             clock.tick(FPS)
-            man.playerX += horizon_step
+            whoitis.playerX += horizon_step
             redraw_window()
             pygame.display.update()
         clock.tick(FPS)
-        man.playerX += 2 * largeurHex - stepnumber * horizon_step
+        whoitis.playerX += 2 * largeurHex - stepnumber * horizon_step
         redraw_window()
         pygame.display.update()
-        if not(KeepRight):man.right = False
+        if not(KeepRight):whoitis.right = False
 
     if elmt == Hex(0, 1):  #Hex down right
-        man.right = True
+        whoitis.right = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
-            man.change)
+            whoitis.change)
         vertical_step = (hauteurHex + largeurHex * sin(pi / 6)) // stepnumber
         horizon_step = largeurHex // stepnumber
         for k in range(stepnumber):
             clock.tick(FPS)
-            man.playerY += vertical_step
-            man.playerX += horizon_step
+            whoitis.playerY += vertical_step
+            whoitis.playerX += horizon_step
             redraw_window()
             pygame.display.update()
         clock.tick(FPS)
-        man.playerX += largeurHex - stepnumber * horizon_step
-        man.playerY += (hauteurHex + largeurHex *
+        whoitis.playerX += largeurHex - stepnumber * horizon_step
+        whoitis.playerY += (hauteurHex + largeurHex *
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        if not(KeepRight):man.right = False
+        if not(KeepRight):whoitis.right = False
 
     if elmt == Hex(-1, 1):  #Hex down left
-        man.left = True
+        whoitis.left = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
-            man.change)
+            whoitis.change)
         vertical_step = (hauteurHex + largeurHex * sin(pi / 6)) // stepnumber
         horizon_step = largeurHex // stepnumber
         for k in range(stepnumber):
             clock.tick(FPS)
-            man.playerY += vertical_step
-            man.playerX -= horizon_step
+            whoitis.playerY += vertical_step
+            whoitis.playerX -= horizon_step
             redraw_window()
             pygame.display.update()
         clock.tick(FPS)
-        man.playerX -= largeurHex - stepnumber * horizon_step
-        man.playerY += (hauteurHex + largeurHex *
+        whoitis.playerX -= largeurHex - stepnumber * horizon_step
+        whoitis.playerY += (hauteurHex + largeurHex *
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        if not(KeepLeft):man.left = False
+        if not(KeepLeft):whoitis.left = False
 
     if elmt == Hex(-1, 0):  #Hex to left
-        man.left = True
-        stepnumber = int((2 * largeurHex) // man.change)
-        horizon_step = man.change
+        whoitis.left = True
+        stepnumber = int((2 * largeurHex) // whoitis.change)
+        horizon_step = whoitis.change
         for k in range(stepnumber):
             clock.tick(FPS)
-            man.playerX -= horizon_step
+            whoitis.playerX -= horizon_step
             redraw_window()
             pygame.display.update()
         clock.tick(FPS)
-        man.playerX -= 2 * largeurHex - stepnumber * horizon_step
+        whoitis.playerX -= 2 * largeurHex - stepnumber * horizon_step
         redraw_window()
         pygame.display.update()
-        if not(KeepLeft):man.left = False
+        if not(KeepLeft):whoitis.left = False
 
     if elmt == Hex(0, -1):  #Hex up left
-        man.left = True
+        whoitis.left = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
-            man.change)
+            whoitis.change)
         vertical_step = (hauteurHex + largeurHex * sin(pi / 6)) // stepnumber
         horizon_step = largeurHex // stepnumber
         for k in range(stepnumber):
             clock.tick(FPS)
-            man.playerY -= vertical_step
-            man.playerX -= horizon_step
+            whoitis.playerY -= vertical_step
+            whoitis.playerX -= horizon_step
             redraw_window()
             pygame.display.update()
         clock.tick(FPS)
-        man.playerX -= largeurHex - stepnumber * horizon_step
-        man.playerY -= (hauteurHex + largeurHex *
+        whoitis.playerX -= largeurHex - stepnumber * horizon_step
+        whoitis.playerY -= (hauteurHex + largeurHex *
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        if not(KeepLeft):man.left = False
+        if not(KeepLeft):whoitis.left = False
 
     if elmt == Hex(1, -1):  #Hex up right
-        man.right = True
+        whoitis.right = True
         stepnumber = int(
             sqrt(largeurHex * largeurHex + 4 * hauteurHex * hauteurHex) //
-            man.change)
+            whoitis.change)
         vertical_step = (hauteurHex + largeurHex * sin(pi / 6)) // stepnumber
         horizon_step = largeurHex // stepnumber
         for k in range(stepnumber):
             clock.tick(FPS)
-            man.playerY -= vertical_step
-            man.playerX += horizon_step
+            whoitis.playerY -= vertical_step
+            whoitis.playerX += horizon_step
             redraw_window()
             pygame.display.update()
         clock.tick(FPS)
-        man.playerX += largeurHex - stepnumber * horizon_step
-        man.playerY -= (hauteurHex + largeurHex *
+        whoitis.playerX += largeurHex - stepnumber * horizon_step
+        whoitis.playerY -= (hauteurHex + largeurHex *
                         sin(pi / 6)) - stepnumber * vertical_step + 2
         redraw_window()
         pygame.display.update()
-        if not(KeepRight):man.right = False
+        if not(KeepRight):whoitis.right = False
     redraw_window()
-
+indice =0
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -179,46 +182,65 @@ while run:
     keys = pygame.key.get_pressed()
     mouse = pygame.mouse.get_pressed()
     x, y = pygame.mouse.get_pos()
+    currentchar=Characters[indice%len(Characters)]
 
     if keys[pygame.K_a] :
-        skeleton.attack=True
+        currentchar.attack=True
 
     if keys[pygame.K_d] :
-        skeleton.dead=True
+        currentchar.dead=True
     
-    if keys[pygame.K_h] :
-        skeleton.hit=True
+    if keys[pygame.K_h] and not skeleton.hit:
+        currentchar.hit=True
 
     if keys[pygame.K_KP_PLUS] :
-        if hp!=11:
-            hp+=1
+        currentchar.dead=False
+        currentchar.deadcount=0
+        if currentchar.healthpoint!=11:
+            currentchar.healthpoint+=1
     if keys[pygame.K_KP_MINUS] :
-        if hp !=0:
-            hp-=1
-        elif hp==0:
-            skeleton.dead=True
+        if currentchar.healthpoint !=0:
+            currentchar.healthpoint-=1
+        elif currentchar.healthpoint==0:
+            currentchar.dead=True
+            
+    if keys[pygame.K_r]:
+        currentchar.dead=False
+        currentchar.deadcount=0
+        currentchar.healthpoint=11
+    
+    if mouse [0] and 0<x<100 and 0<y<100:
+        indice+=1
+        pygame.time.delay(100)
+    
 
 
-
-    if mouse[2] and listecase == []:    #Right click
+    if mouse[2] and listecase == [] and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range (len(Characters))]):    #Right click
         hextogo = pixel_to_hex(layout, (x, y))
         if hextogo in Grid:
-            listecase = pathfinding(poshex, hextogo, Grid)
+            listecase = pathfinding(currentchar.poshex, hextogo, Grid)
 
     if i < (len(listecase)-1) and listecase!=[]:
-        if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
+        if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
             KeepRight=True
-        elif listecase[i+1]-listecase[i] in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)] and listecase[i]-poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
+            currentchar.faceleft=False
+            
+        elif listecase[i+1]-listecase[i] in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)] and listecase[i]-currentchar.poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
             KeepLeft=True
+            currentchar.faceleft=True
         else:
             KeepRight,KeepLeft=False,False
 
-        goto(listecase[i] - poshex,KeepRight,KeepLeft)
-        poshex = listecase[i]
+        goto(currentchar,listecase[i] - currentchar.poshex,KeepRight,KeepLeft)
+        currentchar.poshex = listecase[i]
         i += 1
     elif i == (len(listecase)-1) and listecase!=[]:
-        goto(listecase[i] - poshex,False,False)
-        poshex = listecase[i]
+        if listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
+            currentchar.faceleft=False
+        elif listecase[i]-currentchar.poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
+            currentchar.faceleft=True
+        goto(currentchar,listecase[i] - currentchar.poshex,False,False)
+        currentchar.poshex = listecase[i]
         i += 1
     else:
         listecase = []
@@ -226,11 +248,5 @@ while run:
 
     redraw_window()
     pygame.display.update()
-
-
-
-
-
-
 
 pygame.quit()
