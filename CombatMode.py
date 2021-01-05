@@ -37,7 +37,7 @@ def redraw_window():
             if not Characters[k].animation[0]:
                 screen.blit(health[Characters[k].healthpoint],(healtposx,healtposy) )
     man.drawPlayer(screen)
-    #skeleton.drawSkeleton(screen)
+    skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
     #Player
     """Draw text:
@@ -48,8 +48,7 @@ def redraw_window():
     pygame.draw.rect(screen,(255,0,255),(100,100,100,100))
     """
 
-global hp
-hp=5
+
 run =True
 FPS = 30
 clock = pygame.time.Clock()
@@ -195,8 +194,9 @@ while run:
         currentchar.animation[3]=True
     
     if keys[pygame.K_h] and not currentchar.animation[2]:
-        currentchar.animation[2]=True
+        
         if currentchar.healthpoint>1:
+            currentchar.animation[2]=True
             currentchar.healthpoint-=1
         else:
             currentchar.animation[0]=True
@@ -209,7 +209,7 @@ while run:
     if keys[pygame.K_KP_MINUS] :
         if currentchar.healthpoint !=0:
             currentchar.healthpoint-=1
-        elif currentchar.healthpoint==0:
+        elif currentchar.healthpoint==0 and not currentchar.animation[2]:
             currentchar.animation[0]=True
             
     if keys[pygame.K_r]:
