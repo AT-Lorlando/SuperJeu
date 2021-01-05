@@ -11,8 +11,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Combat mode")
 
 Grid = initgrid(8, 12)
-Grid.remove(Hex(1, 1))
-
+for c in Characters :
+    update_grid(Grid,c.poshex)
+update_grid(Grid, Tile(Hex(1,1)).set_object("Wall"))
 
 def redraw_window():
     screen.blit(bg, (0, 0))  #Background
@@ -22,7 +23,7 @@ def redraw_window():
     pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
 
     x, y = pygame.mouse.get_pos()
-    pygame.draw.rect(screen, BLACK,(0,0,100,100),2)  
+    pygame.draw.rect(screen, BLACK,(0,0,100,100),2)
     if pixel_to_hex(layout, (x, y)) in Grid and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range(len(Characters))]):
 
         pygame.draw.polygon(screen, RED,
@@ -30,12 +31,12 @@ def redraw_window():
 
     for k in range(len(Characters)):
         #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
-            healtposx-=largeurHex-7
-            healtposy-=hauteurHex
-            if not Characters[k].animation[0]:
-                screen.blit(health[Characters[k].healthpoint],(healtposx,healtposy) )
+        #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+        (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+        healtposx-=largeurHex-7
+        healtposy-=hauteurHex
+        if not Characters[k].animation[0]:
+            screen.blit(health[Characters[k].healthpoint],(healtposx,healtposy) )
     man.drawPlayer(screen)
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
@@ -170,6 +171,8 @@ def goto(whoitis,elmt,KeepRight,KeepLeft):
         redraw_window()
         pygame.display.update()
         if not(KeepRight):whoitis.right = False
+    whoitis.poshex = Tile(whoitis.poshex+elmt).set_object(whoitis)
+    update_grid(Grid, whoitis.poshex)
     redraw_window()
 indice=0
 while run:
@@ -192,9 +195,9 @@ while run:
 
     if keys[pygame.K_b] :
         currentchar.animation[3]=True
-    
+
     if keys[pygame.K_h] and not currentchar.animation[2]:
-        
+
         if currentchar.healthpoint>1:
             currentchar.animation[2]=True
             currentchar.healthpoint-=1
@@ -211,44 +214,53 @@ while run:
             currentchar.healthpoint-=1
         elif currentchar.healthpoint==0 and not currentchar.animation[2]:
             currentchar.animation[0]=True
-            
+
     if keys[pygame.K_r]:
         currentchar.animation[0]=False
         currentchar.countdown=0
         currentchar.healthpoint=11
-    
+
     if mouse [0] and 0<x<100 and 0<y<100:
         indice+=1
         pygame.time.delay(100)
-    
+
 
 
     if mouse[2] and listecase == [] and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range (len(Characters))]):    #Right click
         hextogo = pixel_to_hex(layout, (x, y))
-        if hextogo in Grid:
-            listecase = pathfinding(currentchar.poshex, hextogo, Grid)
+        if hextogo in Grid :
+            if Grid[Grid.index(hextogo)].object == None :
+                listecase = pathfinding(currentchar.poshex, hextogo, Grid)
+                if listecase == -1 :
+                    pass
 
     if i < (len(listecase)-1) and listecase!=[]:
         if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
             KeepRight=True
             currentchar.faceleft=False
-            
+
         elif listecase[i+1]-listecase[i] in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)] and listecase[i]-currentchar.poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
             KeepLeft=True
             currentchar.faceleft=True
         else:
             KeepRight,KeepLeft=False,False
-
+        tile_left = deepcopy(currentchar.poshex)
+        tile_left.remove_object()
+        update_grid(Grid, tile_left)
+        print(currentchar.poshex.object == None)
         goto(currentchar,listecase[i] - currentchar.poshex,KeepRight,KeepLeft)
-        currentchar.poshex = listecase[i]
+        currentchar.poshex = listecase[i].set_object(currentchar)
         i += 1
     elif i == (len(listecase)-1) and listecase!=[]:
         if listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
             currentchar.faceleft=False
         elif listecase[i]-currentchar.poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
             currentchar.faceleft=True
+        tile_left = deepcopy(currentchar.poshex)
+        tile_left.remove_object()
+        update_grid(Grid, tile_left)
         goto(currentchar,listecase[i] - currentchar.poshex,False,False)
-        currentchar.poshex = listecase[i]
+        currentchar.poshex = listecase[i].set_object(currentchar)
         i += 1
     else:
         listecase = []

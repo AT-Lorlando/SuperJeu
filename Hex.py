@@ -1,5 +1,5 @@
 from math import sqrt, pi, cos, sin
-
+from copy import deepcopy
 
 class Hex:
     """
@@ -81,6 +81,9 @@ def rounding_hex(q, r, s):
 
 class Tile(Hex) :
     object=None
+
+    def __init__(self, hex=Hex()) :
+        self.q, self.r, self.s = hex.q, hex.r, hex.s
 
     def __repr__(self):
         return f"{self.q} {self.r} {self.s} ({self.object})"
@@ -210,7 +213,7 @@ def initgrid(x, y):
     for i in range(x):
         k += (i) % 2 - 1
         for j in range(k, y + k):
-            Grid.append(Tile(j, i))
+            Grid.append(Tile(Hex(j, i)))
     return Grid
 
 def update_grid(Grid, Tile) :
@@ -220,38 +223,40 @@ def update_grid(Grid, Tile) :
         return e
 
 class cell:
-    def __init__(self, hex):
-        self.hex = hex
+    def __init__(self, tile):
+        self.tile = tile
         self.g = 0
         self.camefrom = None
         self.f = 0
 
     def reconstruct_path(self, path):
 
-        path.insert(0, self.hex)
+        path.insert(0, self.tile)
         if self.camefrom != None:
             return self.camefrom.reconstruct_path(path)
         else:
             return path
 
     def __repr__(self):
-        return self.hex.__repr__()
+        return self.tile.__repr__()
 
 
-def pathfinding(tilestart, tilegoal, Grid):#TO BE FIXED problem of grid pointer
+def pathfinding(tilestart, tilegoal, Grid):
+    path=[]
     if tilestart not in Grid or tilegoal not in Grid :
         print("Error : Tiles not in grid")
         exit(-1)
     start = cell(tilestart)
     goal = cell(tilegoal)
-
+    gr = deepcopy(Grid)
+    print(gr)
     discovered = [start]
     explored = []
-    start.f = start.g + distance_hex(start.hex, goal.hex)
+    start.f = start.g + distance_hex(start.tile, goal.tile)
 
-    for tiles in Grid :
+    for tiles in gr :
         if tiles.object != None :
-            Grid.remove(tiles)
+            gr.remove(tiles)
 
     while (discovered != []):
         min = discovered[0].f
@@ -260,7 +265,7 @@ def pathfinding(tilestart, tilegoal, Grid):#TO BE FIXED problem of grid pointer
                 min = cells.f
                 current = cells
 
-        if current.hex == goal.hex:
+        if current.tile == goal.tile:
             path = []
             return current.reconstruct_path(path)
             #explored.append(current)
@@ -269,14 +274,14 @@ def pathfinding(tilestart, tilegoal, Grid):#TO BE FIXED problem of grid pointer
         discovered.remove(current)
         explored.append(current)
 
-        for neigh in [cell(hex) for hex in current.hex.neighbors()]:
-            if (neigh in explored) or (neigh.hex not in Grid):
+        for neigh in [cell(tile) for tile in [Tile(x) for x in current.tile.neighbors()]]:
+            if (neigh in explored) or (neigh.tile not in gr):
                 continue
-            gtest = current.g + distance_hex(current.hex, neigh.hex)
+            gtest = current.g + distance_hex(current.tile, neigh.tile)
             if (gtest < neigh.g) or (neigh not in discovered):
                 neigh.camefrom = current
                 neigh.g = gtest
-                neigh.f = neigh.g + distance_hex(neigh.hex, goal.hex)
+                neigh.f = neigh.g + distance_hex(neigh.tile, goal.tile)
                 if neigh not in discovered:
                     discovered.append(neigh)
     return -1
@@ -290,8 +295,8 @@ if __name__ == "__main__":
     layout = Layout(orientation_pointy, (758, 876),
                     (758 / 2, 876 / 2))  #layout bizarre
     print(hex_corner(layout, a))
-    cellulle = cell(Tile(0, 0))
-    print(cellulle.hex.neighbors())
+    cellulle = cell(Tile(Hex(0, 0)))
+    print(cellulle.tile.neighbors())
     assert Tile().object == None
     assert Tile().set_object("Object properly initialised").object == "Object properly initialised"
     gr= initgrid(2,2)

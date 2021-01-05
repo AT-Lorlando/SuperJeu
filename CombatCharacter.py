@@ -14,7 +14,7 @@ class player(object):
         
         self.healthpoint=10
         self.faceleft=False
-        self.poshex=Hex(0,0)
+        self.poshex=Tile().set_object(self)
         self.animation=[False,False,False,False]#Dead #Hit #Bomb
         
         self.left = False
@@ -103,13 +103,13 @@ layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
 
 pospix = hex_to_pixel(layout, Hex(5,1))
 man = player(pospix[0], pospix[1], *PlayerScale)
-man.poshex = Hex(5, 1)
+man.poshex = Tile(Hex(5, 1)).set_object(man)
 
 skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],*SkeletonScale)
-skeleton.poshex = Hex(0, 4)
+skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
 
 gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3))[1],*GobelinScale)
-gobelin.poshex = Hex(2, 3)
+gobelin.poshex = Tile(Hex(2, 3)).set_object(gobelin)
 
 Characters=[man,skeleton,gobelin]
 

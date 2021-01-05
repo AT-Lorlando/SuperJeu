@@ -10,10 +10,9 @@ class Spell :
         hex_touched = []
         for hexes in self.dammagezone:
             hex_touched.append(position+hexes)
+        tuiles_touches=[]
         for hexes in hex_touched :
-            #To-do : hex to tiles
-            tuiles_touches = []
-            pass
+            tuiles_touches.append(Grid[Grid.index(hexes)])
         for tuiles in tuiles_touches :
             self.surtuile(self.owner,tuiles)
         return
@@ -21,13 +20,13 @@ class Spell :
 
     def __init__(self, fc) :
         self.surtuile = fc
-        self.surtuile("","")
 
 
-def boule_de_feu(owner, tuile) :
-    # dmg = owner.int * 5
-    # tuile.object.hp -= dmg
-    print("cc")
+def fireball_dammage(owner, tuile) :
+    if tuile.object in Characters :
+        tuile.object.healthpoint-=1
     return 
 
-bdf = Spell(boule_de_feu)
+fireball = Spell(fireball_dammage)
+fireball.dammagezone = hx.hex_circle(hx.Hex(),1)
+fireball.castzone= hx.hex_circle(hx.hex_circle(Hex(), 3))
