@@ -12,6 +12,7 @@ gobelin_attack = path.join(gobelin_folder, 'gobelin_attack')
 gobelin_dead = path.join(gobelin_folder, 'gobelin_dead')
 gobelin_hit = path.join(gobelin_folder, 'gobelin_hit')
 gobelin_walk = path.join(gobelin_folder, 'gobelin_walk')
+gobelin_bomb = path.join(gobelin_folder, 'gobelin_bomb')
 
 HealthScale=(60,10)
 health =  [pygame.transform.scale(pygame.image.load(path.join(health_folder,str(k)+'.png')),HealthScale) for k in range(12)] 
@@ -42,5 +43,6 @@ GobelinHit = [pygame.transform.scale(pygame.image.load(path.join(gobelin_hit,str
 GobelinHitflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_hit,str(k//2)+'.png')),GobelinScale),True,False) for k in range(8)]
 GobelinDead = [pygame.transform.scale(pygame.image.load(path.join(gobelin_dead,str(k//4)+'.png')),GobelinScale) for k in range(16)]
 GobelinDeadflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_dead,str(k//4)+'.png')),GobelinScale),True,False) for k in range(16)]
+GobelinBomb = [pygame.transform.scale(pygame.image.load(path.join(gobelin_bomb,str(k//2)+'.png')),GobelinScale) for k in range(38)]
 GobelinRight = [pygame.transform.scale(pygame.image.load(path.join(gobelin_walk,str(k//2)+'.png')),GobelinScale) for k in range(18)]
 GobelinLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_walk,str(k//2)+'.png')),GobelinScale),True,False) for k in range(18)]

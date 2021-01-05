@@ -11,21 +11,17 @@ class player(object):
         self.width = width
         self.heigth = heigth
         self.change = 5
-        self.attack=False
-        self.attackCount = 0
-        self.dead=False
-        self.deadcount = 0
-        self.hit=False
-        self.hitcount=0
+        
         self.healthpoint=10
         self.faceleft=False
         self.poshex=Hex(0,0)
+        self.animation=[False,False,False,False]#Dead #Hit #Bomb
         
         self.left = False
         self.right = False
         self.walkCount = 0
-        self.CenterX = self.width // 2
-        self.CenterY = self.heigth // 2 + 8
+
+        self.countdown=0
 
     def drawPlayer(self, screen):
         relativeX = self.playerX - Playercombathorizontalshift
@@ -95,58 +91,64 @@ class player(object):
             else:
                 screen.blit(skeletonsrpiteflip, (relativeX, relativeY))
 
+
+
+    
     def drawGobelin(self, screen):
-        relativeX = self.playerX - Gobelincombathorizontalshift
-        if self.faceleft:
-            relativeX-=0
-        relativeY = self.playerY - Gobelincombatverticalshift
-        
-        if self.attackCount==16:
-            self.attack=False
-            self.attackCount=0
-        elif self.attack and self.attackCount<16:
+        pospix = (self.playerX - Gobelincombathorizontalshift,self.playerY - Gobelincombatverticalshift)
+        animator=[(GobelinDeadflip,GobelinDead,16),(GobelinAttackflip,GobelinAttack,16),(GobelinHitflip,GobelinHit,8),(GobelinBomb,GobelinBomb,38)]
+        for k in range(4):
+            if self.animation[k]:
+                if self.faceleft:
+                    data=animator[k][0],animator[k][2]
+                    
+                else:
+                    data=animator[k][1],animator[k][2]
+                print(animator[k][2])
+                self.animate(screen,k,*data,pospix)
+        """ if self.animation[0]:                                                   #Dead
             if self.faceleft:
-                screen.blit(GobelinAttackflip[self.attackCount],(relativeX, relativeY))
+                self.animate(screen,0,GobelinDeadflip,16,pospix)
             else:
-                screen.blit(GobelinAttack[self.attackCount],(relativeX, relativeY))
-            self.attackCount += 1
-        if self.hitcount==8:
-            self.hit=False
-            self.hitcount=0
-            if self.healthpoint>1:
-                self.healthpoint-=1
-            else:
-                self.dead=True
-        elif self.hit and self.hitcount<8:
+                self.animate(screen,0,GobelinDead,16,pospix)
+        elif self.animation[1]:                                                 #Attack
             if self.faceleft:
-                screen.blit(GobelinHitflip[self.hitcount],(relativeX, relativeY))
+                self.animate(screen,1,GobelinAttackflip,16,pospix)
             else:
-                screen.blit(GobelinHit[self.hitcount],(relativeX, relativeY))
-            self.hitcount += 1
-        elif self.deadcount==16:
-            return 8
-            #self.dead=False
-            #self.deadcount=0
-        elif self.dead and self.deadcount<16:
-            if self.faceleft:
-                screen.blit(GobelinDeadflip[self.deadcount],(relativeX, relativeY))
-            else:
-                screen.blit(GobelinDead[self.deadcount],(relativeX, relativeY))
+                self.animate(screen,1,GobelinAttack,16,pospix)
             
-            self.deadcount += 1
-        elif self.right:
-            screen.blit(GobelinRight[self.walkCount%18],
-                        (relativeX, relativeY))
+        elif self.animation[2]:                                                 #Hit
+            if self.faceleft:
+                self.animate(screen,2,GobelinHitflip,8,pospix)        
+            else:
+                self.animate(screen,2,GobelinHit,8,pospix)        
+                             
+        elif self.animation[3]:                                                 #Bomb
+            self.animate(screen,3,GobelinBomb,38,pospix)
+        """
+        if self.right:
+            screen.blit(GobelinRight[self.walkCount%18],pospix)
             self.walkCount += 1
         elif self.left:
-            screen.blit(GobelinLeft[self.walkCount%18],
-                        (relativeX, relativeY))
+            screen.blit(GobelinLeft[self.walkCount%18],pospix)
             self.walkCount += 1
-        elif not any ([self.dead,self.attack,self.hit]) and not self.dead:
+
+        elif not (any(self.animation) or self.right or self.left):              #Static
             if not self.faceleft:
-                screen.blit(Gobelinsprite, (relativeX, relativeY))
+                screen.blit(Gobelinsprite, pospix)
             else:
-                screen.blit(Gobelinsrpiteflip, (relativeX, relativeY))
+                screen.blit(Gobelinsrpiteflip, pospix)
+            
+    def animate(self,screen,nanimation,playeranimation,count,position):
+        if self.countdown==count:
+            if nanimation !=0:
+                self.animation[nanimation]=False
+                self.countdown=0
+        elif self.animation[nanimation] and self.countdown<38:
+            screen.blit(playeranimation[self.countdown],position)
+            self.countdown += 1
+        
+
 
 
 

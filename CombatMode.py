@@ -34,10 +34,10 @@ def redraw_window():
             (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
             healtposx-=largeurHex-7
             healtposy-=hauteurHex
-            if not Characters[k].dead:
+            if not Characters[k].animation[0]:
                 screen.blit(health[Characters[k].healthpoint],(healtposx,healtposy) )
     man.drawPlayer(screen)
-    skeleton.drawSkeleton(screen)
+    #skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
     #Player
     """Draw text:
@@ -172,7 +172,7 @@ def goto(whoitis,elmt,KeepRight,KeepLeft):
         pygame.display.update()
         if not(KeepRight):whoitis.right = False
     redraw_window()
-indice =0
+indice=0
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -185,28 +185,36 @@ while run:
     currentchar=Characters[indice%len(Characters)]
 
     if keys[pygame.K_a] :
-        currentchar.attack=True
-
+        currentchar.animation[1]=True
     if keys[pygame.K_d] :
-        currentchar.dead=True
+        currentchar.animation[0]=True
+        #pygame.time.delay(100)
+        #Characters.remove(currentchar)
+
+    if keys[pygame.K_b] :
+        currentchar.animation[3]=True
     
-    if keys[pygame.K_h] and not skeleton.hit:
-        currentchar.hit=True
+    if keys[pygame.K_h] and not currentchar.animation[2]:
+        currentchar.animation[2]=True
+        if currentchar.healthpoint>1:
+            currentchar.healthpoint-=1
+        else:
+            currentchar.animation[0]=True
 
     if keys[pygame.K_KP_PLUS] :
-        currentchar.dead=False
-        currentchar.deadcount=0
+        currentchar.animation[0]=False
+        currentchar.countdown=0
         if currentchar.healthpoint!=11:
             currentchar.healthpoint+=1
     if keys[pygame.K_KP_MINUS] :
         if currentchar.healthpoint !=0:
             currentchar.healthpoint-=1
         elif currentchar.healthpoint==0:
-            currentchar.dead=True
+            currentchar.animation[0]=True
             
     if keys[pygame.K_r]:
-        currentchar.dead=False
-        currentchar.deadcount=0
+        currentchar.animation[0]=False
+        currentchar.countdown=0
         currentchar.healthpoint=11
     
     if mouse [0] and 0<x<100 and 0<y<100:
