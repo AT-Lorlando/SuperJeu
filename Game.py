@@ -69,9 +69,12 @@ class Game:
                 if(tile//100 not in self.known_tiles):
                     self.known_tiles.append(tile//100)
 
+    def clean_layers(self, i):
+        for i in range(i):
+            self.Layers[i] = pg.sprite.Group()
     def draw_instance(self, instance):
-        for layer in self.Layers[LAYER_NUMBER:]:
-            layer = pg.sprite.Group()
+        print("Drawing")
+        self.clean_layers(LAYER_NUMBER-1)
         print(self.Layers)
         self.obstacle = pg.sprite.Group()
         # self.walls = pg.sprite.Group()
@@ -183,6 +186,7 @@ class Game:
             self.interactif_key = None
 
     def draw(self):
+        self.screen.fill(DARKGREY)
         for layer in self.Layers:
             for sprite in layer:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
