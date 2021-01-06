@@ -72,7 +72,6 @@ class Player(pg.sprite.Sprite):
                 self.vel.x = PLAYER_SPEED
                 self.is_moving = True
             elif self.vel.x != 0:
-                print("slow")
                 self.vel.x *= 0.8
             if keys[pg.K_UP]:
                 if keys[pg.K_DOWN]:
@@ -90,7 +89,6 @@ class Player(pg.sprite.Sprite):
                 self.vel.y = PLAYER_SPEED
                 self.is_moving = True
             elif self.vel.y != 0:
-                print("slow")
                 self.vel.y *= 0.8
             
             if(self.is_moving):
@@ -102,7 +100,6 @@ class Player(pg.sprite.Sprite):
 
             if self.vel.x != 0 and self.vel.y != 0:
                 self.vel *= 0.7071
-            print(self.vel)
             if keys[pg.K_0]:
                 for sprite in self.game.frontLayer:
                     print(sprite)
@@ -134,22 +131,22 @@ class Player(pg.sprite.Sprite):
         self.image = self.main_champ.image
         pg.display.update()
         bg = self.game.screen.copy()
-        for img in self.explode[len(self.explode)//2:]:
+        for img in self.explode[:len(self.explode)//2]:
             self.game.screen.blit(bg, (0, 0))
             self.game.screen.blit(pg.transform.scale(
                 img, (150, 150)), (WIDTH/2 - CHARACTER_SIZE+10, (HEIGHT)/2 - CHARACTER_SIZE-15, 90, 100))
             pg.display.flip()
             self.game.dt_update()
-            time.sleep(.02)
+            time.sleep(.01)
         self.game.draw()
         bg = self.game.screen.copy()
-        for img in self.explode[:len(self.explode)-len(self.explode)//2]:
+        for img in self.explode[len(self.explode)-len(self.explode)//2:]:
             self.game.screen.blit(bg, (0, 0))
             self.game.screen.blit(pg.transform.scale(
                 img, (150, 150)), (WIDTH/2 - CHARACTER_SIZE+10, (HEIGHT)/2 - CHARACTER_SIZE-15, 90, 100))
             pg.display.flip()
             self.game.dt_update()
-            time.sleep(.02)
+            time.sleep(.01)
         self.isPlaying = True
         self.rect = self.image.get_rect()
 

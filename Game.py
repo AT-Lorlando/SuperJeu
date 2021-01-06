@@ -22,7 +22,10 @@ def get_id(tile):
 
 
 def get_header(game, tile):
-    return tile//100 if game.actual_stage == 0 else 1
+    if game.actual_dungeon:
+        return game.actual_dungeon.type
+    else:
+        return tile//100
 
 
 class Game:
@@ -93,6 +96,7 @@ class Game:
                 if get_id(tile) == FLOOR_ID:
                     Floor(self, col, row, get_header(self, tile))
                 elif get_id(tile) == WALL_ID:
+                    Floor(self, col, row, get_header(self, 0))
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
@@ -224,7 +228,7 @@ class Game:
 class Animation():
     def __init__(self, game, pos, tab):
         self.game = game
-        self.frame_rate = 50
+        self.frame_rate = 12
         self.time_since_anime = 0
         self.actual_frame = 0
         self.pos = pos

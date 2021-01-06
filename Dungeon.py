@@ -8,16 +8,16 @@ import csv
 
 ROOM_SIZE = 50
 SPACE_BETWEEN_END = floor(0.10 * ROOM_SIZE)
-global_header = 1100    
+global_header = 11000    
 
 def random_lenght(Room_size):
     return random.randint(floor(0.35 * Room_size), ceil(0.75*Room_size))
 
 def get_header():
     global global_header
-    global_header += 100
+    global_header += 1000
     if global_header > 99000:
-        global_header = 1100
+        global_header = 11000
     return global_header
 
 class Instance:
@@ -25,20 +25,6 @@ class Instance:
         self.name = name
         self.data = []
         self.data = np.full( (70, 80), FLOOR_ID)
-        # for i in range(25):
-        #     self.data[20+i,20] = 10+WALL_ID
-        #     self.data[20+i,60] = 20+WALL_ID
-        # for i in range(40):
-        #     self.data[20, 20+i] = 30+WALL_ID
-        #     self.data[45, 20+i] = 40+WALL_ID
-        # self.data[20,20] = 50+WALL_ID
-        # self.data[20,60] = 60+WALL_ID
-        # self.data[45,20] = 70+WALL_ID
-        # self.data[45,60] = 80+WALL_ID
-        # self.data[25,25] = 1000 + 100 + DOOR_ID
-        # self.data[28,25] = 1000 + 200 + DOOR_ID
-        # self.data[28,28] = SPAWN_ID
-        # self.data[30,30] = SHOP_ID
         self.door_type = 1
 
     def open(self, filename):
@@ -328,8 +314,14 @@ class Stage:
                 room1.connect()
                 room2.connect()
 
+    def add_type(self, x):
+        for i, line in enumerate(self.data):
+            for j, tile in enumerate(line):
+                if tile%100 == FLOOR_ID or tile%100 == WALL_ID:
+                    self.data[i][j] += 100 * x
+
     def save(self):
-        np.savetxt(f"Stage{self.ID}.txt", self.data, fmt="%.4i")
+        np.savetxt(f"Stage{self.ID}.txt", self.data, fmt="%.5i")
         # with open(f"Stage{self.ID}.txt", 'r+') as f:
         #     for line in f:
         #         f.write(str(line).replace('0000', '   '))
@@ -353,11 +345,11 @@ class Dungeon:
             if(i>8):
                 i = 8
             print('add stage', i)
-            self.stage_tab.append(New_Stage(i, i))
+            self.stage_tab.append(New_Stage(i, i, self.type))
         print('Final stage')
-        self.stage_tab.append(New_Stage(0, 0))
+        self.stage_tab.append(New_Stage(0, 0, self.type))
 
-def New_Stage(ID, difficulty):
+def New_Stage(ID, difficulty, dungeon_type):
     tile_number = 0
     stage_size = 0
     if(difficulty == 0):
@@ -420,6 +412,8 @@ def New_Stage(ID, difficulty):
         for room1 in stage.room_tab:
             for room2 in stage.room_tab:
                 stage.connect_corridor(room1, room2)
+
+    stage.add_type(dungeon_type)
 
     print('Stage diffuclty', difficulty)
     stage.save()

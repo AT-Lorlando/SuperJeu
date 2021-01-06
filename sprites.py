@@ -63,6 +63,7 @@ class House(MySprite):
 
 class Door(MySprite):
     def __init__(self, game, x, y, tile):
+        print("Door tile:", tile)
         self.image = resize(pg.image.load(
             path.join(portal_folder, 'portal.png')), TILESIZE)
         self.rect = self.image.get_rect()
@@ -70,8 +71,7 @@ class Door(MySprite):
         self.groups = game.Layers[4], game.obstacle, game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.door_type = 1
-        self.instance_behind = (floor(tile %
-                                      10000/1000), floor(tile % 1000/100))
+        self.instance_behind = (tile//10, tile%10) #Type,dif
         self.actual_frame = 1
         self.time_since_anime = 0
 
