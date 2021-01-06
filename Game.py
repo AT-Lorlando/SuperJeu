@@ -22,7 +22,10 @@ def get_id(tile):
 
 
 def get_header(game, tile):
-    return tile//100 if game.actual_stage == 0 else 1
+    if game.actual_dungeon:
+        return game.actual_dungeon.type
+    else:
+        return tile//100
 
 
 class Game:
@@ -69,9 +72,13 @@ class Game:
                 if(tile//100 not in self.known_tiles):
                     self.known_tiles.append(tile//100)
 
+    def clean_layers(self, i):
+        for i in range(i):
+            self.Layers[i] = pg.sprite.Group()
+            
     def draw_instance(self, instance):
-        for layer in self.Layers[LAYER_NUMBER:]:
-            layer = pg.sprite.Group()
+        print("Drawing")
+        self.clean_layers(LAYER_NUMBER-1)
         print(self.Layers)
         self.obstacle = pg.sprite.Group()
         # self.walls = pg.sprite.Group()
@@ -89,6 +96,7 @@ class Game:
                 if get_id(tile) == FLOOR_ID:
                     Floor(self, col, row, get_header(self, tile))
                 elif get_id(tile) == WALL_ID:
+                    Floor(self, col, row, get_header(self, 0))
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
@@ -183,6 +191,7 @@ class Game:
             self.interactif_key = None
 
     def draw(self):
+        self.screen.fill(DARKGREY)
         for layer in self.Layers:
             for sprite in layer:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
@@ -219,7 +228,7 @@ class Game:
 class Animation():
     def __init__(self, game, pos, tab):
         self.game = game
-        self.frame_rate = 50
+        self.frame_rate = 12
         self.time_since_anime = 0
         self.actual_frame = 0
         self.pos = pos
