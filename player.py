@@ -59,39 +59,50 @@ class Player(pg.sprite.Sprite):
     def get_keys(self):
         if(self.isPlaying):
             keys = pg.key.get_pressed()
-            if keys[pg.K_LEFT] or keys[pg.K_q]:
-                if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            if keys[pg.K_LEFT]:
+                if keys[pg.K_RIGHT]:
+                    self.vel.x = 0
                     self.is_moving = False
                 else:
                     self.looking_at = 'Left'
                     self.vel.x = -PLAYER_SPEED
                     self.is_moving = True
-            elif keys[pg.K_RIGHT] or keys[pg.K_d]:
+            elif keys[pg.K_RIGHT]:
                 self.looking_at = 'Right'
                 self.vel.x = PLAYER_SPEED
                 self.is_moving = True
-            if keys[pg.K_UP] or keys[pg.K_z]:
-                if keys[pg.K_DOWN] or keys[pg.K_s]:
-                    self.is_moving = False
+            elif self.vel.x != 0:
+                print("slow")
+                self.vel.x *= 0.8
+            if keys[pg.K_UP]:
+                if keys[pg.K_DOWN]:
+                    self.vel.y = 0
+                    if keys[pg.K_LEFT] or keys[pg.K_RIGHT]:
+                        self.is_moving = True
+                    else:
+                        self.is_moving = False
                 else:
                     self.looking_at = 'Top'
                     self.vel.y = -PLAYER_SPEED
                     self.is_moving = True
-            elif keys[pg.K_DOWN] or keys[pg.K_s]:
+            elif keys[pg.K_DOWN]:
                 self.looking_at = 'Bot'
                 self.vel.y = PLAYER_SPEED
                 self.is_moving = True
+            elif self.vel.y != 0:
+                print("slow")
+                self.vel.y *= 0.8
+            
             if(self.is_moving):
                 if -10 < self.vel.x < 10: 
                     self.vel.x = 0
-                else:
-                    self.vel.x *= 0.7071
+
                 if -10 < self.vel.y < 10:
                     self.vel.y = 0
-                else:
-                    self.vel.y *= 0.7071
-                if self.vel.x != 0 and self.vel.y != 0:
-                    self.vel *= 0.7071
+
+            if self.vel.x != 0 and self.vel.y != 0:
+                self.vel *= 0.7071
+            print(self.vel)
             if keys[pg.K_0]:
                 for sprite in self.game.frontLayer:
                     print(sprite)

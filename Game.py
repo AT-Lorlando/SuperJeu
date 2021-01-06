@@ -72,6 +72,7 @@ class Game:
     def clean_layers(self, i):
         for i in range(i):
             self.Layers[i] = pg.sprite.Group()
+            
     def draw_instance(self, instance):
         print("Drawing")
         self.clean_layers(LAYER_NUMBER-1)
