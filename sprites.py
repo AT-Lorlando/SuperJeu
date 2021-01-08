@@ -6,6 +6,7 @@ from Dungeon import *
 from inventory_clem import *
 from shop import *
 from screen_shop import *
+from dialogue import *
 vec = pg.math.Vector2
 
 
@@ -146,21 +147,31 @@ class Quest_area(Interactif):
     def __init__(self, game, x, y):
         super(Quest_area, self).__init__(game, x, y)
         self.key = pg.K_e
-        self.quest = Losted_Paper_Quest
+        self.dialogue = Dialogue(game, "Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler, je dois me dépêcher de faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez en acheter une chez le marchand ? Je vous recompenserais !")
 
     def interaction(self, player):
-        print("QUEST: ", self.quest.goal, [item.name for item in self.quest.needed])
-        if self.quest in player.quest_list:
-            if self.quest.is_complete(player):
-                self.quest.congrats(player)
-                print("Congrats")
-            else:
-                print("The quest isn't finished yet")
-        else:
-            player.quest_list.append(self.quest)
-            print("New quest, rewards:")
-            for reward in self.quest.rewards:
-                print(reward.name)
+        # self.dialogue.screen = self.game.screen.copy()
+        self.dialogue.run(self.game.screen.copy())
+
+# class Quest_area(Interactif):
+#     def __init__(self, game, x, y):
+#         super(Quest_area, self).__init__(game, x, y)
+#         self.key = pg.K_e
+#         self.quest = Losted_Paper_Quest
+
+#     def interaction(self, player):
+#         print("QUEST: ", self.quest.goal, [item.name for item in self.quest.needed])
+#         if self.quest in player.quest_list:
+#             if self.quest.is_complete(player):
+#                 self.quest.congrats(player)
+#                 print("Congrats")
+#             else:
+#                 print("The quest isn't finished yet")
+#         else:
+#             player.quest_list.append(self.quest)
+#             print("New quest, rewards:")
+#             for reward in self.quest.rewards:
+#                 print(reward.name)
 
 class Quest():
     def __init__(self, ID,rewards_tab):
@@ -177,7 +188,8 @@ class Quest():
 
 class Lost_Item_Quest(Quest):
     def __init__(self, ID, rewards_tab, needed_tab):
-        super(Lost_Item_Quest,self).__init__(ID,rewards_tab)
+        super(Lost_Item_Quest,
+        self).__init__(ID,rewards_tab)
         self.needed = needed_tab
         self.goal = "You have to find the Losted paper in the first dungeon."
 

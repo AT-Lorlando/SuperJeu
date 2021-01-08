@@ -83,7 +83,7 @@ while run:
         g.draw_instance(g.hub)
         g.run()
 
-    print("var = ", var)
+    # print("var = ", var)
     var = None
 
     for event in pg.event.get():

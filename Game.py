@@ -220,6 +220,8 @@ class Game:
                         self.map.display(self.screen)
                 if(self.interactif_sprite):
                     if event.key == self.interactif_sprite.key and not self.player.is_moving:
+                        self.interactif_sentence = None
+                        self.draw()
                         self.interactif_sprite.interaction(self.player)
 
     def show_start_screen(self):

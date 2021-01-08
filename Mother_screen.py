@@ -12,9 +12,11 @@ class Mother_screen():
         self.liberty = True
         # self.egality
         # self.fratenity
+        self.animation = None
 
-    def print_background(self, background):
-        self.screen.blit(background, (0, 0))
+    def print_background(self, background=None):
+        if background:
+            self.screen.blit(background, (0, 0))
         self.screen.blit(self.fond, (0, 0))
         if(self.image):
             self.screen.blit(self.image if type(self.image) != list else self.image[len(self.image)-1], self.image_pos)          
@@ -43,7 +45,8 @@ class Mother_screen():
         self.running = True
         while self.running:
             self.game.dt_update()
-            self.print_background(background)
+            if background:
+                self.print_background(background)
             self.events()
             self.update()
             self.draw()
