@@ -70,12 +70,13 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
             return "options"
 
     if resume.clicked:
+        print("resume clicked")
         if mouse[0] and not game_launch:
             buttons.update(mouse[0], (x, y))
             for button in buttons:
                 button.draw(screen)
-        else:
-            return "resume"
+    if resume.is_clicked(mouse, (x, y)):
+        return "resume"
 
     if play.is_over((x, y)):
         print_text(screen, main_font, x, y, "Create a game", dialogue)
