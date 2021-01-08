@@ -79,7 +79,13 @@ while run:
                   game_launch, exit, main_font, dialogue, options, resume)
     if var == "exit":
         run = False
+    elif var == "resume":
+        g.resume = True
+        g.load()
+        g.draw_instance(g.hub)
+        g.run()
     elif var == 'game_launch':
+        g.resume = False
         g.draw_instance(g.hub)
         g.run()
 

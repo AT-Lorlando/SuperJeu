@@ -53,6 +53,15 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
             game_launch = True
             return "game_launch"
 
+    if resume.clicked:
+        if mouse[0] and not game_launch:
+            buttons.update(mouse[0], (x, y))
+            for button in buttons:
+                button.draw(screen)
+        else:
+            game_launch = True
+            return "resume"
+
     if exit.clicked:
         if mouse[0] and not game_launch:
             buttons.update(mouse[0], (x, y))
@@ -69,15 +78,6 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
         else:
             return "options"
 
-    if resume.clicked:
-        print("resume clicked")
-        if mouse[0] and not game_launch:
-            buttons.update(mouse[0], (x, y))
-            for button in buttons:
-                button.draw(screen)
-    if resume.is_clicked(mouse, (x, y)):
-        return "resume"
-
     if play.is_over((x, y)):
         print_text(screen, main_font, x, y, "Create a game", dialogue)
 
@@ -87,7 +87,7 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
     if options.is_over((x, y)):
         print_text(screen, main_font, x, y, "Open the options panel", dialogue)
 
-    if play.is_over((x, y)):
+    if resume.is_over((x, y)):
         print_text(screen, main_font, x, y, "Load a game", dialogue)
 
 

@@ -26,7 +26,7 @@ class Screen_shop(Mother_screen):
         self.fond_coin = pygame.transform.scale(self.fond_coin, (30, 30))
         self.origin = None
 
-    def update(self):
+    def update(self, player):
         self.mouse = pg.mouse.get_pressed()
         self.pos_mouse = pg.mouse.get_pos()
         self.player_inventory.update(self.mouse, self.pos_mouse)
@@ -49,11 +49,11 @@ class Screen_shop(Mother_screen):
             if self.is_over(self.player_inventory) and over_case != None and over_case.item == None:
                 self.player_inventory.add(over_case, self.handled)
                 if self.origin != self.player_inventory.name:
-                    self.buy(self.handled)
+                    self.buy(self.handled, player)
             elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
                 self.shop.inv.add(over_case, self.handled)
                 if self.origin != self.shop.inv.name:
-                    self.sell(self.handled)
+                    self.sell(self.handled, player)
             else:
                 self.copy.item = self.handled
                 self.handled = None
@@ -61,7 +61,7 @@ class Screen_shop(Mother_screen):
         if not self.mouse[0]:
             self.handled = None
 
-    def draw(self):
+    def draw(self, player):
         # self.screen.blit(self.shop.fond, (self.shop.inv.pos_x,self.shop.inv.pos_y))  # fond
         self.shop.draw(self.screen)  # shop
         self.player_inventory.draw(
@@ -69,7 +69,7 @@ class Screen_shop(Mother_screen):
         if self.handled != None:
             self.handled.draw(self.screen)
         font_surface = self.main_font.render(
-            str(self.money), True, (255, 255, 255))
+            str(player.money), True, (255, 255, 255))
         # WIDTH - font_surface.get_size()[1])
         self.screen.blit(
             font_surface, (WIDTH - font_surface.get_size()[0], 0))
@@ -86,12 +86,12 @@ class Screen_shop(Mother_screen):
                         self.origin = inv.name
                         case.remove()
 
-    def buy(self, item):
-        self.money -= item.price
+    def buy(self, item, player):
+        player.money -= item.price
         print("You buy", item.name)
 
-    def sell(self, item):
-        self.money += item.price
+    def sell(self, item, player):
+        player.money += item.price
 
     def is_over(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
@@ -111,6 +111,6 @@ class Screen_shop(Mother_screen):
         while self.running:
             self.print_background(background)
             self.events()
-            self.update()            # player_inventory.draw(self.screen)
-            self.draw()
+            self.update(player)            # player_inventory.draw(self.screen)
+            self.draw(player)
             pg.display.update()

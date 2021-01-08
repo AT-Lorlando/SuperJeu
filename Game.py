@@ -6,6 +6,7 @@ import pygame as pg
 import sys
 from os import path
 from math import floor
+import pickle
 
 from settings import *
 from player import *
@@ -35,7 +36,7 @@ class Game:
         pg.display.set_caption(TITLE)
         self.game_folder = path.dirname('.')
         self.clock = pg.time.Clock()
-        
+
         self.dt = self.clock.tick(FPS) / 1000
 
         self.hub = Instance('Hub')
@@ -50,8 +51,8 @@ class Game:
         self.HUD = []  # HUD list: Map, Life, etc
         self.interactif_sentence = None
         self.interactif_sprite = None
-        
-        #Layer:
+
+        # Layer:
         self.Layers = [pg.sprite.Group() for _ in range(LAYER_NUMBER)]
         # print(self.Layers)
         # self.frontLayer = pg.sprite.Group()
@@ -62,6 +63,8 @@ class Game:
         self.animation_tab = []
 
         self.player = Player(self, 0, 0)
+
+        self.resume = False
 
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
@@ -75,11 +78,11 @@ class Game:
     def clean_layers(self, i):
         for i in range(i):
             self.Layers[i] = pg.sprite.Group()
-            
+
     def draw_instance(self, instance):
-        print("Drawing")
+        # print("Drawing")
         self.clean_layers(LAYER_NUMBER-1)
-        print(self.Layers)
+        # print(self.Layers)
         self.obstacle = pg.sprite.Group()
         # self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
@@ -89,6 +92,8 @@ class Game:
         self.interactif = pg.sprite.Group()
         self.map_data = instance.data
         self.known_tiles = []
+
+        print("before row tiles loop pos", self.player.pos)
 
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
@@ -100,7 +105,11 @@ class Game:
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
-                    self.player.set_pos(col*TILESIZE, row*TILESIZE)
+                    if not self.resume:
+                        self.player.set_pos(col*TILESIZE, row*TILESIZE)
+                    else:
+                        pass
+
                 elif get_id(tile) == DOOR_ID:
                     Floor(self, col, row, 0)
                     Door(self, col, row, get_header(self, tile))
@@ -112,11 +121,11 @@ class Game:
                     Floor(self, col, row, 0)
                     NPC(self, col, row, get_header(self, tile))
                     if tile % 1000 == SHOP_ID:
-                        print('shop')
+                        # print('shop')
                         Floor(self, col, row, 0)
                         Shop_area(self, col-1, row)
                     elif tile % 1000 == QUEST_ID:
-                        print("Quest")
+                        # print("Quest")
                         Floor(self, col, row, 0)
                         Quest_area(self, col-1, row)
                 elif get_id(tile) == HOUSE_ID:
@@ -125,6 +134,7 @@ class Game:
                 elif(tile > 0):
                     Floor(self, col, row, 0)
                     Decoration(self, col, row, tile)
+        # print("befor camera pos", self.player.pos)
 
         self.camera = Camera(WIDTH, HEIGHT)
         for layer in self.Layers:
@@ -132,7 +142,7 @@ class Game:
         # self.backLayer.update()
         # self.midLayer.update()
         # self.frontLayer.update()
-        print(self.Layers)
+        # print(self.Layers)
         self.map.data_update(self.map_data)
         if(self.actual_stage == 0):
             for tiles in self.map_data:
@@ -145,8 +155,9 @@ class Game:
         self.actual_dungeon = Dungeon(dungeon_type, dungeon_difficulty)
 
     def animation_add(self, sprite, image_tab):
-        self.animation_tab.append(Animation(self, self.camera.apply(sprite), image_tab))
-        
+        self.animation_tab.append(
+            Animation(self, self.camera.apply(sprite), image_tab))
+
     def run(self):
         # game loop - set self.playing = False to end the game
         self.playing = True
@@ -205,6 +216,21 @@ class Game:
         #     self.screen.blit(scr.image, self.camera.apply(self))
         pg.display.update()
 
+    def save(self):
+        save = Save_player(self.player.money, self.player.pos)
+        pickle.dump((save), open("save.p", "wb"))
+        print(self.player.pos, "and money", self.player.money)
+        pass
+
+    def load(self):
+        save = pickle.load(open("save.p", "rb"))
+        # save.money += 100
+        self.player.money = save.money
+        self.player.pos = save.pos
+        # self.player.set_pos(save.pos[0], save.pos[1])
+        print(save.money)
+        print(self.player.pos)
+
     def events(self):
         # print("Catch")
         # catch all events here
@@ -215,6 +241,9 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                if event.key == pg.K_s:
+                    print("s")
+                    self.save()
                 elif not self.player.is_moving:
                     if event.key == pg.K_m:
                         self.map.display(self.screen)
@@ -226,6 +255,7 @@ class Game:
 
     def show_start_screen(self):
         pass
+
 
 class Animation():
     def __init__(self, game, pos, tab):
@@ -240,15 +270,20 @@ class Animation():
 
     def draw(self):
         this_image = self.image_tab[self.actual_frame]
-        this_image.set_colorkey((223,222,223))
+        this_image.set_colorkey((223, 222, 223))
         self.game.screen.blit(this_image, self.pos)
 
     def update(self):
         now = pg.time.get_ticks()
-        if(now> self.time_since_anime + self.frame_rate):
+        if(now > self.time_since_anime + self.frame_rate):
             self.time_since_anime = now
             self.actual_frame += 1
             if self.actual_frame >= len(self.image_tab):
                 self.game.animation_tab.remove(self)
                 print("removed", len(self.game.animation_tab))
-        
+
+
+class Save_player():
+    def __init__(self, money, pos):
+        self.money = money
+        self.pos = pos
