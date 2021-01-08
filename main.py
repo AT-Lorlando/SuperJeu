@@ -84,9 +84,9 @@ while run:
         print("in resume")
         g.draw_instance(g.hub)
         g.run()
-    # elif var == 'game_launch':
-    #     g.draw_instance(g.hub)
-    #     g.run()
+    elif var == 'game_launch':
+        g.draw_instance(g.hub)
+        g.run()
 
     # print("var = ", var)
     var = None
