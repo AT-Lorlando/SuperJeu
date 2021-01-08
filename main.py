@@ -47,7 +47,9 @@ pos_y = HEIGHT/2 - _button["play"].get_size()[1]/2
 # Declare the buttons
 play = Button(pos_x, pos_y, _button["play"], _button["play_clicked"])
 exit = Button(pos_x, pos_y + 100, _button["exit"], _button["exit_clicked"])
-options = Button(pos_x, pos_y + 200,
+resume = Button(pos_x, pos_y + 200,
+                _button["resume"], _button["resume_clicked"])
+options = Button(pos_x, pos_y + 300,
                  _button["options"], _button["options_clicked"])
 
 
@@ -56,6 +58,7 @@ buttons = pg.sprite.Group()
 buttons.add(play)
 buttons.add(exit)
 buttons.add(options)
+buttons.add(resume)
 
 pg.display.flip()
 game_launch = False
@@ -72,12 +75,13 @@ while run:
     x, y = pg.mouse.get_pos()
 
     var = accueil(screen, bg, buttons, mouse, x, y, play,
-                  game_launch, exit, main_font, dialogue, options)
+                  game_launch, exit, main_font, dialogue, options, resume)
     if var == "exit":
         run = False
     elif var == 'game_launch':
         g.draw_instance(g.hub)
         g.run()
+    print(var)
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -89,7 +93,6 @@ while run:
                 screen_cara.run(screen.copy())
 
     pg.display.update()
-
 
 pg.quit()
 sys.exit()
