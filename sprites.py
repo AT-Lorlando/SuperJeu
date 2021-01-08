@@ -147,7 +147,7 @@ class Quest_area(Interactif):
     def __init__(self, game, x, y):
         super(Quest_area, self).__init__(game, x, y)
         self.key = pg.K_e
-        self.dialogue = Dialogue(game, "Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler, je dois me dépêcher de faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez en acheter une chez le marchand ? Je vous recompenserais !")
+        self.dialogue = Dialogue(game, "Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !")
 
     def interaction(self, player):
         # self.dialogue.screen = self.game.screen.copy()
