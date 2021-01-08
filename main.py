@@ -82,7 +82,7 @@ while run:
     elif var == "resume":
         g.resume = True
         g.load()
-        print("in main pos", g.player.pos)
+        # print("in main pos", g.player.pos)
         g.draw_instance(g.hub)
         # print("after draw instance pos", g.player.pos)
         g.run()

@@ -106,13 +106,9 @@ class Game:
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
                     if not self.resume:
-                        print("avant parametrage",self.player.pos)
                         self.player.set_pos(col*TILESIZE, row*TILESIZE)
-                        print("self.resume = ", self.resume,
-                              "normalement false", self.player.pos)
                     else:
-                        print("self.resume = ", self.resume,
-                              "normalement true", self.player.pos)
+                        pass
 
                 elif get_id(tile) == DOOR_ID:
                     Floor(self, col, row, 0)
@@ -138,7 +134,7 @@ class Game:
                 elif(tile > 0):
                     Floor(self, col, row, 0)
                     Decoration(self, col, row, tile)
-        print("befor camera pos", self.player.pos)
+        # print("befor camera pos", self.player.pos)
 
         self.camera = Camera(WIDTH, HEIGHT)
         for layer in self.Layers:
