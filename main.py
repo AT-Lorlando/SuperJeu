@@ -79,11 +79,16 @@ while run:
                   game_launch, exit, main_font, dialogue, options, resume)
     if var == "exit":
         run = False
-    elif var == 'game_launch':
+    elif var == "resume":
+        g.load()
+        print("in resume")
         g.draw_instance(g.hub)
         g.run()
+    # elif var == 'game_launch':
+    #     g.draw_instance(g.hub)
+    #     g.run()
 
-    print("var = ", var)
+    # print("var = ", var)
     var = None
 
     for event in pg.event.get():
