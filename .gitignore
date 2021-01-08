@@ -143,3 +143,4 @@ cython_debug/
 map_exemple.txt
 
 *.json
+*.p
