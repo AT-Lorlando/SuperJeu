@@ -30,7 +30,7 @@ def get_header(game, tile):
 
 
 class Game:
-    def __init__(self, ):
+    def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
@@ -64,6 +64,8 @@ class Game:
 
         self.player = Player(self, 0, 0)
 
+        self.resume = False
+
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
         PlayerY = floor(self.player.pos[1]/TILESIZE)
@@ -78,9 +80,9 @@ class Game:
             self.Layers[i] = pg.sprite.Group()
 
     def draw_instance(self, instance):
-        print("Drawing")
+        # print("Drawing")
         self.clean_layers(LAYER_NUMBER-1)
-        print(self.Layers)
+        # print(self.Layers)
         self.obstacle = pg.sprite.Group()
         # self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
@@ -90,6 +92,8 @@ class Game:
         self.interactif = pg.sprite.Group()
         self.map_data = instance.data
         self.known_tiles = []
+
+        print("before row tiles loop pos", self.player.pos)
 
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
@@ -101,7 +105,15 @@ class Game:
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
                     Floor(self, col, row, 0)
-                    self.player.set_pos(col*TILESIZE, row*TILESIZE)
+                    if not self.resume:
+                        print("avant parametrage",self.player.pos)
+                        self.player.set_pos(col*TILESIZE, row*TILESIZE)
+                        print("self.resume = ", self.resume,
+                              "normalement false", self.player.pos)
+                    else:
+                        print("self.resume = ", self.resume,
+                              "normalement true", self.player.pos)
+
                 elif get_id(tile) == DOOR_ID:
                     Floor(self, col, row, 0)
                     Door(self, col, row, get_header(self, tile))
@@ -113,11 +125,11 @@ class Game:
                     Floor(self, col, row, 0)
                     NPC(self, col, row, get_header(self, tile))
                     if tile % 1000 == SHOP_ID:
-                        print('shop')
+                        # print('shop')
                         Floor(self, col, row, 0)
                         Shop_area(self, col-1, row)
                     elif tile % 1000 == QUEST_ID:
-                        print("Quest")
+                        # print("Quest")
                         Floor(self, col, row, 0)
                         Quest_area(self, col-1, row)
                 elif get_id(tile) == HOUSE_ID:
@@ -126,6 +138,7 @@ class Game:
                 elif(tile > 0):
                     Floor(self, col, row, 0)
                     Decoration(self, col, row, tile)
+        print("befor camera pos", self.player.pos)
 
         self.camera = Camera(WIDTH, HEIGHT)
         for layer in self.Layers:
@@ -133,7 +146,7 @@ class Game:
         # self.backLayer.update()
         # self.midLayer.update()
         # self.frontLayer.update()
-        print(self.Layers)
+        # print(self.Layers)
         self.map.data_update(self.map_data)
         if(self.actual_stage == 0):
             for tiles in self.map_data:
@@ -210,13 +223,17 @@ class Game:
     def save(self):
         save = Save_player(self.player.money, self.player.pos)
         pickle.dump((save), open("save.p", "wb"))
+        print(self.player.pos)
         pass
 
     def load(self):
         save = pickle.load(open("save.p", "rb"))
         save.money += 100
         self.player.money = save.money
+        self.player.pos = save.pos
+        # self.player.set_pos(save.pos[0], save.pos[1])
         print(save.money)
+        print(self.player.pos)
 
     def events(self):
         # print("Catch")
