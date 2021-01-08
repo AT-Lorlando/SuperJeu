@@ -32,7 +32,7 @@ dialogue = pg.image.load(
 
 # Dictionnary of buttons
 tab_buttons = ["play", "ok", "exit", "options", "restart", "resume", "cancel"]
-_button = dict()
+_button = dict()  # dict of image
 for x in tab_buttons:
     _button[x] = pg.image.load(path.join(button_folder, x+".png")).convert()
     _button[x].set_colorkey((93, 94, 94))
@@ -45,20 +45,21 @@ pos_x = WIDTH/2 - _button["play"].get_size()[0]/2
 pos_y = HEIGHT/2 - _button["play"].get_size()[1]/2
 
 # Declare the buttons
-play = Button(pos_x, pos_y, _button["play"], _button["play_clicked"])
-exit = Button(pos_x, pos_y + 100, _button["exit"], _button["exit_clicked"])
+play = Button(pos_x, pos_y, _button["play"], _button["play_clicked"], "play")
+exit = Button(pos_x, pos_y + 100,
+              _button["exit"], _button["exit_clicked"], "exit")
 resume = Button(pos_x, pos_y + 200,
-                _button["resume"], _button["resume_clicked"])
+                _button["resume"], _button["resume_clicked"], "resume")
 options = Button(pos_x, pos_y + 300,
-                 _button["options"], _button["options_clicked"])
+                 _button["options"], _button["options_clicked"], "options")
 
 
 # Buttons become sprite
 buttons = pg.sprite.Group()
 buttons.add(play)
 buttons.add(exit)
-buttons.add(options)
 buttons.add(resume)
+buttons.add(options)
 
 pg.display.flip()
 game_launch = False
@@ -81,7 +82,8 @@ while run:
     elif var == 'game_launch':
         g.draw_instance(g.hub)
         g.run()
-    print(var)
+    print("var = ", var)
+    var = None
 
     for event in pg.event.get():
         if event.type == pg.QUIT:

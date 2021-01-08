@@ -2,7 +2,7 @@ import pygame as pg
 
 
 class Button(pg.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, image, image_clicked):
+    def __init__(self, pos_x, pos_y, image, image_clicked, name):
         super(Button, self).__init__()
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -11,6 +11,7 @@ class Button(pg.sprite.Sprite):
         self.print = image
         self.rect = image.get_size()
         self.clicked = False
+        self.name = name
 
     def is_clicked(self, mouse, pos_mouse):
         return (mouse and self.pos_x < pos_mouse[0] < self.pos_x + self.rect[0] and self.pos_y < pos_mouse[1] < self.pos_y + self.rect[1])
@@ -37,6 +38,12 @@ class Button(pg.sprite.Sprite):
 
 def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font, dialogue, options, resume):
     screen.blit(bg, (0, 0))  # Background
+
+    buttons.update(mouse[0], (x, y))
+    for button in buttons:
+        button.draw(screen)
+        # print(button.name)
+
     if play.clicked:
         if mouse[0] and not game_launch:
             buttons.update(mouse[0], (x, y))
@@ -45,10 +52,6 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
         else:
             game_launch = True
             return "game_launch"
-    else:
-        buttons.update(mouse[0], (x, y))
-        for button in buttons:
-            button.draw(screen)
 
     if exit.clicked:
         if mouse[0] and not game_launch:
@@ -57,10 +60,6 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
                 button.draw(screen)
         else:
             return "exit"
-    else:
-        buttons.update(mouse[0], (x, y))
-        for button in buttons:
-            button.draw(screen)
 
     if options.clicked:
         if mouse[0] and not game_launch:
@@ -69,10 +68,6 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
                 button.draw(screen)
         else:
             return "options"
-    else:
-        buttons.update(mouse[0], (x, y))
-        for button in buttons:
-            button.draw(screen)
 
     if resume.clicked:
         if mouse[0] and not game_launch:
@@ -81,10 +76,6 @@ def accueil(screen, bg, buttons, mouse, x, y, play, game_launch, exit, main_font
                 button.draw(screen)
         else:
             return "resume"
-    else:
-        buttons.update(mouse[0], (x, y))
-        for button in buttons:
-            button.draw(screen)
 
     if play.is_over((x, y)):
         print_text(screen, main_font, x, y, "Create a game", dialogue)
