@@ -219,12 +219,12 @@ class Game:
     def save(self):
         save = Save_player(self.player.money, self.player.pos)
         pickle.dump((save), open("save.p", "wb"))
-        print(self.player.pos)
+        print(self.player.pos, "and money", self.player.money)
         pass
 
     def load(self):
         save = pickle.load(open("save.p", "rb"))
-        save.money += 100
+        # save.money += 100
         self.player.money = save.money
         self.player.pos = save.pos
         # self.player.set_pos(save.pos[0], save.pos[1])
