@@ -85,9 +85,9 @@ class Dialogue(Mother_screen):
                     self.next()
 
     def draw(self):
-        print(self.sentence_index == len(self.tab))
+        # print(self.sentence_index == len(self.tab))
         for button in self.buttons:
-            print(button == self.accept)
+            # print(button == self.accept)
             if button == self.accept and not self.sentence_index == len(self.tab) - 1:
                 pass
             else:

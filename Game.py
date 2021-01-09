@@ -222,7 +222,7 @@ class Game:
             if case.item != None:
                 inv.append(case.item.name)
         print("inv = ", inv)
-        save = Save_player(self.player.money, self.player.pos, self.player.xp)
+        save = Save_player(self.player.money, self.player.pos, self.player.xp,inv)
         pickle.dump((save), open("save.p", "wb"))
         print(self.player.pos, "and money", self.player.money)
         pass
@@ -291,7 +291,8 @@ class Animation():
 
 
 class Save_player():
-    def __init__(self, money, pos, xp):
+    def __init__(self, money, pos, xp,inv):
         self.money = money
         self.pos = pos
         self.xp = xp
+        self.inv = inv
