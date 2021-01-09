@@ -217,7 +217,12 @@ class Game:
         pg.display.update()
 
     def save(self):
-        save = Save_player(self.player.money, self.player.pos)
+        inv = []
+        for case in self.player.inv.inventory:
+            if case.item != None:
+                inv.append(case.item.name)
+        print("inv = ", inv)
+        save = Save_player(self.player.money, self.player.pos, self.player.xp)
         pickle.dump((save), open("save.p", "wb"))
         print(self.player.pos, "and money", self.player.money)
         pass
@@ -227,6 +232,8 @@ class Game:
         # save.money += 100
         self.player.money = save.money
         self.player.pos = save.pos
+        self.player.xp = save.xp
+
         # self.player.set_pos(save.pos[0], save.pos[1])
         print(save.money)
         print(self.player.pos)
@@ -284,6 +291,7 @@ class Animation():
 
 
 class Save_player():
-    def __init__(self, money, pos):
+    def __init__(self, money, pos, xp):
         self.money = money
         self.pos = pos
+        self.xp = xp
