@@ -292,16 +292,8 @@ class Animation():
 
 
 class Save_player():
-<<<<<<< HEAD
     def __init__(self, money, pos, xp, actual_quests):
         self.money = money
         self.pos = pos
         self.xp = xp
         self.actual_quests = actual_quests
-=======
-    def __init__(self, money, pos, xp,inv):
-        self.money = money
-        self.pos = pos
-        self.xp = xp
-        self.inv = inv
->>>>>>> 80ef38f52af24185b6b317906b7efa98ee16c3fe
