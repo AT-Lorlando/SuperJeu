@@ -13,6 +13,7 @@ class Item(pg.sprite.Sprite):
         self.ID = ID
         self.name = name
         self.image = resize(pg.image.load(path.join(item_folder, f'i ({self.ID}).png')), ITEM_SIZE)
+        self.to_print = self.image
         self.rect = self.image.get_size()
         self.centerx = self.pos_x + (self.rect[0]/2)
         self.centery = self.pos_y + (self.rect[1]/2)
@@ -35,14 +36,13 @@ class Item(pg.sprite.Sprite):
             # print("clicked in item")
             self.pos_x = pos_mouse[0] - self.rect[0]/2 - 5
             self.pos_y = pos_mouse[1] - self.rect[1]/2 - 5
-            self.image = pg.transform.scale(
-                self.image, (self.rect[0]+10, self.rect[1]+10))
+            self.to_print = resize(self.image, ITEM_SIZE+10)
         else:
-            self.image = self.image
+            self.to_print = self.image
 
     # Draw the image at the position given
     def draw(self, screen):
-        screen.blit(self.image, (self.pos_x, self.pos_y))
+        screen.blit(self.to_print, (self.pos_x, self.pos_y))
 
 
 class Stuff(Item):
