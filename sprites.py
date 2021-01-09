@@ -108,7 +108,8 @@ class Stair(MySprite):
 
 class NPC(MySprite):
     def __init__(self, game, x, y, tile):
-        img = tile//10
+        img = tile//10 % 10
+        print(img)
         self.image = resize(pg.image.load(
             path.join(npc_folder, f'{img}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
@@ -129,21 +130,22 @@ class Interactif(pg.sprite.Sprite):
         self.y = y
 
 class Shop_area(Interactif):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, ID):
         super(Shop_area, self).__init__(game, x, y)
-
+        print("Shop ID", ID)
         self.key = pg.K_e
-        self.shop = Screen_shop(game.screen, game)
+        self.shop = Screen_shop(game.screen, game, ID)
 
     def interaction(self, player):
         self.shop.run(self.game.screen.copy(), player)
 
 
 class Quest_area(Interactif):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, ID):
         super(Quest_area, self).__init__(game, x, y)
+        print("Quest ID", ID)
         self.key = pg.K_e
-        self.quest = Gime_apple
+        self.quest = QUEST_DICT[ID]
         self.dialogue = Dialogue(game, self,"Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !")
 
     def interaction(self, player):
@@ -191,13 +193,14 @@ class Lost_Item_Quest(Quest):
         self.give_rewards(player)
         for item in self.needed:
             player.inv.remove(item)
-            print("removed", item)
         player.quest_list.remove(self)
+        print(self, "finished")
 
-Gime_apple = Lost_Item_Quest(1, [Empowered_Sword],[Apple])
-Losted_ring_Quest = Lost_Item_Quest(2, [Empowered_Staff],[Lost_ring])
+Gime_apple = Lost_Item_Quest(1, [Empowered_Sword],[Apple, Meat])
+Lost_ring_Quest = Lost_Item_Quest(2, [Empowered_Staff],[Lost_ring])
 
 
+QUEST_DICT = {12112: Gime_apple, 23112: Lost_ring_Quest}
 
 
 

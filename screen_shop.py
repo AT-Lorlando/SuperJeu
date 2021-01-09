@@ -7,12 +7,12 @@ from Mother_screen import *
 
 
 class Screen_shop(Mother_screen):
-    def __init__(self, screen, game):
+    def __init__(self, screen, game, ID):
         super(Screen_shop, self).__init__(game)
         self.screen = screen
         # 180 is the argument to change the blur
         self.fond.fill((0, 0, 0, 180))
-        self.shop = create_shop()
+        self.shop = SHOP_DICT[ID]
         self.player_inventory = None
         self.animation = None
         self.image = None
