@@ -4,7 +4,7 @@ import pygame as pg
 from os import path
 
 
-class Inventory(pygame.sprite.Sprite):
+class Inventory(pg.sprite.Sprite):
     def __init__(self, name="player"):  # width, x, y
         self.inventory = []
         super(Inventory, self).__init__()
@@ -68,11 +68,12 @@ class Inventory(pygame.sprite.Sprite):
     def add_case(self, case):
         self.inventory.append((case))
 
-    def add_without_case(self, item):
-        for case in self.inventory:
-            if case.item == None:
-                case.item = item
-                break
+    def add_without_case(self, *items):
+        for item in items:
+            for case in self.inventory:
+                if case.item == None:
+                    case.item = item
+                    break
 
     def add(self, case, item):
         for _case in self.inventory:
@@ -83,13 +84,13 @@ class Inventory(pygame.sprite.Sprite):
         return any([case.item == item for case in self.inventory])        
 
 
-class Case(pygame.sprite.Sprite):
+class Case(pg.sprite.Sprite):
     def __init__(self):
         super(Case, self).__init__()
         self.rect = (100, 100)
         self.fond = pg.image.load(
             path.join(assets_folder, "inv_sprite.png"))
-        self.fond = pygame.transform.scale(self.fond, self.rect)
+        self.fond = pg.transform.scale(self.fond, self.rect)
         self.width = 4
         self.pos_x = 0
         self.pos_y = 0
