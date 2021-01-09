@@ -121,13 +121,11 @@ class Game:
                     Floor(self, col, row, 0)
                     NPC(self, col, row, get_header(self, tile))
                     if tile % 1000 == SHOP_ID:
-                        # print('shop')
                         Floor(self, col, row, 0)
-                        Shop_area(self, col-1, row)
+                        Shop_area(self, col-1, row, tile)
                     elif tile % 1000 == QUEST_ID:
-                        # print("Quest")
                         Floor(self, col, row, 0)
-                        Quest_area(self, col-1, row)
+                        Quest_area(self, col-1, row, tile)
                 elif get_id(tile) == HOUSE_ID:
                     Floor(self, col, row, 0)
                     House(self, col, row, get_header(self, tile))

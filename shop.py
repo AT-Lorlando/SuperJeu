@@ -23,8 +23,10 @@ class Shop():
     def draw(self, screen):
         self.inv.draw(screen)
 
-
-def create_shop():
+def create_shop(*items):
     shop = Shop()
-    shop.inv.add_without_case(Apple, Egg, Meat, Shovel, Pickaxe, Axe)
+    [shop.inv.add_without_case(item) for item in items]
     return shop
+
+Hub_shop = create_shop(Apple, Egg, Meat, Shovel, Pickaxe, Axe)
+SHOP_DICT = {11212: Hub_shop}
