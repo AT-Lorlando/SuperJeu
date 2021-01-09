@@ -147,31 +147,19 @@ class Quest_area(Interactif):
     def __init__(self, game, x, y):
         super(Quest_area, self).__init__(game, x, y)
         self.key = pg.K_e
-        self.dialogue = Dialogue(game, "Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !")
+        self.quest = Losted_Paper_Quest
+        self.dialogue = Dialogue(game, self,"Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !")
 
     def interaction(self, player):
-        # self.dialogue.screen = self.game.screen.copy()
+        self.dialogue.linkwith(player)
         self.dialogue.run(self.game.screen.copy())
 
-# class Quest_area(Interactif):
-#     def __init__(self, game, x, y):
-#         super(Quest_area, self).__init__(game, x, y)
-#         self.key = pg.K_e
-#         self.quest = Losted_Paper_Quest
-
-#     def interaction(self, player):
-#         print("QUEST: ", self.quest.goal, [item.name for item in self.quest.needed])
-#         if self.quest in player.quest_list:
-#             if self.quest.is_complete(player):
-#                 self.quest.congrats(player)
-#                 print("Congrats")
-#             else:
-#                 print("The quest isn't finished yet")
-#         else:
-#             player.quest_list.append(self.quest)
-#             print("New quest, rewards:")
-#             for reward in self.quest.rewards:
-#                 print(reward.name)
+    def accept(self, player):
+        if self.quest and not self.quest in player.quest_list:
+            player.quest_list.append(self.quest)
+        elif self.quest and self.quest.is_complete(player):
+            self.quest.congrats(player)
+            self.quest = None
 
 class Quest():
     def __init__(self, ID,rewards_tab):
@@ -185,6 +173,14 @@ class Quest():
             player.inv.add_without_case(reward)
         player.gain_money(self.money)
         player.gain_xp(self.xp)
+        print("gain")
+
+    def give_up(self, player):
+        if self in player.quest_list:
+            player.quest_list.remove(self)
+        
+    def is_complete(self, player):
+        pass
 
 class Lost_Item_Quest(Quest):
     def __init__(self, ID, rewards_tab, needed_tab):
@@ -200,6 +196,7 @@ class Lost_Item_Quest(Quest):
         self.give_rewards(player)
         for item in self.needed:
             player.inv.remove(item)
+            print("removed", item)
         player.quest_list.remove(self)
 
 

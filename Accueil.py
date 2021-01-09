@@ -1,8 +1,8 @@
 import pygame as pg
 
-
+f = lambda *args: None
 class Button(pg.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, image, image_clicked, name):
+    def __init__(self, pos_x, pos_y, image, image_clicked, name, method = f):
         super(Button, self).__init__()
         self.pos_x = pos_x
         self.pos_y = pos_y
@@ -12,6 +12,7 @@ class Button(pg.sprite.Sprite):
         self.rect = image.get_size()
         self.clicked = False
         self.name = name
+        self.method = method
 
     def is_clicked(self, mouse, pos_mouse):
         return (mouse and self.pos_x < pos_mouse[0] < self.pos_x + self.rect[0] and self.pos_y < pos_mouse[1] < self.pos_y + self.rect[1])

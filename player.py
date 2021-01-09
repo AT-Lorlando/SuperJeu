@@ -110,11 +110,12 @@ class Player(pg.sprite.Sprite):
             if self.vel.x != 0 and self.vel.y != 0:
                 self.vel *= 0.7071
             if keys[pg.K_0]:
-                for sprite in self.game.frontLayer:
-                    print(sprite)
-                print((self.pos[0], self.pos[1]))
-                print(self.game.camera.apply(self))
-                print(self.rect)
+                print(self.quest_list)
+                # for sprite in self.game.frontLayer:
+                #     print(sprite)
+                # print((self.pos[0], self.pos[1]))
+                # print(self.game.camera.apply(self))
+                # print(self.rect)
                 # print(self.main_champ)
             elif keys[pg.K_1]:
                 self.switch(0)
