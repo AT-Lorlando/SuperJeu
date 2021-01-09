@@ -23,7 +23,7 @@ class Screen_shop(Mother_screen):
         self.main_font = pg.font.SysFont("Blue Eyes.otf", 50)
         self.fond_coin = pg.image.load(
             path.join(assets_folder, "coin.png"))
-        self.fond_coin = pygame.transform.scale(self.fond_coin, (30, 30))
+        self.fond_coin = pg.transform.scale(self.fond_coin, (30, 30))
         self.origin = None
 
     def update(self, player):

@@ -1,4 +1,5 @@
 from os import path
+import pygame as pg
 
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
@@ -28,6 +29,7 @@ map_folder = path.join(assets_folder, 'map_background')
 
 # wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
+item_folder = path.join(assets_folder, 'items')
 # portal_folder = path.join(assets_folder, 'portal')
 # room_folder = path.join(assets_folder, 'room')
 
@@ -50,6 +52,7 @@ BGCOLOR = DARKGREY
 
 TILESIZE = 96
 CHARACTER_SIZE = 60
+ITEM_SIZE = 40
 
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
@@ -75,3 +78,6 @@ RANGE = 25
 LAYER_NUMBER = 10
 
 ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]
+
+def resize(img, size, y=0):
+    return pg.transform.scale(img, (size, y)) if y else pg.transform.scale(img, (size, size))

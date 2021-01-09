@@ -9,10 +9,6 @@ from screen_shop import *
 from dialogue import *
 vec = pg.math.Vector2
 
-
-def resize(img, size, y=0):
-    return pg.transform.scale(img, (size, y)) if y else pg.transform.scale(img, (size, size))
-
 class MySprite(pg.sprite.Sprite):
     def __init__(self, game, x, y, tile=0):
         self.game = game
@@ -147,7 +143,7 @@ class Quest_area(Interactif):
     def __init__(self, game, x, y):
         super(Quest_area, self).__init__(game, x, y)
         self.key = pg.K_e
-        self.quest = Losted_Paper_Quest
+        self.quest = Gime_apple
         self.dialogue = Dialogue(game, self,"Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !")
 
     def interaction(self, player):
@@ -173,7 +169,6 @@ class Quest():
             player.inv.add_without_case(reward)
         player.gain_money(self.money)
         player.gain_xp(self.xp)
-        print("gain")
 
     def give_up(self, player):
         if self in player.quest_list:
@@ -187,7 +182,7 @@ class Lost_Item_Quest(Quest):
         super(Lost_Item_Quest,
         self).__init__(ID,rewards_tab)
         self.needed = needed_tab
-        self.goal = "You have to find the Losted paper in the first dungeon."
+        self.goal = "You have to find the Losted ring in the first dungeon."
 
     def is_complete(self, player):
         return any([player.inv.is_in(item) for item in self.needed])
@@ -199,9 +194,8 @@ class Lost_Item_Quest(Quest):
             print("removed", item)
         player.quest_list.remove(self)
 
-
-Asword = Sword("The great sword")
-Losted_Paper_Quest = Lost_Item_Quest(1, [Asword],[Losted_Paper])
+Gime_apple = Lost_Item_Quest(1, [Empowered_Sword],[Apple])
+Losted_ring_Quest = Lost_Item_Quest(2, [Empowered_Staff],[Lost_ring])
 
 
 

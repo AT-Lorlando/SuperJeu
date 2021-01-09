@@ -1,17 +1,18 @@
-import pygame
+import pygame as pg
 from copy import deepcopy
-
+from settings import *
 from pygame.constants import KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP
 
 
-class Item(pygame.sprite.Sprite):
-    def __init__(self):  # , image, name, pos_x, pos_y
+
+class Item(pg.sprite.Sprite):
+    def __init__(self, ID, name):  # , image, name, pos_x, pos_y
         super(Item, self).__init__()
         self.pos_x = 0
         self.pos_y = 0
-        self.image = pygame.Surface((50, 50))
-        self.image.fill((255, 255, 0))
-        self.print = self.image
+        self.ID = ID
+        self.name = name
+        self.image = resize(pg.image.load(path.join(item_folder, f'i ({self.ID}).png')), ITEM_SIZE)
         self.rect = self.image.get_size()
         self.centerx = self.pos_x + (self.rect[0]/2)
         self.centery = self.pos_y + (self.rect[1]/2)
@@ -34,20 +35,20 @@ class Item(pygame.sprite.Sprite):
             # print("clicked in item")
             self.pos_x = pos_mouse[0] - self.rect[0]/2 - 5
             self.pos_y = pos_mouse[1] - self.rect[1]/2 - 5
-            self.print = pygame.transform.scale(
+            self.image = pg.transform.scale(
                 self.image, (self.rect[0]+10, self.rect[1]+10))
         else:
-            self.print = self.image
+            self.image = self.image
 
     # Draw the image at the position given
     def draw(self, screen):
-        screen.blit(self.print, (self.pos_x, self.pos_y))
+        screen.blit(self.image, (self.pos_x, self.pos_y))
 
 
 class Stuff(Item):
-    def __init__(self):  # , STR, DEX, CON, INT, WIS, CHA
+    def __init__(self,ID, name):  # , STR, DEX, CON, INT, WIS, CHA
         # Item.__init__(self)
-        super(Stuff, self).__init__()
+        super(Stuff, self).__init__(ID, name)
         self.STR = 0
         # self.DEX = DEX
         # self.CON = CON
@@ -63,20 +64,25 @@ class Consumable(Item):
 
 
 class Sword(Stuff):
-    def __init__(self, name, inv="player"):  # , pos_x, pos_y
-        Item.__init__(self)
-        super(Sword, self).__init__()
+    def __init__(self, ID, name, inv="player"):  # , pos_x, pos_y
+        super(Sword, self).__init__(ID, name)
         self.STR = 5
-        self.name = name
         self.inclued_in = inv
-
-
+    
 class Quest_Item(Item):
-    def __init__(self, ID):
-        super(Quest_Item, self).__init__()
-        self.ID = ID
-        self.image.fill((255, 100, 100))
+    def __init__(self, ID, name):
+        super(Quest_Item, self).__init__(ID, name)
         self.price = 2
-        self.name = "The famous losted paper"
 
-Losted_Paper = Quest_Item(1)
+Lost_ring = Quest_Item(98, "Lost ring", )
+Empowered_Sword = Sword(56, "Empowered sword")
+Empowered_Staff = Sword(73, "Empowered staff")
+
+Apple = Item(192, "Apple")
+Egg = Item(205, "Egg")
+Meat = Item(202, "Meat")
+Shovel = Item(122, "Shovel")
+Pickaxe = Item(121, "Pickaxe")
+Axe = Item(120, "Axe")
+# Ring = Item(192, "Apple")
+# Apple = Item(192, "Apple")
