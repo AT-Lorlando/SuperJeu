@@ -57,6 +57,8 @@ ITEM_SIZE = 40
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
+MAIN_FONT = pg.font.SysFont("Blue Eyes.otf", 30)
+
 VOID_ID = 0
 FLOOR_ID = 10
 WALL_ID = 11
@@ -78,6 +80,7 @@ RANGE = 25
 LAYER_NUMBER = 10
 
 ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]
+
 
 def resize(img, size, y=0):
     return pg.transform.scale(img, (size, y)) if y else pg.transform.scale(img, (size, size))
