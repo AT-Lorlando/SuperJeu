@@ -20,8 +20,9 @@ class Shop():
     def update(self, mouse, pos_mouse):
         self.inv.update(mouse, pos_mouse)
 
-    def draw(self, screen):
-        self.inv.draw(screen)
+    def draw(self, screen, x=0, y=0):
+        self.inv.draw(screen, x, y)
+
 
 def create_shop(*items):
     shop = Shop()

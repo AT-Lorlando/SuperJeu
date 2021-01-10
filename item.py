@@ -4,7 +4,6 @@ from settings import *
 from pygame.constants import KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP
 
 
-
 class Item(pg.sprite.Sprite):
     def __init__(self, ID, name):  # , image, name, pos_x, pos_y
         super(Item, self).__init__()
@@ -12,7 +11,8 @@ class Item(pg.sprite.Sprite):
         self.pos_y = 0
         self.ID = ID
         self.name = name
-        self.image = resize(pg.image.load(path.join(item_folder, f'i ({self.ID}).png')), ITEM_SIZE)
+        self.image = resize(pg.image.load(
+            path.join(item_folder, f'i ({self.ID}).png')), ITEM_SIZE)
         self.to_print = self.image
         self.rect = self.image.get_size()
         self.centerx = self.pos_x + (self.rect[0]/2)
@@ -43,10 +43,19 @@ class Item(pg.sprite.Sprite):
     # Draw the image at the position given
     def draw(self, screen):
         screen.blit(self.to_print, (self.pos_x, self.pos_y))
+        self.draw_quantity(screen)
+
+    def draw_quantity(self, screen):
+        nb = str(self.quantity)
+        font_surface = pg.font.SysFont(
+            "Blue Eyes.otf", 20).render(nb, True, (255, 255, 255))
+        font_size = [font_surface.get_rect()[2], font_surface.get_rect()[3]]
+        screen.blit(
+            font_surface, (self.pos_x + self.rect[0]-font_size[0]/2, self.pos_y + self.rect[1]-font_size[1]/2))
 
 
 class Stuff(Item):
-    def __init__(self,ID, name):  # , STR, DEX, CON, INT, WIS, CHA
+    def __init__(self, ID, name):  # , STR, DEX, CON, INT, WIS, CHA
         # Item.__init__(self)
         super(Stuff, self).__init__(ID, name)
         self.STR = 0
@@ -68,11 +77,13 @@ class Sword(Stuff):
         super(Sword, self).__init__(ID, name)
         self.STR = 5
         self.inclued_in = inv
-    
+
+
 class Quest_Item(Item):
     def __init__(self, ID, name):
         super(Quest_Item, self).__init__(ID, name)
         self.price = 2
+
 
 Lost_ring = Quest_Item(98, "Lost ring", )
 Empowered_Sword = Sword(56, "Empowered sword")
