@@ -110,7 +110,8 @@ class Player(pg.sprite.Sprite):
             if self.vel.x != 0 and self.vel.y != 0:
                 self.vel *= 0.7071
             if keys[pg.K_0]:
-                print(self.quest_list)
+                for quest in self.quest_list:
+                    print(quest.goal)
                 # for sprite in self.game.frontLayer:
                 #     print(sprite)
                 # print((self.pos[0], self.pos[1]))

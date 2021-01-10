@@ -165,6 +165,7 @@ class Quest():
         self.rewards = rewards_tab    
         self.xp = 500
         self.money = 500
+        self.goal = None
 
     def give_rewards(self, player):
         for reward in self.rewards:
@@ -184,10 +185,10 @@ class Lost_Item_Quest(Quest):
         super(Lost_Item_Quest,
         self).__init__(ID,rewards_tab)
         self.needed = needed_tab
-        self.goal = "You have to find the Losted ring in the first dungeon."
+        self.goal = f'QUEST {self.ID}: You have to find {[item.name for item in self.needed]}.'
 
     def is_complete(self, player):
-        return any([player.inv.is_in(item) for item in self.needed])
+        return all([player.inv.is_in(item) for item in self.needed])
 
     def congrats(self, player):
         self.give_rewards(player)
@@ -196,8 +197,8 @@ class Lost_Item_Quest(Quest):
         player.quest_list.remove(self)
         print(self, "finished")
 
-Gime_apple = Lost_Item_Quest(1, [Empowered_Sword],[Apple, Meat])
-Lost_ring_Quest = Lost_Item_Quest(2, [Empowered_Staff],[Lost_ring])
+Gime_apple = Lost_Item_Quest(12112, [Empowered_Sword],[Apple, Meat])
+Lost_ring_Quest = Lost_Item_Quest(23112, [Empowered_Staff],[Lost_ring])
 
 
 QUEST_DICT = {12112: Gime_apple, 23112: Lost_ring_Quest}
