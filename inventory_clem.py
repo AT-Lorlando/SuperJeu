@@ -35,7 +35,7 @@ class Inventory(pg.sprite.Sprite):
                 break
 
     def draw(self, screen):
-        screen.blit(self.fond, (self.pos_x, self.pos_y))
+        # screen.blit(self.fond, (self.pos_x, self.pos_y))
         for i, case in enumerate(self.inventory):
             case.pos_x = self.pos_x + (i % self.width)*100
             case.pos_y = self.pos_y + (i // self.width)*100
@@ -79,9 +79,9 @@ class Inventory(pg.sprite.Sprite):
         for _case in self.inventory:
             if case == _case:
                 case.item = item
-        
+
     def is_in(self, item):
-        return any([case.item == item for case in self.inventory])        
+        return any([case.item == item for case in self.inventory])
 
 
 class Case(pg.sprite.Sprite):
@@ -116,5 +116,3 @@ class Case(pg.sprite.Sprite):
 
     def remove(self):
         self.item = None
-
-

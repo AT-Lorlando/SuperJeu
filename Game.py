@@ -13,6 +13,7 @@ from player import *
 from sprites import *
 from tilemap import *
 from Map import *
+from screen_inv import *
 import time
 
 #from Dungeon import *
@@ -65,6 +66,7 @@ class Game:
         self.player = Player(self, 0, 0)
 
         self.resume = False
+        self.screen_inv = Screen_inv(self.screen, self)
 
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
@@ -220,7 +222,8 @@ class Game:
             if case.item != None:
                 inv.append(case.item.name)
         print("inv = ", inv)
-        save = Save_player(self.player.money, self.player.pos, self.player.xp,self.player.quest_list)
+        save = Save_player(self.player.money, self.player.pos,
+                           self.player.xp, self.player.quest_list)
         pickle.dump((save), open("save.p", "wb"))
         print(self.player.pos, "and money", self.player.money)
         pass
@@ -250,6 +253,9 @@ class Game:
                 if event.key == pg.K_s:
                     print("s")
                     self.save()
+                if event.key == pg.K_i:
+                    print("inv open")
+                    self.screen_inv.run(self.screen.copy(), self.player)
                 elif not self.player.is_moving:
                     if event.key == pg.K_m:
                         self.map.display(self.screen)

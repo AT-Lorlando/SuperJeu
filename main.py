@@ -87,7 +87,7 @@ while run:
         g.draw_instance(g.hub)
         g.run()
 
-    # print("var = ", var)
+    # print("varc = ", var)
     var = None
 
     for event in pg.event.get():
@@ -96,8 +96,8 @@ while run:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 run = False
-            if event.key == pg.K_c:
-                screen_cara.run(screen.copy())
+            # if event.key == pg.K_c:
+            #     screen_cara.run(screen.copy())
 
     pg.display.update()
 

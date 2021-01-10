@@ -51,7 +51,7 @@ class Player(pg.sprite.Sprite):
 
         self.pause = 0
         self.time_since_last_spell = 0
-    
+
     def gain_xp(self, amount):
         self.xp += amount
 
@@ -99,9 +99,9 @@ class Player(pg.sprite.Sprite):
                 self.is_moving = True
             elif self.vel.y != 0:
                 self.vel.y *= 0.8
-            
+
             if(self.is_moving):
-                if -10 < self.vel.x < 10: 
+                if -10 < self.vel.x < 10:
                     self.vel.x = 0
 
                 if -10 < self.vel.y < 10:
@@ -129,7 +129,7 @@ class Player(pg.sprite.Sprite):
     def use_spell(self, spell):
         now = pg.time.get_ticks()
         if now - self.time_since_last_spell > 250:
-            self.time_since_last_spell = now 
+            self.time_since_last_spell = now
             Fireball(self)
             print("FIRE")
 

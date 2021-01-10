@@ -41,9 +41,6 @@ class Item(pg.sprite.Sprite):
             self.to_print = self.image
 
     # Draw the image at the position given
-    # def draw(self, screen):
-    #     screen.blit(self.to_print, (self.pos_x, self.pos_y))
-
     def draw(self, screen):
         screen.blit(self.to_print, (self.pos_x, self.pos_y))
         self.draw_quantity(screen)
