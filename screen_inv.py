@@ -42,18 +42,18 @@ class Screen_inv(Mother_screen):
         if not self.mouse[0] and self.handled:
             # find the case clicked
             over_case = None
-            for case in self.player_inventory.inventory + self.shop.inv.inventory:
+            for case in self.player_inventory.inventory:
                 if self.is_over(case):
                     over_case = case
                     break
             if self.is_over(self.player_inventory) and over_case != None and over_case.item == None:
                 self.player_inventory.add(over_case, self.handled)
-                if self.origin != self.player_inventory.name:
-                    self.buy(self.handled, player)
-            elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
-                self.shop.inv.add(over_case, self.handled)
-                if self.origin != self.shop.inv.name:
-                    self.sell(self.handled, player)
+                # if self.origin != self.player_inventory.name:
+                #     self.buy(self.handled, player)
+            # elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
+            #     self.shop.inv.add(over_case, self.handled)
+            #     if self.origin != self.shop.inv.name:
+            #         self.sell(self.handled, player)
             else:
                 self.copy.item = self.handled
                 self.handled = None
