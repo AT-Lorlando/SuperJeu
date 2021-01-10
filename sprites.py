@@ -208,7 +208,7 @@ class Lost_Item_Quest(Quest):
         print(self, "finished")
 
 Gime_apple = Lost_Item_Quest(12112, [Empowered_Sword],[Apple, Meat], ["Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !"])
-Lost_ring_Quest = Lost_Item_Quest(23112, [Empowered_Staff],[Lost_ring], ["Coucou"])
+Lost_ring_Quest = Lost_Item_Quest(23112, [Empowered_Staff],[Lost_ring], ["Coucou", "J'ai perdu ma bague", "Aled"])
 
 
 QUEST_DICT = {12112: Gime_apple, 23112: Lost_ring_Quest}

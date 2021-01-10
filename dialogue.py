@@ -49,6 +49,7 @@ class Dialogue(Mother_screen):
             if self.quest.is_finished:
                 self.tab = [(pg.font.SysFont("Blue Eyes.otf", 30).render(
                     "Thanks for the help!", True, (255, 255, 255)))]
+                self.buttons = [self.exit_button]
                 self.sentence_index = 0
         while self.running:
             self.events()
