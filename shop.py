@@ -20,13 +20,15 @@ class Shop():
     def update(self, mouse, pos_mouse):
         self.inv.update(mouse, pos_mouse)
 
-    def draw(self, screen):
-        self.inv.draw(screen)
+    def draw(self, screen, x=0, y=0):
+        self.inv.draw(screen, x, y)
+
 
 def create_shop(*items):
     shop = Shop()
     [shop.inv.add_without_case(item) for item in items]
     return shop
+
 
 Hub_shop = create_shop(Apple, Egg, Meat, Shovel, Pickaxe, Axe)
 SHOP_DICT = {11212: Hub_shop}

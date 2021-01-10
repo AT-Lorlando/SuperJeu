@@ -34,11 +34,11 @@ class Inventory(pg.sprite.Sprite):
                 self.inventory[i].item = None
                 break
 
-    def draw(self, screen):
+    def draw(self, screen, x=0, y=0):
         # screen.blit(self.fond, (self.pos_x, self.pos_y))
         for i, case in enumerate(self.inventory):
-            case.pos_x = self.pos_x + (i % self.width)*100
-            case.pos_y = self.pos_y + (i // self.width)*100
+            case.pos_x = self.pos_x + (i % self.width)*100+x
+            case.pos_y = self.pos_y + (i // self.width)*100+y
             case.draw(screen)
 
     def draw_lines(self):

@@ -65,7 +65,7 @@ class Screen_inv(Mother_screen):
         # self.screen.blit(self.shop.fond, (self.shop.inv.pos_x,self.shop.inv.pos_y))  # fond
         # self.shop.draw(self.screen)  # shop
         self.player_inventory.draw(
-            self.screen)  # player inv
+            self.screen, WIDTH/2-(self.player_inventory.inventory[0].rect[0]/2)*self.player_inventory.width, HEIGHT/2-(self.player_inventory.inventory[1].rect[1]/2)*self.player_inventory.width)  # player inv
         if self.handled != None:
             self.handled.draw(self.screen)
         font_surface = self.main_font.render(

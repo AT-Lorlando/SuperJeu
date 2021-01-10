@@ -63,9 +63,10 @@ class Screen_shop(Mother_screen):
 
     def draw(self, player):
         # self.screen.blit(self.shop.fond, (self.shop.inv.pos_x,self.shop.inv.pos_y))  # fond
-        self.shop.draw(self.screen)  # shop
+        self.shop.draw(self.screen, WIDTH/4-(self.shop.inv.inventory[0].rect[0]/2)*self.shop.inv.width, HEIGHT/2-(
+            self.shop.inv.inventory[1].rect[1]/2)*self.shop.inv.width)  # shop
         self.player_inventory.draw(
-            self.screen)  # player inv
+            self.screen, WIDTH/4-(self.player_inventory.inventory[0].rect[0]/2)*self.player_inventory.width, HEIGHT/2-(self.player_inventory.inventory[1].rect[1]/2)*self.player_inventory.width)  # player inv
         if self.handled != None:
             self.handled.draw(self.screen)
         font_surface = self.main_font.render(
