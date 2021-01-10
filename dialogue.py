@@ -9,12 +9,16 @@ from Accueil import Button
 
 
 class Dialogue(Mother_screen):
-    def __init__(self, game, npc,*text):
+    def __init__(self, game, npc, quest = None):
         super(Dialogue, self).__init__(game)
         self.tab = []
+        self.quest = quest
         self.sentence_index = 0
         self.npc = npc
-        for sentence in text:
+        self.text_to_print = ["I have nothing to say","Sorry"]
+        if self.quest:
+            self.text_to_print = self.quest.text_dialogue
+        for sentence in self.text_to_print:
             self.tab.append(pg.font.SysFont("Blue Eyes.otf", 30).render(
                 sentence, True, (255, 255, 255)))
         self.x = floor(WIDTH*0.25)
@@ -26,6 +30,7 @@ class Dialogue(Mother_screen):
         self.image = pg.transform.scale(pg.image.load(path.join(
             assets_folder, 'dialogue_bg.png')), (floor(WIDTH*0.5), floor(HEIGHT*0.8)))
         self.player = None
+        
         # Buttons
 
         
@@ -40,10 +45,11 @@ class Dialogue(Mother_screen):
 
     def run(self, background=None):
         self.running = True
-        if not self.npc.quest:
-            self.tab.append(pg.font.SysFont("Blue Eyes.otf", 30).render(
-                "You finished the quest", True, (255, 255, 255)))
-            self.sentence_index += 1
+        if self.quest:
+            if self.quest.is_finished:
+                self.tab = [(pg.font.SysFont("Blue Eyes.otf", 30).render(
+                    "Thanks for the help!", True, (255, 255, 255)))]
+                self.sentence_index = 0
         while self.running:
             self.events()
             self.update(background)
@@ -65,7 +71,6 @@ class Dialogue(Mother_screen):
         if self.down:
             for button in self.buttons:
                 if button.is_clicked(mouse[0], (x, y)):
-                    print("this", button.method)
                     button.method()
             self.down = False
 

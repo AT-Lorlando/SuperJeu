@@ -146,7 +146,7 @@ class Quest_area(Interactif):
         print("Quest ID", ID)
         self.key = pg.K_e
         self.quest = QUEST_DICT[ID]
-        self.dialogue = Dialogue(game, self,"Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !")
+        self.dialogue = Dialogue(game, self, self.quest)
 
     def interaction(self, player):
         self.dialogue.linkwith(player)
@@ -160,12 +160,14 @@ class Quest_area(Interactif):
             self.quest = None
 
 class Quest():
-    def __init__(self, ID,rewards_tab):
+    def __init__(self, ID,rewards_tab,text_dialogue):
         self.ID = ID
         self.rewards = rewards_tab    
         self.xp = 500
         self.money = 500
         self.goal = None
+        self.text_dialogue = text_dialogue
+        self.is_finished = False
 
     def give_rewards(self, player):
         for reward in self.rewards:
@@ -180,10 +182,16 @@ class Quest():
     def is_complete(self, player):
         pass
 
+    def congrats(self, player):
+        self.give_rewards(player)
+        player.quest_list.remove(self)
+        player.finished_quest.append(self.ID)
+        self.is_finished = True
+        print(self, "finished")
+
 class Lost_Item_Quest(Quest):
-    def __init__(self, ID, rewards_tab, needed_tab):
-        super(Lost_Item_Quest,
-        self).__init__(ID,rewards_tab)
+    def __init__(self, ID, rewards_tab, needed_tab,text_dialogue):
+        super(Lost_Item_Quest,self).__init__(ID,rewards_tab,text_dialogue)
         self.needed = needed_tab
         self.goal = f'QUEST {self.ID}: You have to find {[item.name for item in self.needed]}.'
 
@@ -195,10 +203,12 @@ class Lost_Item_Quest(Quest):
         for item in self.needed:
             player.inv.remove(item)
         player.quest_list.remove(self)
+        player.finished_quest.append(self.ID)
+        self.is_finished = True
         print(self, "finished")
 
-Gime_apple = Lost_Item_Quest(12112, [Empowered_Sword],[Apple, Meat])
-Lost_ring_Quest = Lost_Item_Quest(23112, [Empowered_Staff],[Lost_ring])
+Gime_apple = Lost_Item_Quest(12112, [Empowered_Sword],[Apple, Meat], ["Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !"])
+Lost_ring_Quest = Lost_Item_Quest(23112, [Empowered_Staff],[Lost_ring], ["Coucou"])
 
 
 QUEST_DICT = {12112: Gime_apple, 23112: Lost_ring_Quest}

@@ -46,8 +46,8 @@ wall_folder = path.join(tile_folder, 'wall')
 # game settings
 WIDTH = 1080   # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 720  # 16 * 48 or 32 * 24 or 64 * 12
-FPS = 200
-TITLE = "Tilemap Demo"
+FPS = 120
+TITLE = "Superjeu"
 BGCOLOR = DARKGREY
 
 TILESIZE = 96
