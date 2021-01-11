@@ -110,6 +110,7 @@ class Screen_shop(Mother_screen):
         self.player_inventory = player.inv
         self.money = player.money
         while self.running:
+            self.game.dt_update()
             self.print_background(background)
             self.events()
             self.update(player)            # player_inventory.draw(self.screen)
