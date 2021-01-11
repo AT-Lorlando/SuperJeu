@@ -118,6 +118,9 @@ class Game:
                 elif get_id(tile) == STAIR_ID:
                     Floor(self, col, row, 0)
                     Stair(self, col, row)
+                elif get_id(tile) == COLLECTABLE_ID:
+                    Floor(self, col, row, 0)
+                    Collectable(self, col, row, tile)
                 # HUB Features
                 elif get_id(tile) == NPC_ID:
                     Floor(self, col, row, 0)
