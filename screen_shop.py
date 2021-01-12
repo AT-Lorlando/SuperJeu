@@ -63,10 +63,11 @@ class Screen_shop(Mother_screen):
 
     def draw(self, player):
         # self.screen.blit(self.shop.fond, (self.shop.inv.pos_x,self.shop.inv.pos_y))  # fond
-        self.shop.draw(self.screen, WIDTH/4-(self.shop.inv.inventory[0].rect[0]/2)*self.shop.inv.width, HEIGHT/2-(
-            self.shop.inv.inventory[1].rect[1]/2)*self.shop.inv.width)  # shop
+        # , WIDTH/4-(self.shop.inv.inventory[0].rect[0]/2)*self.shop.inv.width, HEIGHT/2-(
+        self.shop.draw(self.screen)
+        # self.shop.inv.inventory[1].rect[1]/2)*self.shop.inv.width)  # shop
         self.player_inventory.draw(
-            self.screen, WIDTH/4-(self.player_inventory.inventory[0].rect[0]/2)*self.player_inventory.width, HEIGHT/2-(self.player_inventory.inventory[1].rect[1]/2)*self.player_inventory.width)  # player inv
+            self.screen)  # , WIDTH/4-(self.player_inventory.inventory[0].rect[0]/2)*self.player_inventory.width, HEIGHT/2-(self.player_inventory.inventory[1].rect[1]/2)*self.player_inventory.width)  # player inv
         if self.handled != None:
             self.handled.draw(self.screen)
         font_surface = self.main_font.render(
@@ -98,6 +99,22 @@ class Screen_shop(Mother_screen):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]
 
     def run(self, background, player):
+        self.player_inventory = player.inv
+        player.inv.pos_x = WIDTH/4 - \
+            (self.player_inventory.inventory[0].rect[0]/2) * \
+            self.player_inventory.width
+
+        player.inv.pos_y = HEIGHT/2 - \
+            (self.player_inventory.inventory[1].rect[1]/2) * \
+            self.player_inventory.width
+
+        self.shop.inv.pos_x = 3*WIDTH/4 - \
+            (self.player_inventory.inventory[0].rect[0]/2) * \
+            self.player_inventory.width
+
+        self.shop.inv.pos_y = HEIGHT/2 - \
+            (self.player_inventory.inventory[1].rect[1]/2) * \
+            self.player_inventory.width
 
         if self.animation:
             for img in self.animation:
@@ -107,7 +124,6 @@ class Screen_shop(Mother_screen):
                 pg.display.flip()
                 time.sleep(.03)
         self.running = True
-        self.player_inventory = player.inv
         self.money = player.money
         while self.running:
             self.game.dt_update()
