@@ -31,7 +31,7 @@ class Player(pg.sprite.Sprite):
             (pg.image.load(path.join(explode_folder, f'f ({x}).gif'))) for x in range(1, 23)]
 
         self.inv = Inventory()
-        # self.inv.add_without_case()
+        self.inv.add_without_case(Axe)
 
         self.level = 1
         self.xp = 0

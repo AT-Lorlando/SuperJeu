@@ -6,7 +6,7 @@ from Dungeon import *
 from inventory_clem import *
 from shop import *
 from screen_shop import *
-from dialogue import *
+from dialogue import Dialogue
 vec = pg.math.Vector2
 
 class MySprite(pg.sprite.Sprite):
@@ -120,8 +120,11 @@ class NPC(MySprite):
 
 class Collectable(MySprite):
     def __init__(self, game, x, y, tile):
+        print("Collect ID", tile)
+        self.ID = tile//100
+        self.item = ITEM_DICT[self.ID]
         self.image = resize(pg.image.load(
-            path.join(item_folder, f'i ({1}).png')), CHARACTER_SIZE)
+            path.join(item_folder, f'i ({self.ID}).png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
         super(Collectable,self).__init__(game, x, y, tile)
         Collectable_area(game, x-1, y-1, self)
@@ -146,12 +149,13 @@ class Collectable_area(Interactif):
         print("Collectable ID")
         self.sprite = sprite
         self.rect = pg.Rect((x) * TILESIZE, (y) *
-                            TILESIZE, TILESIZE*3, TILESIZE*3)
+                            TILESIZE, TILESIZE*2, TILESIZE*2)
         self.key = pg.K_e
 
     def interaction(self, player):
         print("Collect")
         self.sprite.kill()
+        player.inv.add_without_case(self.sprite.item)
         self.kill()
 
 class Chess_area(Interactif):
@@ -160,7 +164,7 @@ class Chess_area(Interactif):
         print("Chess ID", ID)
         self.key = pg.K_e
         self.rect = pg.Rect((x) * TILESIZE, (y) *
-                            TILESIZE, TILESIZE*3, TILESIZE*3)
+                            TILESIZE, TILESIZE*2, TILESIZE*2)
 
     def interaction(self, player):
         print("Chess open")
