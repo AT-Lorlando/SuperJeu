@@ -5,7 +5,7 @@ from os import path
 
 
 class Inventory(pg.sprite.Sprite):
-    def __init__(self, name="player"):  # width, x, y
+    def __init__(self, name="player", stuff=0):  # width, x, y
         self.inventory = []
         super(Inventory, self).__init__()
         self.width = 4
@@ -16,9 +16,15 @@ class Inventory(pg.sprite.Sprite):
         self.pos_y = 0
         self.index = -1  # no item is handled
         self.name = name
-        for i in range(16):
-            case = Case()
-            self.add_case(case)
+        if stuff == 0:
+            for i in range(16):
+                case = Case()
+                self.add_case(case)
+        else:
+            for i in range(stuff):
+                case = Case()
+                self.add_case(case)
+            self.rect = (100, 500)
 
     def shift(self, x):  # shift the positions of all the items of the inventory
         if not self.shifted:
@@ -39,6 +45,12 @@ class Inventory(pg.sprite.Sprite):
         for i, case in enumerate(self.inventory):
             case.pos_x = self.pos_x + (i % self.width)*100+x
             case.pos_y = self.pos_y + (i // self.width)*100+y
+            case.draw(screen)
+
+    def draw_stuff(self, screen, x=0, y=0):
+        for i, case in enumerate(self.inventory):
+            case.pos_x = self.pos_x  # + (i % self.width)*100+x
+            case.pos_y = self.pos_y + i * 100 + y  # + (i // self.width)*100+y
             case.draw(screen)
 
     def draw_lines(self):
