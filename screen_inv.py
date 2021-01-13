@@ -30,10 +30,10 @@ class Screen_inv(Mother_screen):
         self.mouse = pg.mouse.get_pressed()
         self.pos_mouse = pg.mouse.get_pos()
         self.player_inventory.update(self.mouse, self.pos_mouse)
-        # self.shop.inv.update(self.mouse, self.pos_mouse)
+        player.stuff.update(self.mouse, self.pos_mouse)
 
         self.take_item(self.player_inventory)
-        # self.take_item(self.shop.inv)
+        self.take_item(player.stuff)
 
         if self.handled != None:
             self.handled.pos_x = self.pos_mouse[0] - self.handled.rect[0]/2 - 5
@@ -42,7 +42,7 @@ class Screen_inv(Mother_screen):
         if not self.mouse[0] and self.handled:
             # find the case clicked
             over_case = None
-            for case in self.player_inventory.inventory:
+            for case in self.player_inventory.inventory + player.stuff.inventory:
                 if self.is_over(case):
                     over_case = case
                     break
@@ -50,20 +50,22 @@ class Screen_inv(Mother_screen):
                 self.player_inventory.add(over_case, self.handled)
                 # if self.origin != self.player_inventory.name:
                 #     self.buy(self.handled, player)
-            # elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
-            #     self.shop.inv.add(over_case, self.handled)
+            elif self.is_over(player.stuff) and over_case != None and over_case.item == None:
+                print("ouais")
+                player.stuff.add(over_case, self.handled)
             #     if self.origin != self.shop.inv.name:
             #         self.sell(self.handled, player)
             else:
                 self.copy.item = self.handled
                 self.handled = None
+            # print(self.is_over(player.stuff))
 
         if not self.mouse[0]:
             self.handled = None
 
     def draw(self, player):
         # self.screen.blit(self.shop.fond, (self.shop.inv.pos_x,self.shop.inv.pos_y))  # fond
-        # self.shop.draw(self.screen)  # shop
+        player.stuff.draw_stuff(self.screen)  # shop
         self.player_inventory.draw(
             self.screen)  # , WIDTH/2-(self.player_inventory.inventory[0].rect[0]/2)*self.player_inventory.width, HEIGHT/2-(self.player_inventory.inventory[1].rect[1]/2)*self.player_inventory.width)  # player inv
         if self.handled != None:
@@ -104,6 +106,8 @@ class Screen_inv(Mother_screen):
         player.inv.pos_y = HEIGHT/2 - \
             (self.player_inventory.inventory[1].rect[1]/2) * \
             self.player_inventory.width
+
+        # player.stuff.pos_x
 
         if self.animation:
             for img in self.animation:

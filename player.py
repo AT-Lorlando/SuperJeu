@@ -33,6 +33,8 @@ class Player(pg.sprite.Sprite):
         self.inv = Inventory()
         self.inv.add_without_case(Axe)
 
+        self.stuff = Inventory("stuff", 5)
+
         self.level = 1
         self.xp = 0
         self.champion_pool = []
