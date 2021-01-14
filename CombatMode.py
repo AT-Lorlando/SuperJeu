@@ -11,6 +11,9 @@ layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
 pospix = hex_to_pixel(layout, Hex(5,1))
 man = player(pospix[0], pospix[1], *PlayerScale)
 man.poshex = Tile(Hex(5, 1)).set_object(man)
+man.maxmana=6
+man.mana=6
+
 thunder.owner=man
 man.spellsname.append(thunder)
 
@@ -29,7 +32,7 @@ pygame.display.set_caption("Combat mode")
 main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
 Grid = initgrid(8, 12)
 castzone=[]
-
+currentchar=0
 for c in Characters :
     update_grid(Grid,c.poshex)
 
@@ -40,18 +43,17 @@ for t in Tiles:
     update_grid(Grid,t)
 
 def redraw_window():
-    print(castzone)
     screen.blit(bg, (0, 0))  #Background
     x, y = pygame.mouse.get_pos()
     currentchar=Characters[indice%len(Characters)]
     
-        
-    for element in castzone:
-        pygame.draw.polygon(screen, (0, 255, 0,125), hex_corner(layout, element))  #Grid layout
+    if waitforspell:
+        for element in castzone:
+            pygame.draw.polygon(screen, (0, 255, 0,125), hex_corner(layout, element))  #Grid layout
 
-    if waitforspell and pixel_to_hex(layout, (x, y)) in castzone :
-        for element in currentspell.computedamagezone(Grid,pixel_to_hex(layout, (x, y))):
-            pygame.draw.polygon(screen, (0, 0, 125,125), hex_corner(layout, element))
+        if pixel_to_hex(layout, (x, y)) in castzone :
+            for element in currentspell.computedamagezone(Grid,pixel_to_hex(layout, (x, y))):
+                pygame.draw.polygon(screen, (0, 0, 125,125), hex_corner(layout, element))
 
     for element in Grid:
         pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),1)  #Grid layout
@@ -60,14 +62,14 @@ def redraw_window():
     
 
     
-    currentchar=Characters[indice%len(Characters)]
+    
     pygame.draw.rect(screen, BLACK,(0,0,100,100),2)
     if not(currentchar.left or currentchar.right):
         pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,currentchar.poshex),largeurHex,2)
         if (pixel_to_hex(layout, (x, y)) in Grid) and Grid[Grid.index(pixel_to_hex(layout, (x, y)))].object == None:
                 L=pathfinding(currentchar.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid)
                 for k in range(len(L)):
-                    if len(L)<currentchar.mouvementpoints+2 and k>0:
+                    if len(L)<currentchar.movementpoints+2 and k>0:
                         pygame.draw.polygon(screen, BLUE,hex_corner(layout,L[k]),2)
                 pygame.draw.polygon(screen, RED,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
         
@@ -78,15 +80,17 @@ def redraw_window():
             healtposx-=largeurHex-7
             healtposy-=hauteurHex
             if not Characters[k].animation[0]:
-                screen.blit(Health[Characters[k].healthpoint],(healtposx,healtposy) )
+                screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
     man.drawPlayer(screen)
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
 
-    lives_label = main_font.render(f"Health Points: {currentchar.healthpoint}",1,BLUE)
-    level_label = main_font.render(f"Mouvement Points: {currentchar.mouvementpoints}",1,RED)
-    screen.blit(lives_label,(10,640))
-    screen.blit(level_label,(10,670))
+    lives_label = main_font.render(f"Health Points: {currentchar.healthpoint}",1,(0, 153, 0))
+    level_label = main_font.render(f"Movement Points: {currentchar.movementpoints}",1,RED)
+    mana_level = main_font.render(f"Action Points: {currentchar.mana}",1,BLUE)
+    screen.blit(lives_label,(10,625))
+    screen.blit(level_label,(10,650))
+    screen.blit(mana_level,(10,675))
     
 
 
@@ -220,7 +224,7 @@ indice=0
 
 
 def canispell(target):
-    return target in castzone
+    return target in castzone and currentchar.mana>= currentspell.manacost
     
     
 
@@ -270,28 +274,28 @@ while run:
 
     if keys[pygame.K_h] and not (currentchar.animation[2] or currentchar.animation[0]):
 
-        if currentchar.healthpoint>1:
+        if currentchar.healthpoint>5:
             currentchar.animation[2]=True
-            currentchar.healthpoint-=1
+            currentchar.healthpoint-=5
         else:
             currentchar.animation[0]=True
-            currentchar.healthpoint-=1
+            currentchar.healthpoint-=5
 
     if keys[pygame.K_KP_PLUS] :
         currentchar.animation[0]=False
         currentchar.countdown=0
-        if currentchar.healthpoint!=10:
-            currentchar.healthpoint+=1
+        if currentchar.healthpoint!=100:
+            currentchar.healthpoint+=5
     if keys[pygame.K_KP_MINUS] :
         if currentchar.healthpoint >0:
-            currentchar.healthpoint-=1
+            currentchar.healthpoint-=5
         elif currentchar.healthpoint==0 and not currentchar.animation[2]:
             currentchar.animation[0]=True
 
     if keys[pygame.K_r]:
         currentchar.animation[0]=False
         currentchar.countdown=0
-        currentchar.healthpoint=10
+        currentchar.healthpoint=100
 
 
     if mouse[0]:
@@ -303,6 +307,9 @@ while run:
         elif 0<x<100 and 0<y<100 and not (currentchar.left or currentchar.right):
             indice+=1
             pygame.time.delay(100)
+            currentchar=Characters[indice%len(Characters)]
+            currentchar.mana=currentchar.maxmana
+            currentchar.movementpoints=currentchar.maxmovement
 
     if mouse[2] and not waitforspell:
         if listecase == [] and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range (len(Characters))]):    #Right click
@@ -310,9 +317,13 @@ while run:
             if hextogo in Grid :
                 if Grid[Grid.index(hextogo)].object == None :
                     listecase = pathfinding(currentchar.poshex, hextogo, Grid)
-                    if listecase == [] :
+                    if len(listecase)>currentchar.movementpoints+1:
+                        listecase=[]
+                    elif listecase == [] :
                         print("Pas de chemin")
-                    currentchar.mouvementpoints-=len(listecase)-1
+                    else:
+                        currentchar.movementpoints-=len(listecase)-1
+                    
 
     if i < (len(listecase)-1) and listecase!=[] :
         if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
@@ -343,7 +354,7 @@ while run:
         goto(currentchar,listecase[i] - currentchar.poshex,False,False)
         currentchar.poshex = listecase[i].set_object(currentchar)
         i += 1
-        currentchar.mouvementpoints=4
+        
     else:
         listecase = []
         i = 0

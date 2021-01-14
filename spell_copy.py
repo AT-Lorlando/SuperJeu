@@ -9,6 +9,7 @@ class Spell :
     name=None
     offsetx=0
     offsety=0
+    manacost=0
     """ countdown=0
     spell=[False,False] #Thunder #... """
 
@@ -23,13 +24,16 @@ class Spell :
         for tuiles in tuiles_touches :
             self.surtuile(self.owner,tuiles)
             hx.update_grid(Grid,tuiles)
+        self.owner.mana-=self.manacost
         return
     
     def computecastzone(self,Grid,caster):
-        return [elmt for elmt in list(map((lambda x: caster + x), self.castzone)) if elmt in Grid and (Grid[Grid.index(elmt)].object==None or isinstance(Grid[Grid.index(elmt)].object,player))]
+        return [elmt for elmt in list(map((lambda x: caster + x), self.castzone)) 
+        if elmt in Grid and (Grid[Grid.index(elmt)].object==None or isinstance(Grid[Grid.index(elmt)].object,player))]
         
     def computedamagezone(self,Grid,target):
-        return [elmt for elmt in list(map((lambda x: target + x), self.dammagezone)) if elmt in Grid and (Grid[Grid.index(elmt)].object==None or isinstance(Grid[Grid.index(elmt)].object,player)) ]
+        return [elmt for elmt in list(map((lambda x: target + x), self.dammagezone)) 
+        if elmt in Grid and (Grid[Grid.index(elmt)].object==None or isinstance(Grid[Grid.index(elmt)].object,player)) ]
 
 
     def __init__(self, fc) :
@@ -46,13 +50,13 @@ class Spell :
 
 def fireball_dammage(owner, tuile) :
     if tuile.object in Characters :
-        tuile.object.healthpoint-=1
+        tuile.object.healthpoint-=50
     return 
 
 def thunder_dammage(owner, tuile) :
     #if tuile.object in Characters :
     if isinstance(tuile.object,player):
-        tuile.object.deal_damage(1)
+        tuile.object.deal_damage(40)
     return 
 
 """ fireball = Spell(fireball_dammage)
@@ -67,3 +71,4 @@ thunder.dammagezone= hx.hex_circle(hx.Hex(), 2)
 thunder.castzone = hx.hex_circle(hx.Hex(), 3)
 thunder.offsetx=30
 thunder.offsety=35
+thunder.manacost=2

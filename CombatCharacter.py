@@ -11,8 +11,9 @@ class player(object):
         self.width = width
         self.heigth = heigth
         self.change = 5
-        self.mouvementpoints=4
-        self.healthpoint=10
+        self.maxmovement=4
+        self.movementpoints=4
+        self.healthpoint=100
         self.faceleft=False
         self.poshex=Tile().set_object(self)
         self.animation=[False,False,False,False]#Dead #Attack #Hit 
@@ -23,7 +24,8 @@ class player(object):
         self.left = False
         self.right = False
         self.walkCount = 0
-
+        self.maxmana=10
+        self.mana=10
         self.countdown=0
 
     def drawPlayer(self, screen):
