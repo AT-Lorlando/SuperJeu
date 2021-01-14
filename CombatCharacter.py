@@ -11,12 +11,14 @@ class player(object):
         self.width = width
         self.heigth = heigth
         self.change = 5
-        
+        self.mouvementpoints=4
         self.healthpoint=10
         self.faceleft=False
         self.poshex=Tile().set_object(self)
-        self.animation=[False,False,False,False]#Dead #Hit #Bomb
-        
+        self.animation=[False,False,False,False]#Dead #Attack #Hit 
+        self.spells=[False,False,False] #
+        self.spellsname=[]
+        self.spellpos=Hex(0,0)
         self.left = False
         self.right = False
         self.walkCount = 0
@@ -27,15 +29,31 @@ class player(object):
         relativeX = self.playerX - Playercombathorizontalshift
         relativeY = self.playerY - Playercombatverticalshift
         pospix=relativeX,relativeY
+        spellsanimations=[(Spell_thunder,Spell_thunder,20)]
         
-        if man.left:
+        
+
+        if self.animation[2]:
+            self.animation[2]=False
+            pygame.time.delay(100)
+        if self.left:
             screen.blit(PlayerLeft[self.walkCount%9],pospix)
             self.walkCount += 1
         elif self.right:
             screen.blit(PlayerRight[self.walkCount%9],pospix)
             self.walkCount += 1
         else:
-            screen.blit(char, (relativeX, relativeY))
+            screen.blit(Playersprite, (relativeX, relativeY))
+
+        for k in range(1):
+            if self.spells[k]:
+                
+                if self.faceleft:
+                    data=spellsanimations[k][0],spellsanimations[k][2]
+                else:
+                    data=spellsanimations[k][1],spellsanimations[k][2]
+                
+                self.animate2(screen,k,*data,self.spellpos)
 
     def drawSkeleton(self, screen):
         relativeX = self.playerX - Skeletoncombathorizontalshift
@@ -43,9 +61,10 @@ class player(object):
             relativeX-=18
         relativeY = self.playerY - Skeletoncombatverticalshift
         pospix = (relativeX,relativeY)
-        animator=[(SkeletonDeadflip,SkeletonDead,30),(SkeletonAttackflip,SkeletonAttack,36),(SkeletonHitflip,SkeletonHit,16),(SkeletonShield,SkeletonShield,38)]
+        animator=[(SkeletonDeadflip,SkeletonDead,30),(SkeletonAttackflip,SkeletonAttack,36),(SkeletonHitflip,SkeletonHit,16),(SkeletonShieldflip,SkeletonShield,38)]
         for k in range(4):
             if self.animation[k]:
+                
                 if self.faceleft:
                     data=animator[k][0],animator[k][2]
                 else:
@@ -61,9 +80,9 @@ class player(object):
 
         elif not (any(self.animation) or self.right or self.left):              #Static
             if not self.faceleft:
-                screen.blit(skeletonsprite, pospix)
+                screen.blit(Skeletonsprite[0], pospix)
             else:
-                screen.blit(skeletonsrpiteflip, pospix)
+                screen.blit(Skeletonsrpiteflip[0], pospix)
     
     def drawGobelin(self, screen):
         pospix = (self.playerX - Gobelincombathorizontalshift,self.playerY - Gobelincombatverticalshift)
@@ -85,9 +104,9 @@ class player(object):
 
         elif not (any(self.animation) or self.right or self.left):              #Static
             if not self.faceleft:
-                screen.blit(Gobelinsprite, pospix)
+                screen.blit(Gobelinsprite[0], pospix)
             else:
-                screen.blit(Gobelinsrpiteflip, pospix)
+                screen.blit(Gobelinsrpiteflip[0], pospix)
             
     def animate(self,screen,nanimation,playeranimation,count,position):
         if self.countdown==count:
@@ -97,19 +116,23 @@ class player(object):
         elif self.animation[nanimation] and self.countdown<count:
             screen.blit(playeranimation[self.countdown],position)
             self.countdown += 1
-        
 
-layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
+    def animate2(self,screen,nanimation,playeranimation,count,position):
+        if self.countdown==count:
+            self.spells[nanimation]=False
+            self.countdown=0
+        elif self.spells[nanimation] and self.countdown<count:
+            *a,x,y=position
+            screen.blit(playeranimation[self.countdown],(x-self.spellsname[0].offsetx,y-self.spellsname[0].offsety))
+            self.countdown += 1
 
-pospix = hex_to_pixel(layout, Hex(5,1))
-man = player(pospix[0], pospix[1], *PlayerScale)
-man.poshex = Tile(Hex(5, 1)).set_object(man)
 
-skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],*SkeletonScale)
-skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
+    
+    def deal_damage(self,damage):
+        self.healthpoint-=damage
+        if self.healthpoint<=0:
+            self.animation[0]=True
 
-gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3))[1],*GobelinScale)
-gobelin.poshex = Tile(Hex(2, 3)).set_object(gobelin)
 
-Characters=[man,skeleton,gobelin]
+
 

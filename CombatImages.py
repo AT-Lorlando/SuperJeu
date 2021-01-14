@@ -3,48 +3,69 @@ from os import path
 from settings import *
 bg = pygame.image.load(path.join(assets_folder,'map.png'))
 
+
+
+spell_thunder=path.join(spell_folder,'spell_thunder')
+fighticons_folder=path.join(assets_folder,'fighticons')
+
+def load(flip,folderpath,num,scale,rang):
+    if flip:
+        return [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),scale),True,False) for k in range(rang)]
+    return [pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),scale)for k in range(rang)]
+
+HealthScale=(60,10)
+Health = load(False,health_folder,1,HealthScale,11)
+
+IconsScale=64,64
+Icons = load(False,fighticons_folder,1,IconsScale,2)
+
+
+###Player###
+PlayerScale = (46,64)
+Playersprite = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),PlayerScale)
+PlayerRight = [pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale) for k in range(9)]
+PlayerLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale),True,False) for k in range(9)]
+
+###Skeleton###
+SkeletonScale=(64,64)
 skeleton_attack = path.join(skeleton_folder, 'sk_attack')
 skeleton_dead = path.join(skeleton_folder, 'sk_dead')
 skeleton_hit = path.join(skeleton_folder, 'sk_hit')
 skeleton_walk = path.join(skeleton_folder, 'sk_walk')
 skeleton_shield = path.join(skeleton_folder, 'sk_shield')
 
+Skeletonsprite=load(False,skeleton_folder,1,SkeletonScale,1)
+Skeletonsrpiteflip=load(True,skeleton_folder,1,SkeletonScale,1)
+SkeletonAttack=load(False,skeleton_attack,2,SkeletonScale,36)
+SkeletonAttackflip=load(True,skeleton_attack,2,SkeletonScale,36)
+SkeletonHit=load(False,skeleton_hit,2,SkeletonScale,16)
+SkeletonHitflip=load(True,skeleton_hit,2,SkeletonScale,16)
+SkeletonDead=load(False,skeleton_dead,2,SkeletonScale,30)
+SkeletonDeadflip=load(True,skeleton_dead,2,SkeletonScale,30)
+SkeletonShield = load(False,skeleton_shield,2,SkeletonScale,38)
+SkeletonShieldflip = load(True,skeleton_shield,2,SkeletonScale,38)
+SkeletonRight=load(False,skeleton_walk,2,SkeletonScale,26)
+SkeletonLeft=load(True,skeleton_walk,2,SkeletonScale,26)
+
+###Gobelin###
+GobelinScale=(88,64)
 gobelin_attack = path.join(gobelin_folder, 'gobelin_attack')
 gobelin_dead = path.join(gobelin_folder, 'gobelin_dead')
 gobelin_hit = path.join(gobelin_folder, 'gobelin_hit')
 gobelin_walk = path.join(gobelin_folder, 'gobelin_walk')
 gobelin_bomb = path.join(gobelin_folder, 'gobelin_bomb')
 
-HealthScale=(60,10)
-health =  [pygame.transform.scale(pygame.image.load(path.join(health_folder,str(k)+'.png')),HealthScale) for k in range(12)] 
+Gobelinsprite=load(False,gobelin_folder,1,GobelinScale,1)
+Gobelinsrpiteflip=load(True,gobelin_folder,1,GobelinScale,1)
+GobelinAttack=load(False,gobelin_attack,2,GobelinScale,16)
+GobelinAttackflip=load(True,gobelin_attack,2,GobelinScale,16)
+GobelinHit=load(False,gobelin_hit,2,GobelinScale,8)
+GobelinHitflip=load(True,gobelin_hit,2,GobelinScale,8)
+GobelinDead=load(False,gobelin_dead,4,GobelinScale,16)
+GobelinDeadflip=load(True,gobelin_dead,4,GobelinScale,16)
+GobelinBomb = load(False,gobelin_bomb,2,GobelinScale,38)
+GobelinRight=load(False,gobelin_walk,2,GobelinScale,18)
+GobelinLeft=load(True,gobelin_walk,2,GobelinScale,18)
 
-SkeletonScale=(64,64)
-skeletonsprite = pygame.transform.scale(pygame.image.load(path.join(skeleton_folder,'standing.png')),SkeletonScale)
-skeletonsrpiteflip = pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(skeleton_folder,'standing.png')),SkeletonScale),True,False)
-SkeletonAttack = [pygame.transform.scale(pygame.image.load(path.join(skeleton_attack,str(k//2)+'.png')),SkeletonScale) for k in range(36)]
-SkeletonAttackflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(skeleton_attack,str(k//2)+'.png')),SkeletonScale),True,False) for k in range(36)]
-SkeletonHit = [pygame.transform.scale(pygame.image.load(path.join(skeleton_hit,str(k//2)+'.png')),SkeletonScale) for k in range(16)]
-SkeletonHitflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(skeleton_hit,str(k//2)+'.png')),SkeletonScale),True,False) for k in range(16)]
-SkeletonDead = [pygame.transform.scale(pygame.image.load(path.join(skeleton_dead,str(k//2)+'.png')),SkeletonScale) for k in range(30)]
-SkeletonDeadflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(skeleton_dead,str(k//2)+'.png')),SkeletonScale),True,False) for k in range(30)]
-SkeletonShield = [pygame.transform.scale(pygame.image.load(path.join(skeleton_shield,str(k//2)+'.png')),SkeletonScale) for k in range(38)]
-SkeletonRight = [pygame.transform.scale(pygame.image.load(path.join(skeleton_walk,str(k//2)+'.png')),SkeletonScale) for k in range(26)]
-SkeletonLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(skeleton_walk,str(k//2)+'.png')),SkeletonScale),True,False) for k in range(26)]
-
-PlayerScale = (46,64)
-char = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),PlayerScale)
-PlayerRight = [pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale) for k in range(9)]
-PlayerLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale),True,False) for k in range(9)]
-
-GobelinScale=(88,64)
-Gobelinsprite = pygame.transform.scale(pygame.image.load(path.join(gobelin_folder,'standing.png')),GobelinScale)
-Gobelinsrpiteflip = pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_folder,'standing.png')),GobelinScale),True,False)
-GobelinAttack = [pygame.transform.scale(pygame.image.load(path.join(gobelin_attack,str(k//2)+'.png')),GobelinScale) for k in range(16)]
-GobelinAttackflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_attack,str(k//2)+'.png')),GobelinScale),True,False) for k in range(16)]
-GobelinHit = [pygame.transform.scale(pygame.image.load(path.join(gobelin_hit,str(k//2)+'.png')),GobelinScale) for k in range(8)]
-GobelinHitflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_hit,str(k//2)+'.png')),GobelinScale),True,False) for k in range(8)]
-GobelinDead = [pygame.transform.scale(pygame.image.load(path.join(gobelin_dead,str(k//4)+'.png')),GobelinScale) for k in range(16)]
-GobelinDeadflip = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_dead,str(k//4)+'.png')),GobelinScale),True,False) for k in range(16)]
-GobelinBomb = [pygame.transform.scale(pygame.image.load(path.join(gobelin_bomb,str(k//2)+'.png')),GobelinScale) for k in range(38)]
-GobelinRight = [pygame.transform.scale(pygame.image.load(path.join(gobelin_walk,str(k//2)+'.png')),GobelinScale) for k in range(18)]
-GobelinLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(gobelin_walk,str(k//2)+'.png')),GobelinScale),True,False) for k in range(18)]
+Spellscale=(64,64)
+Spell_thunder=load(False,spell_thunder,2,Spellscale,20)

@@ -9,6 +9,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 ORANGE = (170, 110, 0)
 YELLOW = (255, 255, 0)
+BLUE=(0,0,255)
 
 #Folder
 game_folder = path.dirname('.')
@@ -27,7 +28,8 @@ sprite_folder = path.join(assets_folder, 'img_sprite')
 button_folder = path.join(assets_folder, 'buttons_img')
 portal_folder = path.join(assets_folder, 'portal')
 bullet_forder = path.join(assets_folder,'bullet_img')
-health_folder = path.join(assets_folder,"healthbar")
+health_folder = path.join(assets_folder,'healthbar')
+spell_folder = path.join(assets_folder,'spell')
 
 # game settings
 WIDTH = 800  # 16 * 64 or 32 * 32 or 64 * 16
