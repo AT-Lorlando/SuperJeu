@@ -43,6 +43,7 @@ class Wall(MySprite):
         super(Wall,self).__init__(game, x, y, tile)
         self.groups = game.Layers[2], game.obstacle
         pg.sprite.Sprite.__init__(self, self.groups)
+        
 class House(MySprite):
     def __init__(self, game, x, y, tile):
         self.image = resize(pg.image.load(

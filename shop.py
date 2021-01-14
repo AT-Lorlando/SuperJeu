@@ -29,5 +29,6 @@ def create_shop(*items):
     [shop.inv.add_without_case(item) for item in items]
     return shop
 
-Hub_shop = create_shop(Apple, Egg, Meat, Shovel, Pickaxe, Axe, Lost_ring)
+# Hub_shop = create_shop(Apple, Egg, Meat, Shovel, Pickaxe, Axe, Lost_ring)
+Hub_shop = create_shop(Item(192, "Apple"),Item(205, "Egg"),Item(202, "Meat"),Item(122, "Shovel"),Item(121, "Pickaxe"),Item(120, "Axe"))
 SHOP_DICT = {11212: Hub_shop}

@@ -119,6 +119,7 @@ class Screen_inv(Mother_screen):
         self.running = True
         self.money = player.money
         while self.running:
+            self.game.dt_update()
             self.print_background(background)
             self.events()
             self.update(player)            # player_inventory.draw(self.screen)
