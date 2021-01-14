@@ -1,6 +1,7 @@
 import Hex as hx
 from CombatCharacter import *
 class Spell :
+    name=""
     owner = None
     championClasse = None
     castzone = [hx.Hex()] #relative
@@ -59,6 +60,11 @@ def thunder_dammage(owner, tuile) :
         tuile.object.deal_damage(40)
     return 
 
+def attack_dammage(owner,tuile):
+    if isinstance(tuile.object,player):
+        tuile.object.deal_damage(10)
+    return 
+
 """ fireball = Spell(fireball_dammage)
 fireball.dammagezone = hx.hex_circle(hx.Hex(),1)
 fireball.castzone= hx.hex_circle((hx.Hex(), 3))
@@ -67,8 +73,18 @@ fireball.name=fireball """
 fireball=""
 
 thunder = Spell(thunder_dammage)
-thunder.dammagezone= hx.hex_circle(hx.Hex(), 2)
+#thunder.dammagezone= hx.hex_circle(hx.Hex(), 2)
+thunder.dammagezone=hx.hex_circle(hx.Hex(), 1)
 thunder.castzone = hx.hex_circle(hx.Hex(), 3)
 thunder.offsetx=30
 thunder.offsety=35
 thunder.manacost=2
+thunder.name="thunder"
+
+attack = Spell(attack_dammage)
+attack.dammagezone=hx.hex_circle(hx.Hex(),1)
+attack.castzone= hx.hex_circle(hx.Hex(),2)
+attack.manacost=1
+attack.offsetx=Gobelincombathorizontalshift
+attack.offsety=Gobelincombatverticalshift
+attack.name="attack"

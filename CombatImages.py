@@ -18,7 +18,9 @@ Health = load(False,health_folder,1,HealthScale,11)
 
 heart = pygame.transform.scale(pygame.image.load(path.join(health_folder,'heart.png')),(100,100))
 
-IconsScale=64,64
+spellbar= pygame.image.load(path.join(spell_folder,'spellbar.png'))
+
+IconsScale=(40,40)
 Icons = load(False,fighticons_folder,1,IconsScale,2)
 
 

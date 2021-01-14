@@ -5,7 +5,8 @@ from CombatImages import *
 
 
 class player(object):
-    def __init__(self, playerX, playerY, width, heigth):
+    def __init__(self, playerX, playerY, width, heigth,name):
+        self.name=name
         self.playerX = playerX
         self.playerY = playerY
         self.width = width
@@ -90,6 +91,7 @@ class player(object):
     def drawGobelin(self, screen):
         pospix = (self.playerX - Gobelincombathorizontalshift,self.playerY - Gobelincombatverticalshift)
         animator=[(GobelinDeadflip,GobelinDead,16),(GobelinAttackflip,GobelinAttack,16),(GobelinHitflip,GobelinHit,8),(GobelinBomb,GobelinBomb,37)]
+        spellsanimations=[(GobelinAttackflip,GobelinAttack,16)]
         for k in range(4):
             if self.animation[k]:
                 if self.faceleft:
@@ -105,11 +107,23 @@ class player(object):
             screen.blit(GobelinLeft[self.walkCount%18],pospix)
             self.walkCount += 1
 
-        elif not (any(self.animation) or self.right or self.left):              #Static
+        elif not (any(self.animation)or any(self.spells) or self.right or self.left):              #Static
             if not self.faceleft:
                 screen.blit(Gobelinsprite[0], pospix)
             else:
                 screen.blit(Gobelinsrpiteflip[0], pospix)
+
+        for k in range(len(self.spells)):
+            if self.spells[k]:
+                
+                if self.faceleft:
+                    data=spellsanimations[k][0],spellsanimations[k][2]
+                else:
+                    data=spellsanimations[k][1],spellsanimations[k][2]
+                
+                self.animate2(screen,k,*data,(self.playerX,self.playerY))
+            
+      
             
     def animate(self,screen,nanimation,playeranimation,count,position):
         if self.countdown==count:
@@ -133,8 +147,10 @@ class player(object):
     
     def deal_damage(self,damage):
         self.healthpoint-=damage
+        print(self.name+ " hit, -"+str(damage)+" HP")
         if self.healthpoint<=0:
             self.animation[0]=True
+            self.healthpoint=0
 
 
 
