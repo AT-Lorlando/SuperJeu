@@ -78,15 +78,16 @@ def redraw_window():
                 for k in range(len(L)):
                     if len(L)<currentchar.movementpoints+2 and k>0:
                         pygame.draw.polygon(screen, BLUE,hex_corner(layout,L[k]),2)
-                if len(L)==2:
+                if len(L)==2 and currentchar.movementpoints>0:
                     pygame.draw.polygon(screen, BLUE,hex_corner(layout, pixel_to_hex(layout, (x, y))),2)
                 else:
                     pygame.draw.polygon(screen, RED,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
         
     for k in range(len(Characters)):
-        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-                (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+        if Characters[k].healthpoint<100 and Characters[k]!=man:
+        #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+                (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
                 healtposx-=largeurHex-7
                 healtposy-=hauteurHex
                 if not Characters[k].animation[0]:
