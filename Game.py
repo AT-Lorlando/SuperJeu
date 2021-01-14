@@ -121,9 +121,6 @@ class Game:
                 elif get_id(tile) == COLLECTABLE_ID:
                     Floor(self, col, row, 0)
                     Collectable(self, col, row, tile)
-                elif get_id(tile) == CHESS_ID:
-                    Floor(self, col, row, 0)
-
                 elif get_id(tile) == MOB_ID:
                     Floor(self, col, row, 0)
 
@@ -133,10 +130,13 @@ class Game:
                     NPC(self, col, row, get_header(self, tile))
                     if tile % 1000 == SHOP_ID:
                         Floor(self, col, row, 0)
-                        Shop_area(self, col-1, row, tile)
+                        Shop_area(self, col, row, tile)
                     elif tile % 1000 == QUEST_ID:
                         Floor(self, col, row, 0)
-                        Quest_area(self, col-1, row, tile)
+                        Quest_area(self, col, row, tile)
+                    elif tile % 1000 == CHEST_ID:
+                        Floor(self, col, row, 0)
+                        Chest_area(self, col, row, tile)
                 elif get_id(tile) == HOUSE_ID:
                     Floor(self, col, row, 0)
                     House(self, col, row, get_header(self, tile))

@@ -7,12 +7,16 @@ from Mother_screen import *
 
 
 class Screen_shop(Mother_screen):
-    def __init__(self, screen, game, ID):
+    def __init__(self, screen, game, ID = 0):
         super(Screen_shop, self).__init__(game)
         self.screen = screen
         # 180 is the argument to change the blur
         self.fond.fill((0, 0, 0, 180))
-        self.shop = SHOP_DICT[ID]
+        self.ID = ID
+        if(self.ID):
+            self.shop = SHOP_DICT[self.ID]
+        elif(game.actual_stage == 0):
+            self.shop = Shop()
         self.player_inventory = None
         self.animation = None
         self.image = None
@@ -89,11 +93,12 @@ class Screen_shop(Mother_screen):
                         case.remove()
 
     def buy(self, item, player):
-        player.money -= item.price
-        print("You buy", item.name)
+        if self.ID:
+            player.money -= item.price
 
     def sell(self, item, player):
-        player.money += item.price
+        if self.ID:
+            player.money += item.price
 
     def is_over(self, target):
         return target.pos_x < self.pos_mouse[0] < target.pos_x + target.rect[0] and target.pos_y < self.pos_mouse[1] < target.pos_y + target.rect[1]

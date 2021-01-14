@@ -338,7 +338,7 @@ class Dungeon:
 def New_Stage(ID, difficulty, dungeon_type):
     tile_number = random.randint(difficulty*2,ceil(difficulty*2.5))
     stage_size = STAGE_SIZE_TAB[difficulty]
-    chess_weight = [8,6,4,2]
+    chest_weight = [8,6,4,2]
     mob_weight = [5,7,6,3,2,1]
 
     stage = Stage(ID, stage_size, ROOM_SIZE)
@@ -376,10 +376,10 @@ def New_Stage(ID, difficulty, dungeon_type):
                 new_room.add_corridor('BOT')
             
 
-            #Chess and Mob parts
+            #chest and Mob parts
             if(difficulty):
-                for _ in range(random.choices([0,1,2,3], weights=chess_weight, k=1)[0]):
-                    new_room.add_ID(CHESS_ID)
+                for _ in range(random.choices([0,1,2,3], weights=chest_weight, k=1)[0]):
+                    new_room.add_ID(CHEST_ID)
                 for _ in range(random.choices([0,1,2,3,4,5], weights=mob_weight, k=1)[0]):
                     new_room.add_ID(MOB_ID)
                 

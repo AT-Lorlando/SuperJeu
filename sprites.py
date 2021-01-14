@@ -61,7 +61,6 @@ class House(MySprite):
 
 class Door(MySprite):
     def __init__(self, game, x, y, tile):
-        print("Door tile:", tile)
         self.image = resize(pg.image.load(
             path.join(portal_folder, 'portal.png')), TILESIZE)
         self.rect = self.image.get_rect()
@@ -110,7 +109,7 @@ class Stair(MySprite):
 class NPC(MySprite):
     def __init__(self, game, x, y, tile):
         img = tile//10 % 10
-        print(img)
+        print(tile,img)
         self.image = resize(pg.image.load(
             path.join(npc_folder, f'{img}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
@@ -121,14 +120,13 @@ class NPC(MySprite):
 
 class Collectable(MySprite):
     def __init__(self, game, x, y, tile):
-        print("Collect ID", tile)
         self.ID = tile//100
         self.item = ITEM_DICT[self.ID]
         self.image = resize(pg.image.load(
             path.join(item_folder, f'i ({self.ID}).png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
         super(Collectable,self).__init__(game, x, y, tile)
-        Collectable_area(game, x-1, y-1, self)
+        Collectable_area(game, x, y, self)
 
         self.groups = game.Layers[6], game.obstacle
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -139,41 +137,35 @@ class Interactif(pg.sprite.Sprite):
         self.groups = game.interactif
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.rect = pg.Rect((x) * TILESIZE, (y) *
-                            TILESIZE, TILESIZE*4, TILESIZE)
-        self.x = x
-        self.y = y
+        self.x = x-1
+        self.y = y-1
+        self.rect = pg.Rect((self.x) * TILESIZE, (self.y) *
+                            TILESIZE, TILESIZE*2, TILESIZE*2)
+        
 
 class Collectable_area(Interactif):
     def __init__(self, game, x, y, sprite):
         super(Collectable_area, self).__init__(game, x, y)
-        print("Collectable ID")
         self.sprite = sprite
-        self.rect = pg.Rect((x) * TILESIZE, (y) *
-                            TILESIZE, TILESIZE*2, TILESIZE*2)
         self.key = pg.K_e
 
     def interaction(self, player):
-        print("Collect")
         self.sprite.kill()
         player.inv.add_without_case(self.sprite.item)
         self.kill()
 
-class Chess_area(Interactif):
+class Chest_area(Interactif):
     def __init__(self, game, x, y, ID):
-        super(Chess_area, self).__init__(game, x, y)
-        print("Chess ID", ID)
+        super(Chest_area, self).__init__(game, x, y)
         self.key = pg.K_e
-        self.rect = pg.Rect((x) * TILESIZE, (y) *
-                            TILESIZE, TILESIZE*2, TILESIZE*2)
+        self.shop = Screen_shop(game.screen, game, 0)
 
     def interaction(self, player):
-        print("Chess open")
+        self.shop.run(self.game.screen.copy(), player)
 
 class Shop_area(Interactif):
     def __init__(self, game, x, y, ID):
         super(Shop_area, self).__init__(game, x, y)
-        print("Shop ID", ID)
         self.key = pg.K_e
         self.shop = Screen_shop(game.screen, game, ID)
 
@@ -184,7 +176,6 @@ class Shop_area(Interactif):
 class Quest_area(Interactif):
     def __init__(self, game, x, y, ID):
         super(Quest_area, self).__init__(game, x, y)
-        print("Quest ID", ID)
         self.key = pg.K_e
         self.quest = QUEST_DICT[ID]
         self.dialogue = Dialogue(game, self, self.quest)
