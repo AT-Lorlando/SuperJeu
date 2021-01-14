@@ -137,6 +137,9 @@ class Game:
                     elif tile % 1000 == CHEST_ID:
                         Floor(self, col, row, 0)
                         Chest_area(self, col, row, tile)
+                    elif tile % 1000 == SAVE_ID:
+                        Floor(self, col, row, 0)
+                        Save_area(self, col, row, tile)
                 elif get_id(tile) == HOUSE_ID:
                     Floor(self, col, row, 0)
                     House(self, col, row, get_header(self, tile))

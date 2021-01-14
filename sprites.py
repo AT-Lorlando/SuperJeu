@@ -154,6 +154,13 @@ class Collectable_area(Interactif):
         player.inv.add_without_case(self.sprite.item)
         self.kill()
 
+class Save_area(Interactif):
+    def __init__(self, game, x, y, ID):
+        super(Save_area, self).__init__(game, x, y)
+        self.key = pg.K_e
+
+    def interaction(self, player):
+        self.game.save()
 class Chest_area(Interactif):
     def __init__(self, game, x, y, ID):
         super(Chest_area, self).__init__(game, x, y)
