@@ -69,6 +69,8 @@ SPAWN_ID = 13
 DOOR_ID = 14
 STAIR_ID = 15
 COLLECTABLE_ID = 16
+MOB_ID = 17
+CHESS_ID = 18
 
 HOUSE_ID = 52
 WATER_ID = 53
@@ -78,6 +80,7 @@ PLAYER_SPEED = 600
 RANGE = 25
 LAYER_NUMBER = 10
 
+STAGE_SIZE_TAB = [1,2,3,3,3,4,4,4,5]
 ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]
 
 def resize(img, size, y=0):

@@ -121,6 +121,12 @@ class Game:
                 elif get_id(tile) == COLLECTABLE_ID:
                     Floor(self, col, row, 0)
                     Collectable(self, col, row, tile)
+                elif get_id(tile) == CHESS_ID:
+                    Floor(self, col, row, 0)
+
+                elif get_id(tile) == MOB_ID:
+                    Floor(self, col, row, 0)
+
                 # HUB Features
                 elif get_id(tile) == NPC_ID:
                     Floor(self, col, row, 0)
