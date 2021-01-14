@@ -18,11 +18,18 @@ class Spell :
             hex_touched.append(position+hexes)
         tuiles_touches=[]
         for hexes in hex_touched :
-            tuiles_touches.append(Grid[Grid.index(hexes)])
+            if hexes in Grid:
+                tuiles_touches.append(Grid[Grid.index(hexes)])
         for tuiles in tuiles_touches :
             self.surtuile(self.owner,tuiles)
             hx.update_grid(Grid,tuiles)
         return
+    
+    def computecastzone(self,Grid,caster):
+        return [elmt for elmt in list(map((lambda x: caster + x), self.castzone)) if elmt in Grid and (Grid[Grid.index(elmt)].object==None or isinstance(Grid[Grid.index(elmt)].object,player))]
+        
+    def computedamagezone(self,Grid,target):
+        return [elmt for elmt in list(map((lambda x: target + x), self.dammagezone)) if elmt in Grid and (Grid[Grid.index(elmt)].object==None or isinstance(Grid[Grid.index(elmt)].object,player)) ]
 
 
     def __init__(self, fc) :

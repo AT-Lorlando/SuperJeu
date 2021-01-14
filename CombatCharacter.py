@@ -19,6 +19,7 @@ class player(object):
         self.spells=[False,False,False] #
         self.spellsname=[]
         self.spellpos=Hex(0,0)
+        self.activespell=None
         self.left = False
         self.right = False
         self.walkCount = 0

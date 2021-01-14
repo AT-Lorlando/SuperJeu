@@ -28,6 +28,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Combat mode")
 main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
 Grid = initgrid(8, 12)
+castzone=[]
 
 for c in Characters :
     update_grid(Grid,c.poshex)
@@ -39,13 +40,26 @@ for t in Tiles:
     update_grid(Grid,t)
 
 def redraw_window():
+    print(castzone)
     screen.blit(bg, (0, 0))  #Background
+    x, y = pygame.mouse.get_pos()
+    currentchar=Characters[indice%len(Characters)]
+    
+        
+    for element in castzone:
+        pygame.draw.polygon(screen, (0, 255, 0,125), hex_corner(layout, element))  #Grid layout
+
+    if waitforspell and pixel_to_hex(layout, (x, y)) in castzone :
+        for element in currentspell.computedamagezone(Grid,pixel_to_hex(layout, (x, y))):
+            pygame.draw.polygon(screen, (0, 0, 125,125), hex_corner(layout, element))
 
     for element in Grid:
         pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),1)  #Grid layout
     #pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
     
-    x, y = pygame.mouse.get_pos()
+    
+
+    
     currentchar=Characters[indice%len(Characters)]
     pygame.draw.rect(screen, BLACK,(0,0,100,100),2)
     if not(currentchar.left or currentchar.right):
@@ -55,8 +69,7 @@ def redraw_window():
                 for k in range(len(L)):
                     if len(L)<currentchar.mouvementpoints+2 and k>0:
                         pygame.draw.polygon(screen, BLUE,hex_corner(layout,L[k]),2)
-                pygame.draw.polygon(screen, RED,
-                                    hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
+                pygame.draw.polygon(screen, RED,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
         
     for k in range(len(Characters)):
         #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
@@ -206,11 +219,8 @@ indice=0
 
 
 
-def canispell(character,Grid,spellnumber,target):
-    badz=character.spellsname[spellnumber]
-    castzone=list(map((lambda x: character.poshex + x), badz.castzone))
-    print(len(castzone))
-    return (target in castzone and isinstance(Grid[Grid.index(target)], player))
+def canispell(target):
+    return target in castzone
     
     
 
@@ -242,11 +252,18 @@ while run:
 
     if keys[pygame.K_b] :
         if not waitforspell:
+            currentchar.activespell=0
             waitforspell=True
+            print("Spell mode")
+            currentspell=currentchar.spellsname[currentchar.activespell]
+            castzone=currentspell.computecastzone(Grid,currentchar.poshex)
         else:
             waitforspell=False
+            currentchar.activespell=None
+            print("Deplacement mode")
+            castzone=[]
         pygame.time.delay(100)
-        print("swap")
+        
         
         
         
@@ -279,16 +296,15 @@ while run:
 
     if mouse[0]:
         if waitforspell and not any( currentchar.spells):
-                print(canispell(currentchar,Grid,0,pixel_to_hex(layout,(x,y))))
-            #if canispell(currentchar,Grid,0,pixel_to_hex(layout,(x,y))):
-                currentchar.spells[0]=True
+            if canispell(pixel_to_hex(layout,(x,y))):
+                currentchar.spells[currentchar.activespell]=True
                 currentchar.spellpos=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-                thunder.cast(Grid,pixel_to_hex(layout,(x,y)))
+                currentchar.spellsname[currentchar.activespell].cast(Grid,pixel_to_hex(layout,(x,y)))
         elif 0<x<100 and 0<y<100 and not (currentchar.left or currentchar.right):
             indice+=1
             pygame.time.delay(100)
 
-    if mouse[2]:
+    if mouse[2] and not waitforspell:
         if listecase == [] and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range (len(Characters))]):    #Right click
             hextogo = pixel_to_hex(layout, (x, y))
             if hextogo in Grid :
