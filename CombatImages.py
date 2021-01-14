@@ -16,6 +16,8 @@ def load(flip,folderpath,num,scale,rang):
 HealthScale=(60,10)
 Health = load(False,health_folder,1,HealthScale,11)
 
+heart = pygame.transform.scale(pygame.image.load(path.join(health_folder,'heart.png')),(100,100))
+
 IconsScale=64,64
 Icons = load(False,fighticons_folder,1,IconsScale,2)
 

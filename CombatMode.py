@@ -6,14 +6,15 @@ from settings import *
 from CombatCharacter import *
 from spell_copy import *
 
-layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
 
+
+layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
 pospix = hex_to_pixel(layout, Hex(5,1))
+
 man = player(pospix[0], pospix[1], *PlayerScale)
 man.poshex = Tile(Hex(5, 1)).set_object(man)
 man.maxmana=6
 man.mana=6
-
 thunder.owner=man
 man.spellsname.append(thunder)
 
@@ -23,14 +24,18 @@ skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
 gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3))[1],*GobelinScale)
 gobelin.poshex = Tile(Hex(2, 3)).set_object(gobelin)
 
+
+
 Characters=[man,skeleton,gobelin]
-waitforspell=False
+
 WIDTH, HEIGTH = 1097, 720
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Combat mode")
 main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
 Grid = initgrid(8, 12)
+
+waitforspell=False
 castzone=[]
 currentchar=0
 for c in Characters :
@@ -42,6 +47,8 @@ for t in Tiles:
     t.set_object("Three")
     update_grid(Grid,t)
 
+fond = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
+bg= bg.convert_alpha()
 def redraw_window():
     screen.blit(bg, (0, 0))  #Background
     x, y = pygame.mouse.get_pos()
@@ -49,11 +56,11 @@ def redraw_window():
     
     if waitforspell:
         for element in castzone:
-            pygame.draw.polygon(screen, (0, 255, 0,125), hex_corner(layout, element))  #Grid layout
+            pygame.draw.polygon(screen, (255,183, 85,125), hex_corner(layout, element))  #Grid layout
 
         if pixel_to_hex(layout, (x, y)) in castzone :
             for element in currentspell.computedamagezone(Grid,pixel_to_hex(layout, (x, y))):
-                pygame.draw.polygon(screen, (0, 0, 125,125), hex_corner(layout, element))
+                pygame.draw.polygon(screen, (200, 100, 0,125), hex_corner(layout, element))
 
     for element in Grid:
         pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),1)  #Grid layout
@@ -71,27 +78,40 @@ def redraw_window():
                 for k in range(len(L)):
                     if len(L)<currentchar.movementpoints+2 and k>0:
                         pygame.draw.polygon(screen, BLUE,hex_corner(layout,L[k]),2)
-                pygame.draw.polygon(screen, RED,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
+                if len(L)==2:
+                    pygame.draw.polygon(screen, BLUE,hex_corner(layout, pixel_to_hex(layout, (x, y))),2)
+                else:
+                    pygame.draw.polygon(screen, RED,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
         
     for k in range(len(Characters)):
-        #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
-            healtposx-=largeurHex-7
-            healtposy-=hauteurHex
-            if not Characters[k].animation[0]:
-                screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
+        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+                (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+                healtposx-=largeurHex-7
+                healtposy-=hauteurHex
+                if not Characters[k].animation[0]:
+                    screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
     man.drawPlayer(screen)
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
 
-    lives_label = main_font.render(f"Health Points: {currentchar.healthpoint}",1,(0, 153, 0))
     level_label = main_font.render(f"Movement Points: {currentchar.movementpoints}",1,RED)
     mana_level = main_font.render(f"Action Points: {currentchar.mana}",1,BLUE)
-    screen.blit(lives_label,(10,625))
-    screen.blit(level_label,(10,650))
-    screen.blit(mana_level,(10,675))
+    hp =  main_font.render(f"{currentchar.healthpoint}",1,BLACK)
+    screen.blit(level_label,(110,650))
+    screen.blit(mana_level,(110,675))
+    pygame.draw.rect(screen, lifecolor(man.healthpoint),pygame.Rect(0,710-0.85*currentchar.healthpoint,100,90))
+    screen.blit(heart,(0,620))
+    screen.blit(hp,(50-hp.get_width()/2,655))
     
+
+def lifecolor(lifelevel):
+    if lifelevel>50:
+        return (round(2*(1-lifelevel/100)*250),255-lifelevel//100,0)
+    return (255,round(2*lifelevel/100*250),0)
+
+
+
 
 
 run =True
@@ -285,10 +305,10 @@ while run:
         currentchar.animation[0]=False
         currentchar.countdown=0
         if currentchar.healthpoint!=100:
-            currentchar.healthpoint+=5
+            currentchar.healthpoint+=1
     if keys[pygame.K_KP_MINUS] :
         if currentchar.healthpoint >0:
-            currentchar.healthpoint-=5
+            currentchar.healthpoint-=1
         elif currentchar.healthpoint==0 and not currentchar.animation[2]:
             currentchar.animation[0]=True
 
