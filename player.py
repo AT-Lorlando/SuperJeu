@@ -37,6 +37,8 @@ class Player(pg.sprite.Sprite):
 
         self.level = 1
         self.xp = 0
+        self.hp = 100
+        self.hp_max = 200
         self.champion_pool = []
         self.champion_pool.append(Dark_Wizard(self))
         self.champion_pool.append(Sun_Wizard(self))
@@ -59,6 +61,7 @@ class Player(pg.sprite.Sprite):
 
     def gain_money(self, amount):
         self.money += amount
+        
 
     def set_pos(self, x, y):
         self.pos.x = x
@@ -114,6 +117,12 @@ class Player(pg.sprite.Sprite):
             if keys[pg.K_0]:
                 for quest in self.quest_list:
                     print(quest.goal)
+            if keys[pg.K_8]:
+                self.hp -= 1 if self.hp > 0 else 0
+                print(self.hp)
+            if keys[pg.K_9]:
+                self.hp += 1 if self.hp < self.hp_max else 0
+                print(self.hp)
                 # for sprite in self.game.frontLayer:
                 #     print(sprite)
                 # print((self.pos[0], self.pos[1]))
