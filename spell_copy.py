@@ -60,6 +60,12 @@ def thunder_dammage(owner, tuile) :
         tuile.object.deal_damage(40)
     return 
 
+def sunburn_dammage(owner, tuile) :
+    #if tuile.object in Characters :
+    if isinstance(tuile.object,player):
+        tuile.object.deal_damage(25)
+    return 
+
 def attack_dammage(owner,tuile):
     if isinstance(tuile.object,player):
         tuile.object.deal_damage(10)
@@ -72,14 +78,22 @@ fireball.name=fireball """
 
 fireball=""
 
+sunburn = Spell(thunder_dammage)
+sunburn.name="sunburn"
+sunburn.dammagezone=hx.hex_circle(hx.Hex(), 1)
+sunburn.castzone = hx.hex_circle(hx.Hex(),3)
+sunburn.manacost=2
+
+
 thunder = Spell(thunder_dammage)
-#thunder.dammagezone= hx.hex_circle(hx.Hex(), 2)
-thunder.dammagezone=hx.hex_circle(hx.Hex(), 1)
-thunder.castzone = hx.hex_circle(hx.Hex(), 3)
-thunder.offsetx=30
+thunder.dammagezone=hx.hex_circle(hx.Hex(), 2)
+thunder.castzone = hx.hex_circle(hx.Hex(), 4)
+thunder.offsetx=31
 thunder.offsety=35
-thunder.manacost=2
+thunder.manacost=4
 thunder.name="thunder"
+
+
 
 attack = Spell(attack_dammage)
 attack.dammagezone=hx.hex_circle(hx.Hex(),1)

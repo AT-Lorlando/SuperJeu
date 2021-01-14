@@ -33,7 +33,7 @@ class player(object):
         relativeX = self.playerX - Playercombathorizontalshift
         relativeY = self.playerY - Playercombatverticalshift
         pospix=relativeX,relativeY
-        spellsanimations=[(Spell_thunder,Spell_thunder,20)]
+        spellsanimations=[(Spell_thunder,Spell_thunder,20),(Spell_sunburn,Spell_sunburn,18)]
         
         
 
@@ -49,7 +49,7 @@ class player(object):
         else:
             screen.blit(Playersprite, (relativeX, relativeY))
 
-        for k in range(1):
+        for k in range(len(self.spells)):
             if self.spells[k]:
                 
                 if self.faceleft:
@@ -140,17 +140,19 @@ class player(object):
             self.countdown=0
         elif self.spells[nanimation] and self.countdown<count:
             *a,x,y=position
-            screen.blit(playeranimation[self.countdown],(x-self.spellsname[0].offsetx,y-self.spellsname[0].offsety))
+            screen.blit(playeranimation[self.countdown],(x-self.spellsname[0].offsetx*3,y-self.spellsname[0].offsety*5))
             self.countdown += 1
 
 
     
     def deal_damage(self,damage):
         self.healthpoint-=damage
-        print(self.name+ " hit, -"+str(damage)+" HP")
+        #Scriptprint(self.name+ " hit, -"+str(damage)+" HP")
+        self.animation[2]=True
         if self.healthpoint<=0:
             self.animation[0]=True
             self.healthpoint=0
+            
 
 
 

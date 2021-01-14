@@ -7,7 +7,7 @@ from CombatCharacter import *
 from spell_copy import *
 
 
-
+##Init
 layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
 pospix = hex_to_pixel(layout, Hex(5,1))
 
@@ -16,7 +16,8 @@ man.poshex = Tile(Hex(5, 1)).set_object(man)
 man.maxmana=6
 man.mana=6
 thunder.owner=man
-man.spellsname.append(thunder)
+sunburn.owner=man
+man.spellsname.extend((thunder,sunburn))
 skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],*SkeletonScale,"Skeleton")
 skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
 
@@ -24,7 +25,8 @@ gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3)
 gobelin.poshex = Tile(Hex(2, 3)).set_object(gobelin)
 attack.owner=gobelin
 gobelin.spellsname.append(attack)
-
+gobelin.mana=2
+gobelin.maxmana=2
 
 
 Characters=[man,skeleton,gobelin]
@@ -50,6 +52,7 @@ for t in Tiles:
 
 fond = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
 bg= bg.convert_alpha()
+
 def redraw_window():
     screen.blit(bg, (0, 0))  #Background
     x, y = pygame.mouse.get_pos()
@@ -68,7 +71,6 @@ def redraw_window():
     #pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
     
     
-
     
     L=[]
     pygame.draw.rect(screen, BLACK,(0,0,100,100),2)
@@ -91,15 +93,20 @@ def redraw_window():
                 healtposy-=hauteurHex
                 if not Characters[k].animation[0]:
                     screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
-    man.drawPlayer(screen)
+
+    
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
+    man.drawPlayer(screen)
     if 1<len(L) and len(L)<(currentchar.movementpoints+2):
-        Movement_label = main_font.render(f"AP: {currentchar.movementpoints} - {len(L)-1}",1,RED)
+        Movement_label = main_font.render(f"MP: {currentchar.movementpoints} - {len(L)-1}",1,RED)
     else:
-        Movement_label = main_font.render(f"AP: {currentchar.movementpoints}",1,RED)
+        Movement_label = main_font.render(f"MP: {currentchar.movementpoints}",1,RED)
     if waitforspell:
-        Mana_level = main_font.render(f"AP: {currentchar.mana} - {currentspell.manacost}",1,BLUE)
+        if currentchar.mana>= currentspell.manacost:
+            Mana_level = main_font.render(f"AP: {currentchar.mana} - {currentspell.manacost}",1,BLUE)
+        else:
+            Mana_level = main_font.render(f"Not enough AP : {currentchar.mana} - {currentspell.manacost}",1,BLUE)
     else:
         Mana_level = main_font.render(f"AP: {currentchar.mana}",1,BLUE)
     screen.blit(Movement_label,(170,630+(Icons[1].get_height()-Movement_label.get_height())/2))
@@ -111,10 +118,15 @@ def redraw_window():
 
     screen.blit(Icons[1],(120,675))
     screen.blit(Icons[0],(120,630))
-
+    
     #Inventory
     screen.blit(spellbar,(WIDTH-spellbar.get_width()-10,640))
-    
+    for k in range(len(man.spellsname)):
+        screen.blit(Spell_icons[k],(inventory_cases[k]+2*(k+1),650))
+
+inventory_cases=[(597+60*k+k) for k in range (-1,9)]
+
+
 
 def lifecolor(lifelevel):
     if lifelevel>50:
@@ -276,7 +288,6 @@ def eastorwest():
         currentchar.faceleft=True
 
 
-
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -311,9 +322,6 @@ while run:
             castzone=[]
         pygame.time.delay(100)
         
-        
-        
-        
 
     if keys[pygame.K_h] and not (currentchar.animation[2] or currentchar.animation[0]):
 
@@ -342,13 +350,36 @@ while run:
 
 
     if mouse[0]:
-        if waitforspell and not any( currentchar.spells):
-            if canispell(pixel_to_hex(layout,(x,y))):
-                currentchar.spells[currentchar.activespell]=True
-                currentchar.spellpos=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-                print(currentchar.name+' uses '+currentchar.spellsname[currentchar.activespell].name+', cost : '+str(currentchar.spellsname[currentchar.activespell].manacost)+' action point(s)')
-                currentchar.spellsname[currentchar.activespell].cast(Grid,pixel_to_hex(layout,(x,y)))
-        elif 0<x<100 and 0<y<100 and not (currentchar.left or currentchar.right):
+
+        for k in range(len(currentchar.spellsname)):
+            if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
+                currentchar.activespell=k
+                print(k)
+                if not waitforspell:
+                    currentchar.activespell=k
+                    waitforspell=True
+                    currentspell=currentchar.spellsname[currentchar.activespell]
+                    castzone=currentspell.computecastzone(Grid,currentchar.poshex)
+                else:
+                    waitforspell=False
+                    currentchar.activespell=None
+                    castzone=[]
+                pygame.time.delay(200)
+
+        
+        if waitforspell:
+            if not any( currentchar.spells):
+                if canispell(pixel_to_hex(layout,(x,y))):
+                    
+                    currentchar.spells[currentchar.activespell]=True
+                    currentchar.spellpos=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+                    #Scriptprint(currentchar.name+' uses '+currentchar.spellsname[currentchar.activespell].name+', cost : '+str(currentchar.spellsname[currentchar.activespell].manacost)+' action point(s)')
+                    currentchar.spellsname[currentchar.activespell].cast(Grid,pixel_to_hex(layout,(x,y)))
+                    waitforspell=False
+                
+        
+        if 0<x<100 and 0<y<100 and not (currentchar.left or currentchar.right):
+            waitforspell=False
             indice+=1
             pygame.time.delay(100)
             currentchar=Characters[indice%len(Characters)]
