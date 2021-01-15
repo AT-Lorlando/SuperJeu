@@ -14,6 +14,7 @@ from sprites import *
 from tilemap import *
 from Map import *
 from screen_inv import *
+from hud import *
 import time
 
 #from Dungeon import *
@@ -28,40 +29,6 @@ def get_header(game, tile):
         return game.actual_dungeon.type
     else:
         return tile//100
-
-class Life_HUD:
-    def __init__(self, x, y, player):
-        self.player = player
-        self.x = x
-        self.y = y
-        self.source_image = resize(pg.image.load(
-            path.join(assets_folder, f'life.png')), 200,200)
-        self.image_rect = self.source_image.get_rect()
-        self.image = self.source_image.subsurface(self.image_rect)
-        self.image_rect.height = 20
-
-    def update(self):
-        self.image_rect.width = 200 * self.player.hp/self.player.hp_max
-        self.image_rect.y = 180 * self.player.hp/self.player.hp_max
-        self.image = self.source_image.subsurface(self.image_rect)
-
-class Character_HUD:
-    def __init__(self, x, y, player):
-        self.player = player
-        self.x = x
-        self.y = y
-        self.source_image = resize(self.player.main_champ.walk_bot[0], 70,70)
-        self.image_rect = self.source_image.get_rect()
-        self.image_rect.x = 5
-        self.image_rect.y = 0
-        self.image_rect.width = 60
-        self.image_rect.height = 52
-        self.image = self.source_image.subsurface(self.image_rect)
-        
-
-    def update(self):
-        self.source_image = resize(self.player.main_champ.walk_bot[0], 70,70)
-        self.image = self.source_image.subsurface(self.image_rect)
        
 
 class Game:
@@ -99,10 +66,18 @@ class Game:
 
         self.player = Player(self, 0, 0)
         
-        LIFE_HUD = Life_HUD(80,15 ,self.player)
+        LIFE_HUD = Life_HUD(HEIGHT//15 + 10,15 ,self.player)
+        EXP_HUD = Exp_HUD(HEIGHT//15 + 10,45 ,self.player)
         CHARACTER_HUD = Character_HUD(5,5, self.player)
+        Life_DATA_HUD = Life_Data_HUD(300,12, self.player)
+        Exp_DATA_HUD = Exp_Data_HUD(300,42, self.player)
+
         self.HUD.append(LIFE_HUD)
+        self.HUD.append(EXP_HUD)
         self.HUD.append(CHARACTER_HUD)
+        self.HUD.append(Life_DATA_HUD)
+        self.HUD.append(Exp_DATA_HUD)
+
 
         self.resume = False
         self.screen_inv = Screen_inv(self.screen, self)
@@ -263,9 +238,8 @@ class Game:
             self.screen.blit(self.dialogue, (WIDTH/2-60, HEIGHT/1.3))
             self.screen.blit(self.interactif_sentence,
                              (WIDTH/2-60, HEIGHT/1.3+20))
-        for scr in self.HUD:
-            scr.update()
-            self.screen.blit(scr.image, (scr.x, scr.y))
+        for hud in self.HUD:
+            hud.draw(self)
         pg.display.update()
 
     def save(self):

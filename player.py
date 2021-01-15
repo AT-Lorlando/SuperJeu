@@ -36,7 +36,8 @@ class Player(pg.sprite.Sprite):
         self.stuff = Inventory("stuff", 5)
 
         self.level = 1
-        self.xp = 0
+        self.xp = 100
+        self.xp_max = 200
         self.hp = 100
         self.hp_max = 200
         self.champion_pool = []
@@ -123,6 +124,12 @@ class Player(pg.sprite.Sprite):
             if keys[pg.K_9]:
                 self.hp += 1 if self.hp < self.hp_max else 0
                 print(self.hp)
+            if keys[pg.K_6]:
+                self.xp -= 1 if self.xp > 0 else 0
+                print(self.xp)
+            if keys[pg.K_7]:
+                self.xp += 1 if self.xp < self.xp_max else 0
+                print(self.xp)
                 # for sprite in self.game.frontLayer:
                 #     print(sprite)
                 # print((self.pos[0], self.pos[1]))

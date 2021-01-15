@@ -44,8 +44,8 @@ wall_folder = path.join(tile_folder, 'wall')
 
 
 # game settings
-WIDTH = 1080   # 16 * 64 or 32 * 32 or 64 * 16
-HEIGHT = 720  # 16 * 48 or 32 * 24 or 64 * 12
+WIDTH = 1920   # 16 * 64 or 32 * 32 or 64 * 16
+HEIGHT = 1080  # 16 * 48 or 32 * 24 or 64 * 12
 FPS = 120
 TITLE = "Superjeu"
 BGCOLOR = DARKGREY
@@ -85,6 +85,9 @@ LAYER_NUMBER = 10
 
 STAGE_SIZE_TAB = [1,2,3,3,3,4,4,4,5]
 ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]
+
+def text_to_screen(text, color=(255,255,255), l=30):
+    return pg.font.SysFont("Blue Eyes.otf", l).render(text, True, color)
 
 def resize(img, size, y=0):
     return pg.transform.scale(img, (size, y)) if y else pg.transform.scale(img, (size, size))
