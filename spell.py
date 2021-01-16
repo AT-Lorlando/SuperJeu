@@ -35,19 +35,19 @@ class Spell (pg.sprite.Sprite):
         if self.range:
             if(self.player.looking_at == "Right"):
                 self.pos += vec(TILESIZE//2,0)
-                self.vel = vec(300,0)
+                self.vel = vec(1000,0) + self.player.vel
                 self.angle = 0
             elif(self.player.looking_at == "Left"):
                 self.pos += vec(-TILESIZE//2,0)
-                self.vel = vec(-300,0)
+                self.vel = vec(-1000,0)+ self.player.vel
                 self.angle = 180
             elif(self.player.looking_at == "Top"):
                 self.pos += vec(0,-TILESIZE//2)
-                self.vel = vec(0,-300)
+                self.vel = vec(0,-1000)+ self.player.vel
                 self.angle = 90
             elif(self.player.looking_at == "Bot"):
                 self.pos += vec(0,TILESIZE//2)
-                self.vel = vec(0,300)
+                self.vel = vec(0,1000)+ self.player.vel
                 self.angle = 270
         self.traveling = True
     
