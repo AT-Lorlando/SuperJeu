@@ -162,7 +162,6 @@ class Player(pg.sprite.Sprite):
         if now - self.time_since_last_spell > 250:
             self.time_since_last_spell = now
             Fireball(self)
-            print("FIRE")
 
     def switch(self, x):
         self.vel = vec(0, 0)

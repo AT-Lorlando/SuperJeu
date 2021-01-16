@@ -109,8 +109,6 @@ class Game:
         self.map_data = instance.data
         self.known_tiles = []
 
-        print("before row tiles loop pos", self.player.pos)
-
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 # print(tile, get_id(tile))
@@ -311,7 +309,6 @@ class Animation():
         # self.rect = pg.Rect(0,0,pos)
         self.image_tab = tab
         self.to_kill = False
-        print(colorkey)
 
     def draw(self):
         this_image = self.image_tab[self.actual_frame]

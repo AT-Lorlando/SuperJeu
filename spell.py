@@ -55,7 +55,6 @@ class Spell (pg.sprite.Sprite):
         return pg.sprite.spritecollide(self, self.game.obstacle, False)
 
     def hit(self, sprite_group = None):
-        # print("hit")        
         if sprite_group:
             self.vel = vec(0,0)
             self.hiting = True
@@ -90,7 +89,6 @@ class Spell (pg.sprite.Sprite):
 class Fireball(Spell):
     def __init__(self, character):
         super(Fireball,self).__init__(character)
-        print("Fire ball creating")
         self.range = 5
         self.dmg = 5
         self.hp = -1        

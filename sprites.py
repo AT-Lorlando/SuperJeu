@@ -109,8 +109,6 @@ class Stair(MySprite):
 class NPC(MySprite):
     def __init__(self, game, x, y, tile):
         img = tile//10 % 10
-        print(tile,img)
-
         self.image = resize(pg.image.load(
             path.join(npc_folder, f'{img}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
