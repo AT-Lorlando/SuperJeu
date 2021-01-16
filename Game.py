@@ -115,26 +115,26 @@ class Game:
                 if get_id(tile) == FLOOR_ID:
                     Floor(self, col, row, get_header(self, tile))
                 elif get_id(tile) == WALL_ID:
-                    Floor(self, col, row, get_header(self, 0))
+                    Floor(self, col, row, get_header(self, tile))
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
-                    Floor(self, col, row, 0)
+                    Floor(self, col, row, tile if self.actual_stage else 0)
                     if not self.resume:
                         self.player.set_pos(col*TILESIZE, row*TILESIZE)
                     else:
                         pass
 
                 elif get_id(tile) == DOOR_ID:
-                    Floor(self, col, row, 0)
+                    Floor(self, col, row, tile if self.actual_stage else 0)
                     Door(self, col, row, get_header(self, tile))
                 elif get_id(tile) == STAIR_ID:
-                    Floor(self, col, row, 0)
+                    Floor(self, col, row, tile)
                     Stair(self, col, row)
                 elif get_id(tile) == COLLECTABLE_ID:
-                    Floor(self, col, row, 0)
+                    Floor(self, col, row, tile if self.actual_stage else 0)
                     Collectable(self, col, row, tile)
                 elif get_id(tile) == MOB_ID:
-                    Floor(self, col, row, 0)
+                    Floor(self, col, row, tile)
 
                 # HUB Features
                 elif get_id(tile) == NPC_ID:
@@ -147,10 +147,10 @@ class Game:
                         Floor(self, col, row, 0)
                         Quest_area(self, col, row, tile)
                     elif tile % 1000 == CHEST_ID:
-                        Floor(self, col, row, 0)
+                        Floor(self, col, row, tile if self.actual_stage else 0)
                         Chest_area(self, col, row, tile)
                     elif tile % 1000 == SAVE_ID:
-                        Floor(self, col, row, 0)
+                        Floor(self, col, row, tile if self.actual_stage else 0)
                         Save_area(self, col, row, tile)
                 elif get_id(tile) == HOUSE_ID:
                     Floor(self, col, row, 0)
