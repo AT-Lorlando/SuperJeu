@@ -159,7 +159,7 @@ class Player(pg.sprite.Sprite):
 
     def use_spell(self, spell):
         now = pg.time.get_ticks()
-        if now - self.time_since_last_spell > 250:
+        if now - self.time_since_last_spell > 120:
             self.time_since_last_spell = now
             Fireball(self)
 
