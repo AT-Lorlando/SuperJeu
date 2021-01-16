@@ -21,8 +21,9 @@ class MySprite(pg.sprite.Sprite):
 
 class Floor(MySprite):
     def __init__(self, game, x, y, tile):
+        img = random.randint(1,8) if tile else 0
         self.image = resize(pg.image.load(
-            path.join(floor_folder, f'{tile}.png')), TILESIZE)
+            path.join(floor_folder, f'{img}.png')), TILESIZE)
         self.rect = self.image.get_rect()
         super(Floor,self).__init__(game, x, y, tile)
         self.groups = game.Layers[0]
@@ -37,8 +38,9 @@ class Decoration(MySprite):
         pg.sprite.Sprite.__init__(self, self.groups)
 class Wall(MySprite):
     def __init__(self, game, x, y, tile):
+        img = random.randint(1,6) if tile else 0
         self.image = resize(pg.image.load(
-            path.join(wall_folder, f'{tile}.png')), TILESIZE)
+            path.join(wall_folder, f'{img}.png')), TILESIZE)
         self.rect = self.image.get_rect()
         super(Wall,self).__init__(game, x, y, tile)
         self.groups = game.Layers[2], game.obstacle
