@@ -63,6 +63,15 @@ class Player(pg.sprite.Sprite):
     def gain_money(self, amount):
         self.money += amount
         
+    def level_up(self):
+        self.level += 1
+        self.xp -= self.xp_max
+        self.xp_max = 10*floor(self.xp_max * XP_RATIO)
+        self.hp_max = 10*floor(self.hp_max * HP_RATIO)
+        self.hp = self.hp_max
+        self.game.animation_add([(pg.image.load(path.join(level_up_folder, f'l ({x}).gif'))) for x in range(1, 38)], pos=(700,400), colorkey=(0,0,0))
+        if(self.xp >= self.xp_max):
+            self.level_up()
 
     def set_pos(self, x, y):
         self.pos.x = x
@@ -129,6 +138,9 @@ class Player(pg.sprite.Sprite):
                 print(self.xp)
             if keys[pg.K_7]:
                 self.xp += 1 if self.xp < self.xp_max else 0
+                print(self.xp)
+            if keys[pg.K_5]:
+                self.xp += 100
                 print(self.xp)
                 # for sprite in self.game.frontLayer:
                 #     print(sprite)
@@ -244,6 +256,7 @@ class Player(pg.sprite.Sprite):
     def update(self):
         self.main_champ.animation()
         self.image = self.main_champ.image
+        
         if(self.isPlaying):
             self.get_keys()
             self.pos += self.vel * self.game.dt
@@ -255,3 +268,6 @@ class Player(pg.sprite.Sprite):
             self.playerpos = [floor(pos/TILESIZE) for pos in self.pos]
         if(self.vel == (0, 0)):
             self.is_moving = False
+
+        if (self.xp >= self.xp_max):
+            self.level_up()

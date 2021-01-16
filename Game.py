@@ -180,12 +180,15 @@ class Game:
     def load_dungeon(self, dungeon_type, dungeon_difficulty):
         self.actual_dungeon = Dungeon(dungeon_type, dungeon_difficulty)
 
-    def animation_add(self, sprite, image_tab):
-        self.animation_tab.append(
-            Animation(self, self.camera.apply(sprite), image_tab))
+    def animation_add(self, image_tab, sprite=None, pos=(0,0),colorkey=None):
+        if(sprite):
+            self.animation_tab.append(
+                Animation(self, self.camera.apply(sprite), image_tab, colorkey))
+        else:
+            self.animation_tab.append(
+                Animation(self, pos, image_tab,colorkey))
 
     def run(self):
-        # game loop - set self.playing = False to end the game
         self.playing = True
         while self.playing:
             self.dt_update()
@@ -296,19 +299,24 @@ class Game:
 
 
 class Animation():
-    def __init__(self, game, pos, tab):
+    def __init__(self, game, pos, tab, colorkey = None):
         self.game = game
         self.frame_rate = 12
         self.time_since_anime = 0
         self.actual_frame = 0
         self.pos = pos
+        self.colorkey = None
+        if colorkey:
+            self.colorkey = colorkey
         # self.rect = pg.Rect(0,0,pos)
         self.image_tab = tab
         self.to_kill = False
+        print(colorkey)
 
     def draw(self):
         this_image = self.image_tab[self.actual_frame]
-        this_image.set_colorkey((223, 222, 223))
+        if self.colorkey:
+            this_image.set_colorkey(self.colorkey)
         self.game.screen.blit(this_image, self.pos)
 
     def update(self):
@@ -318,8 +326,6 @@ class Animation():
             self.actual_frame += 1
             if self.actual_frame >= len(self.image_tab):
                 self.game.animation_tab.remove(self)
-                print("removed", len(self.game.animation_tab))
-
 
 class Save_player():
     def __init__(self, money, pos, xp, actual_quests):

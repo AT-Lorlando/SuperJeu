@@ -61,22 +61,23 @@ class House(MySprite):
 
 class Door(MySprite):
     def __init__(self, game, x, y, tile):
-        self.image = resize(pg.image.load(
-            path.join(portal_folder, 'portal.png')), TILESIZE)
+        self.image_tab = [(resize(pg.image.load(path.join(portal_folder, f'p ({x}).gif')), TILESIZE)) for x in range(1, 21)]
+        self.image = self.image_tab[0]
         self.rect = self.image.get_rect()
         super(Door,self).__init__(game, x, y, tile)
         self.groups = game.Layers[4], game.obstacle, game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.door_type = 1
         self.instance_behind = (tile//10, tile%10) #Type,dif
-        self.actual_frame = 1
+        self.actual_frame = 0
         self.time_since_anime = 0
 
     def turn(self):
         self.time = pg.time.get_ticks()
-        if(self.time > self.time_since_anime + 150):
+        if(self.time > self.time_since_anime + 25):
             self.time_since_anime = self.time
-            self.image = pg.transform.rotate(self.image, 90)
+            self.actual_frame = (self.actual_frame + 1) % 19
+            self.image = self.image_tab[self.actual_frame]
 
     def update(self):
         self.turn()
@@ -84,8 +85,8 @@ class Door(MySprite):
 
 class Stair(MySprite):
     def __init__(self, game, x, y):
-        self.image = resize(pg.image.load(
-            path.join(portal_folder, 'portal.png')), TILESIZE)
+        self.image_tab = [(resize(pg.image.load(path.join(portal_folder, f'p ({x}).gif')), TILESIZE)) for x in range(1, 21)]
+        self.image = self.image_tab[0]
         self.rect = self.image.get_rect()
         super(Stair,self).__init__(game, x, y)
         self.groups = game.Layers[4], game.obstacle, game.stairs
@@ -93,15 +94,14 @@ class Stair(MySprite):
         
         self.actual_frame = 1
         self.time_since_anime = 0
-        self.portal = [(pg.image.load(
-            path.join(portal_folder, f'{i}.png'))) for i in range(1, 4)]
 
 
     def turn(self):
         self.time = pg.time.get_ticks()
-        if(self.time > self.time_since_anime + 150):
+        if(self.time > self.time_since_anime + 25):
             self.time_since_anime = self.time
-            self.image = pg.transform.rotate(self.image, 90)
+            self.actual_frame = (self.actual_frame + 1) % 19
+            self.image = self.image_tab[self.actual_frame]
 
     def update(self):
         self.turn()
@@ -110,6 +110,7 @@ class NPC(MySprite):
     def __init__(self, game, x, y, tile):
         img = tile//10 % 10
         print(tile,img)
+
         self.image = resize(pg.image.load(
             path.join(npc_folder, f'{img}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
@@ -128,7 +129,7 @@ class Collectable(MySprite):
         super(Collectable,self).__init__(game, x, y, tile)
         Collectable_area(game, x, y, self)
 
-        self.groups = game.Layers[6], game.obstacle
+        self.groups = game.Layers[6]
         pg.sprite.Sprite.__init__(self, self.groups)
 
 class Interactif(pg.sprite.Sprite):

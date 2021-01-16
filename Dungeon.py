@@ -336,8 +336,11 @@ class Dungeon:
         self.stage_tab.append(New_Stage(0, 0, self.type))
 
 def New_Stage(ID, difficulty, dungeon_type):
-    tile_number = random.randint(difficulty*2,ceil(difficulty*2.5))
     stage_size = STAGE_SIZE_TAB[difficulty]
+    tile_number = random.randint(difficulty*2,floor(difficulty*2.5))
+    if tile_number > stage_size*stage_size:
+        tile_number = stage_size*stage_size
+        
     chest_weight = [8,6,4,2]
     mob_weight = [5,7,6,3,2,1]
 
@@ -389,7 +392,5 @@ def New_Stage(ID, difficulty, dungeon_type):
                 stage.connect_corridor(room1, room2)
     
     stage.add_type(dungeon_type)
-
-    print('Stage diffuclty', difficulty)
     stage.save()
     return stage

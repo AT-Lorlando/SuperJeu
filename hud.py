@@ -31,7 +31,7 @@ class Life_HUD(HUD):
 class Exp_HUD(HUD):
     def __init__(self, x, y, player):
         super(Exp_HUD,self).__init__(x, y, player)
-        self.source_image = resize(pg.image.load(path.join(assets_folder, f'life.png')), 200,200)
+        self.source_image = resize(pg.image.load(path.join(assets_folder, f'exp.png')), 200,200)
         self.image_rect = self.source_image.get_rect()
         self.image = self.source_image.subsurface(self.image_rect)
         self.image_rect.height = 20

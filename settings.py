@@ -22,7 +22,9 @@ dark_wizard_folder = path.join(champ_folder, 'dark_wizard')
 sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
 hunter_folder = path.join(champ_folder, 'archer')
 
+portal_folder = path.join(champ_folder, 'portal')
 explode_folder = path.join(champ_folder, 'explode')
+level_up_folder = path.join(champ_folder, 'level_up')
 
 button_folder = path.join(assets_folder, 'buttons_img')
 map_folder = path.join(assets_folder, 'map_background')
@@ -39,7 +41,6 @@ deco_folder = path.join(tile_folder, 'deco')
 floor_folder = path.join(tile_folder, 'floor')
 house_folder = path.join(tile_folder, 'house')
 npc_folder = path.join(tile_folder, 'npc')
-portal_folder = path.join(tile_folder, 'portal')
 wall_folder = path.join(tile_folder, 'wall')
 
 
@@ -53,6 +54,9 @@ BGCOLOR = DARKGREY
 TILESIZE = 96
 CHARACTER_SIZE = 60
 ITEM_SIZE = 40
+
+XP_RATIO = 0.12
+HP_RATIO = 0.11
 
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE

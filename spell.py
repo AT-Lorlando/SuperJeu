@@ -64,16 +64,13 @@ class Spell (pg.sprite.Sprite):
             for sprite in sprite_group:
                 self.make_effect(sprite)
             self.kill()
-            print("Fireball killed")
 
     def make_effect(self, sprite):
         if sprite.hp:
             sprite.hp -= 1
-        print(sprite, "Hited", sprite.hp)
 
     def explode(self):
-        self.game.animation_add(self, self.explodes_images)
-        print("Pfiou EXPLOSION")
+        self.game.animation_add(self.explodes_images, self, colorkey=(223,222,223))
 
     def update(self):
         now = pg.time.get_ticks()
