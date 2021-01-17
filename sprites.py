@@ -115,6 +115,7 @@ class Mob(MySprite):
             path.join(npc_folder, f'{1}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
         super(Mob,self).__init__(game, x, y, tile)
+        self.hp = 10
         # self.rect.center = (x, y)
         # self.hit_rect = MOB_HIT_RECT.copy()
         # self.hit_rect.center = self.rect.center
@@ -158,12 +159,6 @@ class Mob(MySprite):
             self.rot = (self.game.player.pos - self.pos).angle_to(vec(1, 0))
         else:
             self.is_moving = False
-        for mob in self.game.mobs:
-            if mob != self:
-                dist = self.pos - mob.pos
-                if 0 < dist.length() < 100:
-                    self.is_moving = True
-                    self.acc += dist.normalize()
 
 
     def update(self):
@@ -174,7 +169,7 @@ class Mob(MySprite):
             self.aim.scale_to_length(self.speed)
             self.aim += self.vel * -1
             self.vel += self.aim * self.game.dt
-            self.pos += self.vel * self.game.dt  + 0.5 * self.aim * self.game.dt ** 2
+            self.pos += self.vel * self.game.dt  #+ 0.5 * self.aim * self.game.dt ** 2
         self.rect.x = self.pos.x
         self.collide_with_obstacle('x')
         self.rect.y = self.pos.y
@@ -183,7 +178,7 @@ class Mob(MySprite):
         if(self.vel == (0, 0)):
             self.is_moving = False
 
-        if self.health <= 0:
+        if self.hp <= 0:
             self.kill()
 
 class NPC(MySprite):
