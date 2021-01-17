@@ -112,7 +112,7 @@ class Mob(MySprite):
     def __init__(self, game, x, y, tile):
         
         self.image = resize(pg.image.load(
-            path.join(npc_folder, f'{0}.png')), CHARACTER_SIZE)
+            path.join(npc_folder, f'{1}.png')), CHARACTER_SIZE)
         self.rect = self.image.get_rect()
         super(Mob,self).__init__(game, x, y, tile)
         # self.rect.center = (x, y)
@@ -124,10 +124,10 @@ class Mob(MySprite):
         self.rect.center = self.pos
         self.rot = 0
         self.health = 100
-        self.speed = 600
+        self.speed = 250
         self.is_moving = False
 
-        self.groups = game.Layers[6], game.mobs # game.all_sprites, game.mobs
+        self.groups = game.Layers[6], game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
     
     
@@ -152,7 +152,6 @@ class Mob(MySprite):
                 self.rect.y = self.pos.y
 
     def IA(self):
-        # print(self.game.player.pos, self.pos)
         if(abs(self.game.player.pos.x - self.pos.x) < 4 * TILESIZE and 
         abs(self.game.player.pos.y - self.pos.y) < 4 * TILESIZE):
             self.is_moving = True
