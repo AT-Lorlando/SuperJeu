@@ -31,6 +31,7 @@ map_folder = path.join(assets_folder, 'map_background')
 
 # wall_folder = path.join(assets_folder, 'wall')
 sprite_folder = path.join(assets_folder, 'img_sprite')
+enemy_folder = path.join(assets_folder,'enemy')
 item_folder = path.join(assets_folder, 'items')
 # portal_folder = path.join(assets_folder, 'portal')
 # room_folder = path.join(assets_folder, 'room')
