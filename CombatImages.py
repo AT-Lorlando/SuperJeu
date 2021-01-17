@@ -7,6 +7,8 @@ bg = pygame.image.load(path.join(assets_folder,'map.png'))
 
 spell_thunder=path.join(spell_folder,'spell_thunder')
 spell_sunburn=path.join(spell_folder,'spell_sunburn')
+spell_bomb=path.join(spell_folder,'spell_bomb')
+spell_heal=path.join(spell_folder,'spell_heal')
 fighticons_folder=path.join(assets_folder,'fighticons')
 
 def load(flip,folderpath,num,scale,rang):
@@ -72,9 +74,11 @@ GobelinBomb = load(False,gobelin_bomb,2,GobelinScale,38)
 GobelinRight=load(False,gobelin_walk,2,GobelinScale,18)
 GobelinLeft=load(True,gobelin_walk,2,GobelinScale,18)
 
-Spellscale=(64*3,64*3)
+Spellscale=(64*3,64*2)
 Spell_thunder=load(False,spell_thunder,2,Spellscale,20)
 Spell_sunburn=load(False,spell_sunburn,2,Spellscale,18)
+Spell_bomb=load(False,spell_bomb,2,Spellscale,20)
+Spell_heal=load(False,spell_heal,2,Spellscale,24)
 
 SpelliconsScale=(50,50)
-Spell_icons=load(False,spell_folder,1,SpelliconsScale,2)
+Spell_icons=load(False,spell_folder,1,SpelliconsScale,4)

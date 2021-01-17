@@ -17,7 +17,9 @@ man.maxmana=6
 man.mana=6
 thunder.owner=man
 sunburn.owner=man
-man.spellsname.extend((thunder,sunburn))
+bomb.owner=man
+heal.owner=man
+man.spellsname.extend((thunder,sunburn,bomb,heal))
 skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],*SkeletonScale,"Skeleton")
 skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
 
@@ -85,7 +87,7 @@ def redraw_window():
                     if len(L)>currentchar.movementpoints+1:
                         pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
     for k in range(len(Characters)):
-        if Characters[k].healthpoint<100 and Characters[k]!=man:
+        if Characters[k].healthpoint<100:
         #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
                 #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
                 (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
@@ -95,6 +97,7 @@ def redraw_window():
                     screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
 
     
+        
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
     man.drawPlayer(screen)
@@ -121,6 +124,8 @@ def redraw_window():
     
     #Inventory
     screen.blit(spellbar,(WIDTH-spellbar.get_width()-10,640))
+    if currentchar.activespell !=None:
+        pygame.draw.rect(screen, RED,pygame.Rect(597+60*(currentchar.activespell-1),645,60,60),2)
     for k in range(len(man.spellsname)):
         screen.blit(Spell_icons[k],(inventory_cases[k]+2*(k+1),650))
 
@@ -353,20 +358,18 @@ while run:
 
         for k in range(len(currentchar.spellsname)):
             if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
-                currentchar.activespell=k
-                print(k)
-                if not waitforspell:
+                #if not waitforspell:
                     currentchar.activespell=k
                     waitforspell=True
                     currentspell=currentchar.spellsname[currentchar.activespell]
                     castzone=currentspell.computecastzone(Grid,currentchar.poshex)
-                else:
-                    waitforspell=False
-                    currentchar.activespell=None
-                    castzone=[]
-                pygame.time.delay(200)
+            
+            elif (pixel_to_hex(layout,(x,y)) in Grid) and waitforspell and (pixel_to_hex(layout,(x,y)) not in castzone):
+                waitforspell=False  
+                currentchar.activespell=None
+            pygame.time.delay(10)
+            
 
-        
         if waitforspell:
             if not any( currentchar.spells):
                 if canispell(pixel_to_hex(layout,(x,y))):

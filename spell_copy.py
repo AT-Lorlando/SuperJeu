@@ -71,6 +71,17 @@ def attack_dammage(owner,tuile):
         tuile.object.deal_damage(10)
     return 
 
+def bomb_dammage(owner,tuile):
+    if isinstance(tuile.object,player):
+        tuile.object.deal_damage(70)
+    return 
+
+def heal_dammage(owner,tuile):
+    if isinstance(tuile.object,player):
+        tuile.object.deal_damage(-20)
+    return 
+
+
 """ fireball = Spell(fireball_dammage)
 fireball.dammagezone = hx.hex_circle(hx.Hex(),1)
 fireball.castzone= hx.hex_circle((hx.Hex(), 3))
@@ -94,6 +105,17 @@ thunder.manacost=4
 thunder.name="thunder"
 
 
+bomb = Spell(bomb_dammage)
+bomb.name="bomb"
+bomb.dammagezone=hx.hex_circle(hx.Hex(), 2)
+bomb.castzone = hx.hex_circle(hx.Hex(),3)
+bomb.manacost=2
+
+heal=Spell(heal_dammage)
+heal.name="heal"
+heal.dammagezone=hx.hex_circle(hx.Hex(),1)
+heal.castzone = hx.hex_circle(hx.Hex(),3)
+heal.manacost=2
 
 attack = Spell(attack_dammage)
 attack.dammagezone=hx.hex_circle(hx.Hex(),1)
