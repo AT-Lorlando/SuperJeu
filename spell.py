@@ -52,7 +52,8 @@ class Spell (pg.sprite.Sprite):
         self.traveling = True
     
     def collide(self):
-        return pg.sprite.spritecollide(self, self.game.obstacle, False)
+        return pg.sprite.spritecollide(self, self.game.mobs, False) if pg.sprite.spritecollide(self, self.game.mobs, False) else pg.sprite.spritecollide(self, self.game.obstacle, False)
+
 
     def hit(self, sprite_group = None):
         if sprite_group:
