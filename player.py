@@ -124,6 +124,7 @@ class Player(pg.sprite.Sprite):
 
             if self.vel.x != 0 and self.vel.y != 0:
                 self.vel *= 0.7071
+                
             if keys[pg.K_0]:
                 for quest in self.quest_list:
                     print(quest.goal)
@@ -223,6 +224,12 @@ class Player(pg.sprite.Sprite):
             else:
                 self.game.interactif_dialogue(None)
 
+    def collide_with_mob(self):
+        hits = pg.sprite.spritecollide(self, self.game.mobs, False)
+
+        if hits:
+            hits[0].kill()
+
     def collide_interaction(self, sprite):
         if sprite in self.game.doors:
             self.vel = vec(0, 0)
@@ -258,11 +265,13 @@ class Player(pg.sprite.Sprite):
         
         if(self.isPlaying):
             self.get_keys()
+            # print("Player", self.vel)
             self.pos += self.vel * self.game.dt
             self.rect.x = self.pos.x
             self.collide_with_obstacle('x')
             self.rect.y = self.pos.y
             self.collide_with_obstacle('y')
+            self.collide_with_mob()
             self.collide_with_interactif()
             self.playerpos = [floor(pos/TILESIZE) for pos in self.pos]
         if(self.vel == (0, 0)):
