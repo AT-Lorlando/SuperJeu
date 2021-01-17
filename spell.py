@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+from sound import *
 vec = pg.math.Vector2
 
 
@@ -70,6 +71,7 @@ class Spell (pg.sprite.Sprite):
 
     def explode(self):
         self.game.animation_add(self.explodes_images, self, colorkey=(223,222,223))
+        explosionSound.play()
 
     def update(self):
         now = pg.time.get_ticks()
