@@ -96,7 +96,7 @@ class Player(pg.sprite.Sprite):
                 self.vel.x = PLAYER_SPEED
                 self.is_moving = True
             elif self.vel.x != 0:
-                self.vel.x *= 0.8
+                self.vel.x *= 0.9
             if keys[pg.K_UP]:
                 if keys[pg.K_DOWN]:
                     self.vel.y = 0
@@ -113,7 +113,7 @@ class Player(pg.sprite.Sprite):
                 self.vel.y = PLAYER_SPEED
                 self.is_moving = True
             elif self.vel.y != 0:
-                self.vel.y *= 0.8
+                self.vel.y *= 0.9
 
             if(self.is_moving):
                 if -10 < self.vel.x < 10:
@@ -228,6 +228,7 @@ class Player(pg.sprite.Sprite):
         hits = pg.sprite.spritecollide(self, self.game.mobs, False)
 
         if hits:
+            self.hp -= 10
             hits[0].kill()
 
     def collide_interaction(self, sprite):
