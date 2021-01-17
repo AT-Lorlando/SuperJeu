@@ -64,6 +64,26 @@ def redraw_window():
     x, y = pygame.mouse.get_pos()
     currentchar=Characters[indice%len(Characters)]
     
+    Spell_range()
+    GridOverlay()
+    
+    PathAnimation()
+    HealthView()
+        
+    skeleton.drawSkeleton(screen)
+    gobelin.drawGobelin(screen)
+    man.drawPlayer(screen)
+
+    screen.blit(Icons[1],(120,675))
+    screen.blit(Icons[0],(120,630))
+    
+    #Button turn
+    inventory()
+    endbutton()
+    
+
+
+def Spell_range():
     if waitforspell:
         for element in castzone:
             pygame.draw.polygon(screen, (255,183, 85,125), hex_corner(layout, element))  #Grid layout
@@ -72,14 +92,13 @@ def redraw_window():
             for element in currentspell.computedamagezone(Grid,pixel_to_hex(layout, (x, y))):
                 pygame.draw.polygon(screen, (200, 100, 0,125), hex_corner(layout, element))
 
+def GridOverlay():
     for element in Grid:
         pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),1)  #Grid layout
     #pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
-    
-    
-    
+
+def PathAnimation():
     L=[]
-    pygame.draw.rect(screen, BLACK,(0,0,100,100),2)
     if not (waitforspell):
         if listecase==[]:
             pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,currentchar.poshex),largeurHex,2)
@@ -90,22 +109,7 @@ def redraw_window():
                             pygame.draw.polygon(screen, BLUE,hex_corner(layout,L[k]),2)
                     if len(L)>currentchar.movementpoints+1:
                         pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
-    for k in range(len(Characters)):
-        #if Characters[k].healthpoint<100:
-        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) or Characters[k].healthpoint<100:
-                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-                (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
-                healtposx-=largeurHex-7
-                healtposy-=hauteurHex
-                if not Characters[k].animation[0]:
-                    #screen.blit(Dialog,(x,y-Dialog.get_height()))
-                    screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
-
-    
-        
-    skeleton.drawSkeleton(screen)
-    gobelin.drawGobelin(screen)
-    man.drawPlayer(screen)
+            
     if 1<len(L) and len(L)<(currentchar.movementpoints+2):
         Movement_label = main_font.render(f"MP: {currentchar.movementpoints} - {len(L)-1}",1,RED)
     else:
@@ -119,29 +123,32 @@ def redraw_window():
         Mana_level = main_font.render(f"AP: {currentchar.mana}",1,BLUE)
     screen.blit(Movement_label,(170,630+(Icons[1].get_height()-Movement_label.get_height())/2))
     screen.blit(Mana_level,(170,675+(Icons[0].get_height()-Mana_level.get_height())/2))
+
+def HealthView():
+    for k in range(len(Characters)):
+        #if Characters[k].healthpoint<100:
+        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) or Characters[k].healthpoint<100:
+                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+                (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+                healtposx-=largeurHex-7
+                healtposy-=hauteurHex
+                if not Characters[k].animation[0]:
+                    #screen.blit(Dialog,(x,y-Dialog.get_height()))
+                    screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
+
     hp =  main_font.render(f"{currentchar.healthpoint}",1,BLACK)
     pygame.draw.rect(screen, lifecolor(currentchar.healthpoint),pygame.Rect(0,710-0.85*currentchar.healthpoint,100,90))
     screen.blit(heart,(0,620))
     screen.blit(hp,(50-hp.get_width()/2,655))
 
-    screen.blit(Icons[1],(120,675))
-    screen.blit(Icons[0],(120,630))
-    
-    #Button turn
-    
-    
+def lifecolor(lifelevel):
+    if lifelevel>50:
+        return (round(2*(1-lifelevel/100)*250),255-lifelevel//100,0)
+    return (255,round(2*lifelevel/100*250),0)
 
-    if endbutton():
-        screen.blit(End_button[1],Button_position)
-    elif currentchar.movementpoints==0 and currentchar.mana==0:
-        screen.blit(End_button[3],Button_position)
-    else:
-        screen.blit(End_button[0],Button_position)
+inventory_cases=[(597+60*k+k) for k in range (-1,9)]
 
-
-
-
-    #Inventory
+def inventory():
     screen.blit(spellbar,(WIDTH-spellbar.get_width()-10,640))
     if currentchar.activespell !=None:
         pygame.draw.rect(screen, RED,pygame.Rect(597+60*(currentchar.activespell-1),645,60,60),2)
@@ -150,20 +157,6 @@ def redraw_window():
     for k in range(len(man.spellsname)):
         if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
             descriptor(k)
-
-def endbutton():
-    
-    return x>Button_position[0] and x<Button_position[0]+End_button[0].get_width() and y>Button_position[1] and y<Button_position[1]+End_button[0].get_width() and listecase==[]
-
-
-def lifecolor(lifelevel):
-    if lifelevel>50:
-        return (round(2*(1-lifelevel/100)*250),255-lifelevel//100,0)
-    return (255,round(2*lifelevel/100*250),0)
-
-
-
-inventory_cases=[(597+60*k+k) for k in range (-1,9)]
 
 def descriptor(k):
     screen.blit(Dialog,(x,y-Dialog.get_height()))
@@ -219,6 +212,17 @@ def descriptor(k):
     )
 
 
+
+def endbutton():
+    if AmIOnendbutton():
+        screen.blit(End_button[1],Button_position)
+    elif currentchar.movementpoints==0 and currentchar.mana==0:
+        screen.blit(End_button[3],Button_position)
+    else:
+        screen.blit(End_button[0],Button_position)
+
+def AmIOnendbutton():
+    return x>Button_position[0] and x<Button_position[0]+End_button[0].get_width() and y>Button_position[1] and y<Button_position[1]+End_button[0].get_width() and listecase==[]
 
 
 
@@ -464,7 +468,7 @@ while run:
                     waitforspell=False
                 
         
-        if endbutton():
+        if AmIOnendbutton():
             waitforspell=False
             indice+=1
             pygame.time.delay(100)
