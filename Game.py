@@ -15,8 +15,6 @@ from tilemap import *
 from Map import *
 from screen_inv import *
 from hud import *
-from enemy import *
-from sound import *
 import time
 
 #from Dungeon import *
@@ -58,7 +56,6 @@ class Game:
 
         # Layer:
         self.Layers = [pg.sprite.Group() for _ in range(LAYER_NUMBER)]
-        self.enemies = pg.sprite.Group()
         # print(self.Layers)
         # self.frontLayer = pg.sprite.Group()
         # self.midLayer = pg.sprite.Group()
@@ -68,7 +65,6 @@ class Game:
         self.animation_tab = []
 
         self.player = Player(self, 0, 0)
-        self.enemy = Enemy(self, 0,0)
         
         LIFE_HUD = Life_HUD(HEIGHT//15 + 10,15 ,self.player)
         EXP_HUD = Exp_HUD(HEIGHT//15 + 10,45 ,self.player)
@@ -85,9 +81,6 @@ class Game:
 
         self.resume = False
         self.screen_inv = Screen_inv(self.screen, self)
-
-        #MUSIC
-        swap_music("assets/sound/dungeon.mp3")
 
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
@@ -106,7 +99,6 @@ class Game:
         # print("Drawing")
         self.clean_layers(LAYER_NUMBER-1)
         # print(self.Layers)
-        self.enemies = pg.sprite.Group()
         self.obstacle = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
@@ -127,7 +119,6 @@ class Game:
                     Floor(self, col, row, tile if self.actual_stage else 0)
                     if not self.resume:
                         self.player.set_pos(col*TILESIZE, row*TILESIZE)
-                        self.enemy.set_pos(col*TILESIZE, row*TILESIZE)
                     else:
                         pass
 
