@@ -38,6 +38,7 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Combat mode")
 main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
+spell_font = pygame.font.SysFont("Blue Eyes.otf", 25)
 Grid = initgrid(8, 12)
 
 waitforspell=False
@@ -54,6 +55,9 @@ for t in Tiles:
 
 fond = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
 bg= bg.convert_alpha()
+
+
+Button_position =(400,650)
 
 def redraw_window():
     screen.blit(bg, (0, 0))  #Background
@@ -77,7 +81,7 @@ def redraw_window():
     L=[]
     pygame.draw.rect(screen, BLACK,(0,0,100,100),2)
     if not (waitforspell):
-        if not(currentchar.left or currentchar.right):
+        if listecase==[]:
             pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,currentchar.poshex),largeurHex,2)
             if (pixel_to_hex(layout, (x, y)) in Grid) and Grid[Grid.index(pixel_to_hex(layout, (x, y)))].object == None:
                     L=pathfinding(currentchar.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid)
@@ -87,13 +91,14 @@ def redraw_window():
                     if len(L)>currentchar.movementpoints+1:
                         pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
     for k in range(len(Characters)):
-        if Characters[k].healthpoint<100:
-        #if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+        #if Characters[k].healthpoint<100:
+        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) or Characters[k].healthpoint<100:
                 #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
                 (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
                 healtposx-=largeurHex-7
                 healtposy-=hauteurHex
                 if not Characters[k].animation[0]:
+                    #screen.blit(Dialog,(x,y-Dialog.get_height()))
                     screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy) )
 
     
@@ -107,7 +112,7 @@ def redraw_window():
         Movement_label = main_font.render(f"MP: {currentchar.movementpoints}",1,RED)
     if waitforspell:
         if currentchar.mana>= currentspell.manacost:
-            Mana_level = main_font.render(f"AP: {currentchar.mana} - {currentspell.manacost}",1,BLUE)
+            Mana_level = main_font.render(f"AP: {currentchar.mana} - {currentspell.manacost}",10,BLUE)
         else:
             Mana_level = main_font.render(f"Not enough AP : {currentchar.mana} - {currentspell.manacost}",1,BLUE)
     else:
@@ -122,21 +127,97 @@ def redraw_window():
     screen.blit(Icons[1],(120,675))
     screen.blit(Icons[0],(120,630))
     
+    #Button turn
+    
+    
+
+    if endbutton():
+        screen.blit(End_button[1],Button_position)
+    elif currentchar.movementpoints==0 and currentchar.mana==0:
+        screen.blit(End_button[3],Button_position)
+    else:
+        screen.blit(End_button[0],Button_position)
+
+
+
+
     #Inventory
     screen.blit(spellbar,(WIDTH-spellbar.get_width()-10,640))
     if currentchar.activespell !=None:
         pygame.draw.rect(screen, RED,pygame.Rect(597+60*(currentchar.activespell-1),645,60,60),2)
     for k in range(len(man.spellsname)):
         screen.blit(Spell_icons[k],(inventory_cases[k]+2*(k+1),650))
+    for k in range(len(man.spellsname)):
+        if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
+            descriptor(k)
 
-inventory_cases=[(597+60*k+k) for k in range (-1,9)]
-
+def endbutton():
+    
+    return x>Button_position[0] and x<Button_position[0]+End_button[0].get_width() and y>Button_position[1] and y<Button_position[1]+End_button[0].get_width() and listecase==[]
 
 
 def lifecolor(lifelevel):
     if lifelevel>50:
         return (round(2*(1-lifelevel/100)*250),255-lifelevel//100,0)
     return (255,round(2*lifelevel/100*250),0)
+
+
+
+inventory_cases=[(597+60*k+k) for k in range (-1,9)]
+
+def descriptor(k):
+    screen.blit(Dialog,(x,y-Dialog.get_height()))
+    width,height = Dialog.get_width(),Dialog.get_height()
+
+    spell_description_name = spell_font.render(f"{man.spellsname[k].name}",1,WHITE)
+    spell_description_range= spell_font.render(f"{man.spellsname[k].castrange}",1,WHITE)
+    spell_description_aim= spell_font.render(f"{man.spellsname[k].dammagerange}",1,WHITE)
+   
+    
+    screen.blit(spell_description_name,(
+        x+(width-spell_description_name.get_width())/2,
+        y-(3*Dialog.get_height()/4+spell_description_name.get_height()/2))
+    )
+
+    cut = 6
+    screen.blit(Aim,(
+        x+((width/cut-Aim.get_width())/2),
+        y-(height/4+Aim.get_height()/2))
+    )
+
+    screen.blit(spell_description_aim,(
+        x+((3*width/cut-spell_description_aim.get_width())/2),
+        y-(height/4+spell_description_aim.get_height()/2))
+    )
+
+    screen.blit(Range,(
+        x+((5*width/cut-Range.get_width())/2),
+        y-(height/4+Range.get_height()/2))
+    )
+
+    screen.blit(spell_description_range,(
+        x+((7*width/cut-spell_description_range.get_width())/2),
+        y-(height/4+spell_description_range.get_height()/2))
+    )
+
+    if k!=3:
+        screen.blit(Sword,(
+            x+((9*width/cut-Sword.get_width())/2),
+            y-(height/4+Sword.get_height()/2))
+        )
+        spell_description_dammage = spell_font.render(f"{man.spellsname[k].dammage}",1,WHITE)
+    else:
+        screen.blit(Medicine,(
+            x+((9*width/cut-Medicine.get_width())/2),
+            y-(height/4+Medicine.get_height()/2))
+        )
+        spell_description_dammage = spell_font.render(f"{-man.spellsname[k].dammage}",1,WHITE)
+
+    screen.blit(spell_description_dammage,(
+        x+((11*width/cut-spell_description_dammage.get_width())/2),
+        y-(height/4+spell_description_dammage.get_height()/2))
+    )
+
 
 
 
@@ -356,6 +437,8 @@ while run:
 
     if mouse[0]:
 
+        
+
         for k in range(len(currentchar.spellsname)):
             if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
                 #if not waitforspell:
@@ -381,13 +464,15 @@ while run:
                     waitforspell=False
                 
         
-        if 0<x<100 and 0<y<100 and not (currentchar.left or currentchar.right):
+        if endbutton():
             waitforspell=False
             indice+=1
             pygame.time.delay(100)
             currentchar=Characters[indice%len(Characters)]
             currentchar.mana=currentchar.maxmana
             currentchar.movementpoints=currentchar.maxmovement
+            currentchar.activespell=None
+
 
     if mouse[2] and not waitforspell:
         if listecase == [] and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range (len(Characters))]):    #Right click

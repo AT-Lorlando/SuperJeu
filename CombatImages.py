@@ -10,6 +10,7 @@ spell_sunburn=path.join(spell_folder,'spell_sunburn')
 spell_bomb=path.join(spell_folder,'spell_bomb')
 spell_heal=path.join(spell_folder,'spell_heal')
 fighticons_folder=path.join(assets_folder,'fighticons')
+end_button_folder=path.join(fighticons_folder,'turn_button')
 
 def load(flip,folderpath,num,scale,rang):
     if flip:
@@ -26,6 +27,13 @@ spellbar= pygame.image.load(path.join(spell_folder,'spellbar.png'))
 IconsScale=(40,40)
 Icons = load(False,fighticons_folder,1,IconsScale,2)
 
+End_button = load(False,end_button_folder,1,(90,50),4)
+
+Dialog = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'dialog.png')),(127,64))
+Aim = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'aim.png')),(25,25))
+Range= pygame.transform.scale(pygame.image.load(path.join(spell_folder,'range.png')),(25,25))
+Sword = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'sword.png')),(25,25))
+Medicine = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'medicine.png')),(25,25))
 
 ###Player###
 PlayerScale = (46,64)

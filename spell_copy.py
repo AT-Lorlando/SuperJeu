@@ -5,12 +5,14 @@ class Spell :
     owner = None
     championClasse = None
     castzone = [hx.Hex()] #relative
+    castrange = 0
     dammagezone = [hx.Hex()]  #relative
     surtuile = None
     name=None
-    offsetx=0
-    offsety=0
+    offsetx=31
+    offsety=35
     manacost=0
+    dammage=0
     """ countdown=0
     spell=[False,False] #Thunder #... """
 
@@ -23,7 +25,7 @@ class Spell :
             if hexes in Grid:
                 tuiles_touches.append(Grid[Grid.index(hexes)])
         for tuiles in tuiles_touches :
-            self.surtuile(self.owner,tuiles)
+            self.surtuile(self.owner,tuiles,self.dammage)
             hx.update_grid(Grid,tuiles)
         self.owner.mana-=self.manacost
         return
@@ -40,45 +42,11 @@ class Spell :
     def __init__(self, fc) :
         self.surtuile = fc
 
-    """ def draw_spell(self,screen,spellnum,count,position):
-        if self.countdown==count:
-            self.spell[spellnum]=False
-            self.countdown=0
-        elif spell[spellnum] and self.countdown<count:
-            screen.blit(self.name[self.countdown],position)
-            self.countdown += 1 """
 
-
-def fireball_dammage(owner, tuile) :
-    if tuile.object in Characters :
-        tuile.object.healthpoint-=50
-    return 
-
-def thunder_dammage(owner, tuile) :
+def dammage(owner, tuile,dammage) :
     #if tuile.object in Characters :
     if isinstance(tuile.object,player):
-        tuile.object.deal_damage(40)
-    return 
-
-def sunburn_dammage(owner, tuile) :
-    #if tuile.object in Characters :
-    if isinstance(tuile.object,player):
-        tuile.object.deal_damage(25)
-    return 
-
-def attack_dammage(owner,tuile):
-    if isinstance(tuile.object,player):
-        tuile.object.deal_damage(10)
-    return 
-
-def bomb_dammage(owner,tuile):
-    if isinstance(tuile.object,player):
-        tuile.object.deal_damage(70)
-    return 
-
-def heal_dammage(owner,tuile):
-    if isinstance(tuile.object,player):
-        tuile.object.deal_damage(-20)
+        tuile.object.deal_damage(dammage)
     return 
 
 
@@ -87,40 +55,28 @@ fireball.dammagezone = hx.hex_circle(hx.Hex(),1)
 fireball.castzone= hx.hex_circle((hx.Hex(), 3))
 fireball.name=fireball """
 
-fireball=""
+def initspell(spell,name,dammage,dammagerange,castrange,manacost):
+    spell.dammage=dammage
+    spell.name=name
+    spell.dammagerange=dammagerange
+    spell.dammagezone=hx.hex_circle(hx.Hex(), spell.dammagerange)
+    spell.castrange=castrange
+    spell.castzone = hx.hex_circle(hx.Hex(),spell.castrange)
+    spell.manacost=manacost
+    return spell
 
-sunburn = Spell(thunder_dammage)
-sunburn.name="sunburn"
-sunburn.dammagezone=hx.hex_circle(hx.Hex(), 1)
-sunburn.castzone = hx.hex_circle(hx.Hex(),3)
-sunburn.manacost=2
+sunburn = Spell(dammage)
+sunburn = initspell(sunburn,"Sunburn",20,1,3,2)
+
+thunder = Spell(dammage)
+thunder = initspell(thunder,"Thunder",40,2,4,4)
 
 
-thunder = Spell(thunder_dammage)
-thunder.dammagezone=hx.hex_circle(hx.Hex(), 2)
-thunder.castzone = hx.hex_circle(hx.Hex(), 4)
-thunder.offsetx=31
-thunder.offsety=35
-thunder.manacost=4
-thunder.name="thunder"
+bomb = Spell(dammage)
+bomb = initspell(bomb,"Bomb",70,2,3,2)
 
+heal=Spell(dammage)
+heal = initspell(heal,"Heal",-20,1,2,2)
 
-bomb = Spell(bomb_dammage)
-bomb.name="bomb"
-bomb.dammagezone=hx.hex_circle(hx.Hex(), 2)
-bomb.castzone = hx.hex_circle(hx.Hex(),3)
-bomb.manacost=2
-
-heal=Spell(heal_dammage)
-heal.name="heal"
-heal.dammagezone=hx.hex_circle(hx.Hex(),1)
-heal.castzone = hx.hex_circle(hx.Hex(),3)
-heal.manacost=2
-
-attack = Spell(attack_dammage)
-attack.dammagezone=hx.hex_circle(hx.Hex(),1)
-attack.castzone= hx.hex_circle(hx.Hex(),2)
-attack.manacost=1
-attack.offsetx=Gobelincombathorizontalshift
-attack.offsety=Gobelincombatverticalshift
-attack.name="attack"
+attack = Spell(dammage)
+attack= initspell(attack,"Attack",10,1,2,1)
