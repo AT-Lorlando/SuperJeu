@@ -56,11 +56,6 @@ class Game:
 
         # Layer:
         self.Layers = [pg.sprite.Group() for _ in range(LAYER_NUMBER)]
-        # print(self.Layers)
-        # self.frontLayer = pg.sprite.Group()
-        # self.midLayer = pg.sprite.Group()
-        # self.backLayer = pg.sprite.Group()
-        # self.interactif = pg.sprite.Group()
 
         self.animation_tab = []
 
@@ -96,15 +91,11 @@ class Game:
             self.Layers[i] = pg.sprite.Group()
 
     def draw_instance(self, instance):
-        # print("Drawing")
         self.clean_layers(LAYER_NUMBER-1)
-        # print(self.Layers)
         self.obstacle = pg.sprite.Group()
-        # self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.stairs = pg.sprite.Group()
-        # self.backLayer = pg.sprite.Group()
-        # self.midLayer = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
         self.interactif = pg.sprite.Group()
         self.map_data = instance.data
         self.known_tiles = []
@@ -134,7 +125,8 @@ class Game:
                     Floor(self, col, row, tile if self.actual_stage else 0)
                     Collectable(self, col, row, tile)
                 elif get_id(tile) == MOB_ID:
-                    Floor(self, col, row, tile)
+                    Floor(self, col, row, tile if self.actual_stage else 0)
+                    Mob(self, col, row, tile)
 
                 # HUB Features
                 elif get_id(tile) == NPC_ID:
@@ -219,8 +211,7 @@ class Game:
             self.interactif_sprite = sprite
             self.interactif_sentence = pg.font.SysFont("Blue Eyes.otf", 30).render(
                 f'Press {sprite.key} to interact with {sprite}', True, (255, 255, 255))
-            font_size = [self.interactif_sentence.get_rect(
-            )[2], self.interactif_sentence.get_rect()[3]]
+            font_size = [self.interactif_sentence.get_rect()[2], self.interactif_sentence.get_rect()[3]]
             self.dialogue = pg.transform.scale(pg.image.load(path.join(
                 assets_folder, "dialogue.png")).convert_alpha(), (font_size[0]+15, font_size[1]+20))
         else:
