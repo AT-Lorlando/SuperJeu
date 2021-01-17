@@ -108,6 +108,85 @@ class Stair(MySprite):
     def update(self):
         self.turn()
 
+class Mob(MySprite):
+    def __init__(self, game, x, y, tile):
+        
+        self.image = resize(pg.image.load(
+            path.join(npc_folder, f'{0}.png')), CHARACTER_SIZE)
+        self.rect = self.image.get_rect()
+        super(Mob,self).__init__(game, x, y, tile)
+        # self.rect.center = (x, y)
+        # self.hit_rect = MOB_HIT_RECT.copy()
+        # self.hit_rect.center = self.rect.center
+        self.pos = vec(x, y) * TILESIZE
+        self.vel = vec(0, 0)
+        self.aim = vec(0, 0)
+        self.rect.center = self.pos
+        self.rot = 0
+        self.health = 100
+        self.speed = 600
+        self.is_moving = False
+
+        self.groups = game.Layers[6], game.mobs # game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+    
+    
+    def collide_with_obstacle(self, dir):
+        if dir == 'x':
+            hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
+            if hits:
+                if self.vel.x > 0:
+                    self.pos.x = hits[0].rect.left - self.rect.width
+                if self.vel.x < 0:
+                    self.pos.x = hits[0].rect.right
+                self.vel.x = 0
+                self.rect.x = self.pos.x
+        if dir == 'y':
+            hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
+            if hits:
+                if self.vel.y > 0:
+                    self.pos.y = hits[0].rect.top - self.rect.height
+                if self.vel.y < 0:
+                    self.pos.y = hits[0].rect.bottom
+                self.vel.y = 0
+                self.rect.y = self.pos.y
+
+    def IA(self):
+        # print(self.game.player.pos, self.pos)
+        if(abs(self.game.player.pos.x - self.pos.x) < 4 * TILESIZE and 
+        abs(self.game.player.pos.y - self.pos.y) < 4 * TILESIZE):
+            self.is_moving = True
+            self.rot = (self.game.player.pos - self.pos).angle_to(vec(1, 0))
+        else:
+            self.is_moving = False
+        for mob in self.game.mobs:
+            if mob != self:
+                dist = self.pos - mob.pos
+                if 0 < dist.length() < 100:
+                    self.is_moving = True
+                    self.acc += dist.normalize()
+
+
+    def update(self):
+        self.IA()
+        self.rect.center = self.pos
+        if self.is_moving:
+            self.aim = vec(1, 0).rotate(-self.rot)
+            self.aim.scale_to_length(self.speed)
+            self.aim += self.vel * -1
+            self.vel += self.aim * self.game.dt
+            self.pos += self.vel * self.game.dt  + 0.5 * self.aim * self.game.dt ** 2
+        self.rect.x = self.pos.x
+        self.collide_with_obstacle('x')
+        self.rect.y = self.pos.y
+        self.collide_with_obstacle('y')
+
+        if(self.vel == (0, 0)):
+            self.is_moving = False
+
+        if self.health <= 0:
+            self.kill()
+
 class NPC(MySprite):
     def __init__(self, game, x, y, tile):
         img = tile//10 % 10
@@ -227,8 +306,6 @@ class Quest():
         player.quest_list.remove(self)
         player.finished_quest.append(self.ID)
         self.is_finished = True
-        print(self, "finished")
-
 class Lost_Item_Quest(Quest):
     def __init__(self, ID, rewards_tab, needed_tab,text_dialogue):
         super(Lost_Item_Quest,self).__init__(ID,rewards_tab,text_dialogue)
@@ -245,7 +322,6 @@ class Lost_Item_Quest(Quest):
         player.quest_list.remove(self)
         player.finished_quest.append(self.ID)
         self.is_finished = True
-        print(self, "finished")
 
 Gime_apple = Lost_Item_Quest(12112, [Empowered_Sword],[Apple, Meat], ["Bonjour M.Hugo", "Désolé, je ne peux pas trop vous parler", "Je dois absolument faire la récolte de mon champ !", "Malheureusement, je viens de casser ma pelle...","Pouvez vous allez m'en acheter une ?", "Le marchand se trouve juste à gauche !",  "Je vous recompenserais !"])
 Lost_ring_Quest = Lost_Item_Quest(23112, [Empowered_Staff],[Lost_ring], ["Coucou", "J'ai perdu ma bague", "Aled"])
