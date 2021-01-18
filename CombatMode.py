@@ -154,8 +154,12 @@ def HealthView():
             pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,Characters[k].healthpoint/100*Health[0].get_width(),Health[0].get_height()))
             pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
+    #for k in range(len(Characters)):
             if Characters[k].healthpoint==0:
+                (Characters[k].poshex).remove_object()
+                update_grid(Grid,(Characters[k].poshex))
                 Characters.remove(Characters[k])
+                
 
     hp =  main_font.render(f"{man.healthpoint}",1,BLACK)
     pygame.draw.rect(screen, lifecolor(man.healthpoint),pygame.Rect(0,710-0.85*man.healthpoint,100,90))
