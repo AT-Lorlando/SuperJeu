@@ -17,23 +17,6 @@ def load(flip,folderpath,num,scale,rang):
         return [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),scale),True,False) for k in range(rang)]
     return [pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),scale)for k in range(rang)]
 
-HealthScale=(60,10)
-Health = load(False,health_folder,1,HealthScale,11)
-
-heart = pygame.transform.scale(pygame.image.load(path.join(health_folder,'heart.png')),(100,100))
-
-spellbar= pygame.image.load(path.join(spell_folder,'spellbar.png'))
-
-IconsScale=(40,40)
-Icons = load(False,fighticons_folder,1,IconsScale,2)
-
-End_button = load(False,end_button_folder,1,(90,50),4)
-
-Dialog = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'dialog.png')),(127,64))
-Aim = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'aim.png')),(25,25))
-Range= pygame.transform.scale(pygame.image.load(path.join(spell_folder,'range.png')),(25,25))
-Sword = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'sword.png')),(25,25))
-Medicine = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'medicine.png')),(25,25))
 
 ###Player###
 PlayerScale = (46,64)
@@ -82,11 +65,35 @@ GobelinBomb = load(False,gobelin_bomb,2,GobelinScale,38)
 GobelinRight=load(False,gobelin_walk,2,GobelinScale,18)
 GobelinLeft=load(True,gobelin_walk,2,GobelinScale,18)
 
+
+#Spells
 Spellscale=(64*3,64*2)
 Spell_thunder=load(False,spell_thunder,2,Spellscale,20)
 Spell_sunburn=load(False,spell_sunburn,2,Spellscale,18)
 Spell_bomb=load(False,spell_bomb,2,Spellscale,20)
 Spell_heal=load(False,spell_heal,2,Spellscale,24)
 
+
+
+Spellbar= pygame.image.load(path.join(spell_folder,'Spellbar.png'))
 SpelliconsScale=(50,50)
 Spell_icons=load(False,spell_folder,1,SpelliconsScale,4)
+Dialog = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'dialog.png')),(127,64))
+DialogIconsScale = (20,20)
+Aim = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'aim.png')),DialogIconsScale)
+Range= pygame.transform.scale(pygame.image.load(path.join(spell_folder,'range.png')),DialogIconsScale)
+Sword = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'sword.png')),DialogIconsScale)
+Medicine = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'medicine.png')),DialogIconsScale)
+
+HealthScale=(60,10)
+Health = load(False,health_folder,1,HealthScale,11)
+
+heart = pygame.transform.scale(pygame.image.load(path.join(health_folder,'heart.png')),(100,100))
+
+
+
+IconsScale=(40,40)
+Icons = load(False,fighticons_folder,1,IconsScale,2)
+
+End_button = load(False,end_button_folder,1,(90,50),4)
+Button_position =(400,650)

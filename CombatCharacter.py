@@ -7,13 +7,15 @@ from CombatImages import *
 class player(object):
     def __init__(self, playerX, playerY, width, heigth,name):
         self.name=name
+        self.Xshift=0
+        self.Yshift=0
         self.playerX = playerX
         self.playerY = playerY
         self.width = width
         self.heigth = heigth
         self.change = 5
-        self.maxmovement=4
-        self.movementpoints=4
+        self.maxmovement=0
+        self.movementpoints=0
         self.healthpoint=100
         self.faceleft=False
         self.poshex=Tile().set_object(self)

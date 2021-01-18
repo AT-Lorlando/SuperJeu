@@ -246,7 +246,7 @@ class cell:
         return self.tile.__repr__()
 
 
-def pathfinding(tilestart, tilegoal, Grid):
+def pathfinding(tilestart, tilegoal, Grid,ListAllowed): #J'ai rajouté des Allowed pour que lIa le reach
     path=[]
     if tilestart not in Grid or tilegoal not in Grid :
         print("Error : Tiles not in grid")
@@ -258,7 +258,7 @@ def pathfinding(tilestart, tilegoal, Grid):
     explored = []
     start.f = start.g + distance_hex(start.tile, goal.tile)
     for tiles in Grid :
-        if tiles.object == None :
+        if tiles.object == None or tiles.object in ListAllowed:
             gr.append(tiles)
 
     i=0
