@@ -12,7 +12,7 @@ class Square(pg.sprite.Sprite):
         self.mother_map = mother_map
         self.x = mother_map.x + x*mother_map.square_size
         self.y = mother_map.y + y*mother_map.square_size
-        self.image = pg.Surface((mother_map.square_size+2, mother_map.square_size+2))
+        self.image = pg.Surface((mother_map.square_size+1, mother_map.square_size+1))
         self.image.fill(color)
         self.rect = pg.Rect(self.x, self.y, mother_map.square_size, mother_map.square_size)
         # print(self.rect)
@@ -20,8 +20,8 @@ class Square(pg.sprite.Sprite):
 class Map(Mother_screen):
     def __init__(self, game):
         super(Map, self).__init__(game)
-        self.zoom = 2
-        self.zoom_index = 5 
+        self.zoom = 1.4
+        self.zoom_index = 2
         self.square_size = floor(TILESIZE/40)
         self.range = 20
         self.map_data = []
@@ -33,24 +33,39 @@ class Map(Mother_screen):
         self.animation = [pg.transform.scale(pg.image.load(path.join(map_folder, f'{x}.png')), (floor(WIDTH*0.8), floor(HEIGHT*0.8))) for x in range(1,9)]
         self.image = pg.transform.scale(pg.image.load(path.join(map_folder, '8.png')), (floor(WIDTH*0.8), floor(HEIGHT*0.8)))
         self.sprites = pg.sprite.Group()
+        self.move = None
+        self.old_offset = (0,0)
+        self.offset_x = 0
+        self.offset_y = 0
+
+    def update(self):
+        self.mouse = pg.mouse.get_pressed()
+        self.pos_mouse = pg.mouse.get_pos()
+        if self.mouse[0]:
+            if not self.move: 
+                self.move = self.pos_mouse
+            self.offset_x = self.pos_mouse[0] - self.move[0] + self.old_offset[0]
+            self.offset_y = self.pos_mouse[1] - self.move[1] + self.old_offset[1]
+        if not self.mouse[0]:
+            self.old_offset = (self.offset_x, self.offset_y)
+            self.move = None
+            
 
     def event_zoom(self, y):
         self.zoom_index = (self.zoom_index + y) if 0 < (self.zoom_index + y) < len(ZOOM_VALUE) else len(ZOOM_VALUE)-1 if (self.zoom_index + y) >= len(ZOOM_VALUE) else 0
+        self.pos_mouse = pg.mouse.get_pos()
         self.zoom = ZOOM_VALUE[self.zoom_index]
-        # print(self.zoom)
     
     def data_update(self, data):
         self.map_data = data
         self.sprites = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
-                if tile//100 in self.game.known_tiles:
-                    if tile%100 == FLOOR_ID:
-                        Square(self, col, row, YELLOW)
-                    elif tile%100 == WALL_ID:
+                if tile//100 in self.game.known_tiles or self.game.player.divinesight:
+                    if tile%100 == WALL_ID:
                         Square(self, col, row, BLACK)
                     elif tile%100 == STAIR_ID or tile%100 == DOOR_ID:
-                        Square(self, col, row, GREEN)
+                        Square(self, col, row, RED)
                     elif tile%100 == SPAWN_ID:
                         Square(self, col, row, GREEN)
 
@@ -66,17 +81,16 @@ class Map(Mother_screen):
         self.Playerpos = [floor(pos/TILESIZE) for pos in self.game.player.pos]
         self.data_update(self.map_data)
         self.screen = screen
-        print(self.game.known_tiles)
         self.run(self.screen.copy())
 
     def draw(self):        
         for sprite in self.sprites:
-            if(floor(WIDTH*0.25)<(sprite.x*self.zoom)<floor(WIDTH*0.65) and 
-            floor(HEIGHT*0.25)<(sprite.y*self.zoom)<floor(HEIGHT*0.7)):
+            if(floor(WIDTH*0.25)<(self.offset_x+sprite.x*self.zoom)<floor(WIDTH*0.65) and 
+            floor(HEIGHT*0.25)<(self.offset_y+sprite.y*self.zoom)<floor(HEIGHT*0.7)):
                 self.screen.blit(pg.transform.scale(sprite.image,(
                     floor(sprite.image.get_width()*self.zoom),
                     floor(sprite.image.get_height()*self.zoom)
                 )),(
-                    floor(sprite.x*self.zoom), 
-                    floor(sprite.y*self.zoom)
+                    floor(self.offset_x+sprite.x*self.zoom), 
+                    floor(self.offset_y+sprite.y*self.zoom)
                 ))
