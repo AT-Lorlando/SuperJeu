@@ -179,6 +179,7 @@ class Game:
                 for tile in tiles:
                     if(tile//100 not in self.known_tiles):
                         self.known_tiles.append(tile//100)
+        self.dt_update()
         self.player.isPlaying = True
 
     def load_dungeon(self, dungeon_type, dungeon_difficulty):
