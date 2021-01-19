@@ -255,10 +255,30 @@ class Player(pg.sprite.Sprite):
 
     def go_upstair(self):
         assert(self.game.actual_dungeon)
+        items = []
         self.game.known_tiles = []
         self.game.actual_stage += 1
-        self.game.draw_instance(
-            self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
+        print(len(self.game.actual_dungeon.stage_tab))
+        if(self.game.actual_stage == len(self.game.actual_dungeon.stage_tab)):
+            for quest in self.quest_list:
+                if type(quest) == Lost_Item_Quest:
+                    for item in quest.needed:
+                        if type(item) == Quest_Item:
+                            items.append(item)
+            self.game.draw_instance(
+                self.game.actual_dungeon.stage_tab[self.game.actual_stage-1], items)
+            return
+            
+        elif(self.game.actual_stage > len(self.game.actual_dungeon.stage_tab)):
+            self.game.actual_dungeon = 0
+            self.game.actual_stage = 0
+            self.game.draw_instance(
+                self.game.hub)
+            return
+        else:
+            self.game.draw_instance(
+                self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
+            return
 
     def update(self):
         self.main_champ.animation()
