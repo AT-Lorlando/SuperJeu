@@ -323,7 +323,7 @@ class Stage:
 
 
 class Dungeon:
-    def __init__(self, instance_type, difficulty, *quest_item):
+    def __init__(self, instance_type, difficulty):
         assert(difficulty > 0, difficulty)
         self.stage_tab = []
         self.type = instance_type
@@ -334,6 +334,8 @@ class Dungeon:
                 i = 8
             self.stage_tab.append(New_Stage(i, i, self.type))
         self.stage_tab.append(New_Stage(0, 0, self.type))
+
+
 
 def New_Stage(ID, difficulty, dungeon_type):
     stage_size = STAGE_SIZE_TAB[difficulty]
@@ -347,50 +349,58 @@ def New_Stage(ID, difficulty, dungeon_type):
     stage = Stage(ID, stage_size, ROOM_SIZE)
     Room_size = ROOM_SIZE
 
-    while(not stage.are_connected(tile_number)):
-        stage = Stage(ID, stage_size, ROOM_SIZE)
-        #Chosing tile position:
-        Tile_pos_tab = np.sort(random.sample([i for i in range(stage_size*stage_size)], k = tile_number))
-        #Chosing stair and spawn position
-        special_room = random.sample(sorted(Tile_pos_tab), k = 2 if tile_number > 1 else 1) #Spawn and Stair pos
-        for pos in Tile_pos_tab:
-            new_room = Room(pos, Room_size)
-            new_room.add_tile(Tile(pos))
-            #Adding spawn and stairs
-            if pos == special_room[0]:
-                new_room.add_ID(SPAWN_ID)
-            elif pos == special_room[1]:
-                new_room.add_ID(STAIR_ID)
+    if(difficulty):
+        while(not stage.are_connected(tile_number)):
+            stage = Stage(ID, stage_size, ROOM_SIZE)
+            #Chosing tile position:
+            Tile_pos_tab = np.sort(random.sample([i for i in range(stage_size*stage_size)], k = tile_number))
+            #Chosing stair and spawn position
+            special_room = random.sample(sorted(Tile_pos_tab), k = 2 if tile_number > 1 else 1) #Spawn and Stair pos
+            for pos in Tile_pos_tab:
+                new_room = Room(pos, Room_size)
+                new_room.add_tile(Tile(pos))
+                #Adding spawn and stairs
+                if pos == special_room[0]:
+                    new_room.add_ID(SPAWN_ID)
+                elif pos == special_room[1]:
+                    new_room.add_ID(STAIR_ID)
 
-            #Adding corridor with the position of the tile
-            if(pos%stage_size == 0): #RIGHT
-                new_room.add_corridor('RIGHT')
-            elif(pos%stage_size == stage_size): #RIGHT
-                new_room.add_corridor('LEFT')
-            elif(0<pos%stage_size<stage_size): #MID
-                new_room.add_corridor('RIGHT')
-                new_room.add_corridor('LEFT')
-            if(floor(pos/stage_size) == 0): #TOP
-                new_room.add_corridor('BOT')
-            elif(floor(pos/stage_size) == stage_size): #BOT
-                new_room.add_corridor('TOP')
-            elif(0<floor(pos/stage_size)<stage_size): #MID
-                new_room.add_corridor('TOP')
-                new_room.add_corridor('BOT')
-            
+                #Adding corridor with the position of the tile
+                if(pos%stage_size == 0): #RIGHT
+                    new_room.add_corridor('RIGHT')
+                elif(pos%stage_size == stage_size): #RIGHT
+                    new_room.add_corridor('LEFT')
+                elif(0<pos%stage_size<stage_size): #MID
+                    new_room.add_corridor('RIGHT')
+                    new_room.add_corridor('LEFT')
+                if(floor(pos/stage_size) == 0): #TOP
+                    new_room.add_corridor('BOT')
+                elif(floor(pos/stage_size) == stage_size): #BOT
+                    new_room.add_corridor('TOP')
+                elif(0<floor(pos/stage_size)<stage_size): #MID
+                    new_room.add_corridor('TOP')
+                    new_room.add_corridor('BOT')
+                
 
-            #chest and Mob parts
-            if(difficulty):
+                #chest and Mob parts
                 for _ in range(random.choices([0,1,2,3], weights=chest_weight, k=1)[0]):
                     new_room.add_ID(CHEST_ID)
                 for _ in range(random.choices([0,1,2,3,4,5], weights=mob_weight, k=1)[0]):
-                    new_room.add_ID(MOB_ID)
-                
-            stage.add_room(new_room)
-        for room1 in stage.room_tab:
-            for room2 in stage.room_tab:
-                stage.connect_corridor(room1, room2)
-    
+                    new_room.add_ID(MOB_ID)  
+
+                stage.add_room(new_room)
+            for room1 in stage.room_tab:
+                for room2 in stage.room_tab:
+                    stage.connect_corridor(room1, room2)
+    else:
+        stage = Stage(ID, stage_size, ROOM_SIZE)
+        new_room = Room(0, Room_size)
+        new_room.add_tile(Tile(0))
+        new_room.add_ID(SPAWN_ID)
+        new_room.add_ID(STAIR_ID)
+        new_room.add_ID(CHEST_ID)
+        stage.add_room(new_room)
+
     stage.add_type(dungeon_type)
     stage.save()
     return stage

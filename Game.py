@@ -95,7 +95,7 @@ class Game:
         for i in range(i):
             self.Layers[i] = pg.sprite.Group()
 
-    def draw_instance(self, instance):  
+    def draw_instance(self, instance, quest_item = None): 
         # print("Drawing")
         self.clean_layers(LAYER_NUMBER-1)
         # print(self.Layers)
@@ -116,11 +116,10 @@ class Game:
                     Floor(self, col, row, get_header(self, tile))
                     Wall(self, col, row, get_header(self, tile))
                 elif get_id(tile) == SPAWN_ID:
-                    Floor(self, col, row, tile if self.actual_stage else 0)
+                    Floor(self, col, row, get_header(self, tile))
                     if not self.resume:
                         self.player.set_pos(col*TILESIZE, row*TILESIZE)
-                    else:
-                        pass
+
 
                 elif get_id(tile) == DOOR_ID:
                     Floor(self, col, row, tile if self.actual_stage else 0)
@@ -137,17 +136,24 @@ class Game:
 
                 # HUB Features
                 elif get_id(tile) == NPC_ID:
+                    if(quest_item):
+                        NPC(self, col, row, 0)
+                    else:
+                        NPC(self, col, row, get_header(self, tile))
                     Floor(self, col, row, 0)
-                    NPC(self, col, row, get_header(self, tile))
+                
                     if tile % 1000 == SHOP_ID:
-                        Floor(self, col, row, 0)
+                        Floor(self, col, row, tile if self.actual_stage else 0)
                         Shop_area(self, col, row, tile)
                     elif tile % 1000 == QUEST_ID:
-                        Floor(self, col, row, 0)
+                        Floor(self, col, row, tile if self.actual_stage else 0)
                         Quest_area(self, col, row, tile)
                     elif tile % 1000 == CHEST_ID:
                         Floor(self, col, row, tile if self.actual_stage else 0)
-                        Chest_area(self, col, row, tile)
+                        if(quest_item):
+                            Chest_area(self, col, row, 0, quest_item)
+                        else:
+                            Chest_area(self, col, row, tile)
                     elif tile % 1000 == SAVE_ID:
                         Floor(self, col, row, tile if self.actual_stage else 0)
                         Save_area(self, col, row, tile)
@@ -157,7 +163,8 @@ class Game:
                 elif(tile > 0):
                     Floor(self, col, row, 0)
                     Decoration(self, col, row, tile)
-        # print("befor camera pos", self.player.pos)
+
+        
 
         self.camera = Camera(WIDTH, HEIGHT)
         for layer in self.Layers:
