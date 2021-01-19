@@ -4,6 +4,7 @@ from os import path
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
+MEDIUMGREY = (60, 60, 60)
 LIGHTGREY = (100, 100, 100)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
@@ -34,6 +35,7 @@ spell_folder = path.join(assets_folder,'spell')
 # game settings
 WIDTH = 800  # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 600  # 16 * 48 or 32 * 24 or 64 * 12
+PYGAMESIZE=6
 FPS = 120
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY

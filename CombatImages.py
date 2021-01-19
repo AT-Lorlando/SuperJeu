@@ -1,9 +1,11 @@
 import pygame
 from os import path
 from settings import *
-bg = pygame.image.load(path.join(assets_folder,'map.png'))
-
-
+pygame.init()
+size = pygame.display.list_modes()[PYGAMESIZE]
+SHIFT=0.8
+scale=int(size[0]*SHIFT),int(size[1]*SHIFT)
+bg = pygame.transform.scale(pygame.image.load(path.join(assets_folder,'test.png')),scale)
 
 spell_thunder=path.join(spell_folder,'spell_thunder')
 spell_sunburn=path.join(spell_folder,'spell_sunburn')

@@ -7,8 +7,32 @@ from CombatCharacter import *
 from spell_copy import *
 
 
+(WIDTH, HEIGHT)=(1097,720)
+pygame.init()
+
+WINDOWSIZE = pygame.display.list_modes()[PYGAMESIZE]
+size=WINDOWSIZE
+#print(size)
+screen = pygame.display.set_mode(size)
+#screen = pygame.display.set_mode((1080, 720))
+#screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Combat mode")
+pygame.display.set_icon(Sword)
+
 ##Init
-layout = Layout(orientation_pointy, (largeurHex, hauteurHex), (165, 165))
+
+Line = 7
+Column = 12
+
+print(size)
+largeurHex=largeurHex*size[0]/1360
+hauteurHex=hauteurHex*size[1]/768
+layout = Layout(orientation_pointy, (largeurHex, hauteurHex),(
+    0+(0.5*size[0]-largeurHex*(Column-0.5)),
+    0+(0.4*size[1]-hauteurHex*(1.5*Line-1)/2)
+    ))
+
+#print(SHIFT*size[0]//(2*largeurHex)-2,SHIFT*size[1],2*SHIFT*size[1]/(hauteurHex-0.5)//3-2)
 pospix = hex_to_pixel(layout, Hex(5,1))
 
 man = player(pospix[0], pospix[1], *PlayerScale,"Player 1")
@@ -23,6 +47,8 @@ man.spellsname.extend((thunder,sunburn,bomb,heal))
 man.spells.extend((False,False,False,False))
 man.movementpoints=4
 man.maxmovement=4
+man.Xshift=Playercombathorizontalshift
+man.Yshift=Playercombatverticalshift
 
 
 
@@ -45,15 +71,17 @@ gobelin.Yshift=Gobelincombatverticalshift+2
 
 Characters=[man,skeleton,gobelin]
 Friendly=[man]
-(WIDTH, HEIGHT)=(1097,720)
-pygame.init()
-#screen = pygame.display.set_mode((WIDTH, HEIGHT),pygame.FULLSCREEN)
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Combat mode")
+
 main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
 spell_font = pygame.font.SysFont("Blue Eyes.otf", 25)
-Grid = initgrid(8, 12)
 
+""" Line = int(2*SHIFT*size[1]/(hauteurHex-0.5)//3-2) 
+Column= int(SHIFT*size[0]//(2*largeurHex)-2)
+ """
+
+#print(2*Line*hauteurHex,0.8*size[0],3/4*Column*largeurHex,0.8*size[1])
+#assert(Line*hauteurHex>=0.8*size[0],Column*largeurHex>=0.8*size[1])
+Grid = initgrid(Line, Column)
 waitforspell=False
 castzone=[]
 currentchar=0
@@ -73,7 +101,8 @@ bg= bg.convert_alpha()
 
 
 def redraw_window():
-    screen.blit(bg, (0, 0))  #Background
+    screen.fill(DARKGREY)
+    screen.blit(bg, (0+(1-SHIFT)/2*size[0], 0))  #Background
     global x
     global y
     x, y = pygame.mouse.get_pos()
@@ -83,15 +112,15 @@ def redraw_window():
     GridOverlay()
     
     PathAnimation()
-    HealthView()
+    
+   
         
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
     man.drawPlayer(screen)
-
     screen.blit(Icons[1],(120,675))
     screen.blit(Icons[0],(120,630))
-    
+    HealthView()
     #Button turn
     inventory()
     endbutton()
@@ -101,15 +130,15 @@ def redraw_window():
 def Spell_range():
     if waitforspell:
         for element in castzone:
-            pygame.draw.polygon(screen, (255,183, 85,125), hex_corner(layout, element))  #Grid layout
+            pygame.draw.polygon(screen, MEDIUMGREY, hex_corner(layout, element))  #Grid layout
 
         if pixel_to_hex(layout, (x, y)) in castzone :
             for element in currentspell.computedamagezone(Grid,pixel_to_hex(layout, (x, y))):
-                pygame.draw.polygon(screen, (200, 100, 0,125), hex_corner(layout, element))
+                pygame.draw.polygon(screen, DARKGREY, hex_corner(layout, element))
 
 def GridOverlay():
     for element in Grid:
-        pygame.draw.polygon(screen, (0, 0, 0), hex_corner(layout, element),1)  #Grid layout
+        pygame.draw.polygon(screen, BLACK, hex_corner(layout, element),1)  #Grid layout
     #pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
 
 def PathAnimation():
@@ -121,7 +150,7 @@ def PathAnimation():
                     L=pathfinding(man.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid,Friendly)
                     for k in range(len(L)):
                         if len(L)<man.movementpoints+2 and k>0:
-                            pygame.draw.polygon(screen, BLUE,hex_corner(layout,L[k]),2)
+                            pygame.draw.polygon(screen, WHITE,hex_corner(layout,L[k]),2)
                     if len(L)>man.movementpoints+1:
                         pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
             
@@ -146,20 +175,21 @@ def HealthView():
                 update_grid(Grid,(Characters[k].poshex))
                 break
 
-        if Characters[k] not in Friendly:
+        #if Characters[k] not in Friendly:
         #if Characters[k].healthpoint<100:
-            if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-                CharacterDescriptor(k)
-                    #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
-            healtposx-=largeurHex-7
-            healtposy-=hauteurHex
-            #if not Characters[k].animation[0]:
-                #screen.blit(Dialog,(x,y-Dialog.get_height()))
-            A,B=Characters[k].playerX-Characters[k].Xshift,Characters[k].playerY-Characters[k].Yshift
-            #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,Health[0].get_width(),Health[0].get_height()),2)
-            pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,Characters[k].healthpoint/100*Health[0].get_width(),Health[0].get_height()))
-            pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
+            
+                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+        (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+        healtposx-=largeurHex-7
+        healtposy-=hauteurHex
+        #if not Characters[k].animation[0]:
+            #screen.blit(Dialog,(x,y-Dialog.get_height()))
+        A,B=Characters[k].playerX-Characters[k].Xshift,Characters[k].playerY-Characters[k].Yshift
+        #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,Health[0].get_width(),Health[0].get_height()),2)
+        pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,Characters[k].healthpoint/100*Health[0].get_width(),Health[0].get_height()))
+        pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
+        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+            CharacterDescriptor(k)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
     #for k in range(len(Characters)):
             
