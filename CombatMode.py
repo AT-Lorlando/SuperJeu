@@ -24,9 +24,8 @@ pygame.display.set_icon(Sword)
 Line = 7
 Column = 12
 
-print(size)
-largeurHex=largeurHex*size[0]/1360
-hauteurHex=hauteurHex*size[1]/768
+largeurHex=largeurHex*GoldenX
+hauteurHex=hauteurHex*GoldenY
 layout = Layout(orientation_pointy, (largeurHex, hauteurHex),(
     0+(0.5*size[0]-largeurHex*(Column-0.5)),
     0+(0.4*size[1]-hauteurHex*(1.5*Line-1)/2)
@@ -48,6 +47,7 @@ man.spells.extend((False,False,False,False))
 man.movementpoints=4
 man.maxmovement=4
 man.Xshift=Playercombathorizontalshift
+print("Mode, ",Playercombathorizontalshift)
 man.Yshift=Playercombatverticalshift
 
 
@@ -145,7 +145,7 @@ def PathAnimation():
     L=[]
     if not (waitforspell):
         if listecase==[]:
-            pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,man.poshex),largeurHex,2)
+            #pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,man.poshex),largeurHex,2)
             if (pixel_to_hex(layout, (x, y)) in Grid) and Grid[Grid.index(pixel_to_hex(layout, (x, y)))].object == None:
                     L=pathfinding(man.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid,Friendly)
                     for k in range(len(L)):
@@ -175,21 +175,21 @@ def HealthView():
                 update_grid(Grid,(Characters[k].poshex))
                 break
 
-        #if Characters[k] not in Friendly:
+        if Characters[k] not in Friendly:
         #if Characters[k].healthpoint<100:
             
-                #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-        (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
-        healtposx-=largeurHex-7
-        healtposy-=hauteurHex
-        #if not Characters[k].animation[0]:
-            #screen.blit(Dialog,(x,y-Dialog.get_height()))
-        A,B=Characters[k].playerX-Characters[k].Xshift,Characters[k].playerY-Characters[k].Yshift
-        #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,Health[0].get_width(),Health[0].get_height()),2)
-        pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,Characters[k].healthpoint/100*Health[0].get_width(),Health[0].get_height()))
-        pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
-        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-            CharacterDescriptor(k)
+                    #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+            healtposx-=largeurHex-7
+            healtposy-=hauteurHex
+            #if not Characters[k].animation[0]:
+                #screen.blit(Dialog,(x,y-Dialog.get_height()))
+            A,B=Characters[k].playerX-Characters[k].Xshift,Characters[k].playerY-Characters[k].Yshift
+            #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,Health[0].get_width(),Health[0].get_height()),2)
+            pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,Characters[k].healthpoint/100*Health[0].get_width(),Health[0].get_height()))
+            pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
+            if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+                CharacterDescriptor(k)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
     #for k in range(len(Characters)):
             

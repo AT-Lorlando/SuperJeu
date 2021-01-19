@@ -4,6 +4,8 @@ from settings import *
 from CombatImages import *
 
 
+
+
 class player(object):
     def __init__(self, playerX, playerY, width, heigth,name):
         self.name=name
@@ -47,10 +49,11 @@ class player(object):
             screen.blit(PlayerLeft[self.walkCount%9],pospix)
             self.walkCount += 1
         elif self.right:
+            print(self.walkCount)
             screen.blit(PlayerRight[self.walkCount%9],pospix)
             self.walkCount += 1
         else:
-            screen.blit(Playersprite, (relativeX, relativeY))
+            screen.blit(Playersprite[1], pospix)
 
         for k in range(len(self.spells)):
             if self.spells[k]:

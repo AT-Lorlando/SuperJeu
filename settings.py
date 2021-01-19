@@ -70,8 +70,8 @@ BULLET_RATE = 150
 GUN_SPREAD = 5
 
 #Combat Settings
-Playercombathorizontalshift=24
-Playercombatverticalshift=32
+Playercombathorizontalshift=28
+Playercombatverticalshift=30
 
 Skeletoncombathorizontalshift=24
 Skeletoncombatverticalshift=38

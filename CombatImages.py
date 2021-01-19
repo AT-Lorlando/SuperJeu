@@ -4,6 +4,8 @@ from settings import *
 pygame.init()
 size = pygame.display.list_modes()[PYGAMESIZE]
 SHIFT=0.8
+GoldenX=size[0]/1360
+GoldenY=size[1]/768
 scale=int(size[0]*SHIFT),int(size[1]*SHIFT)
 bg = pygame.transform.scale(pygame.image.load(path.join(assets_folder,'test.png')),scale)
 
@@ -15,16 +17,31 @@ fighticons_folder=path.join(assets_folder,'fighticons')
 end_button_folder=path.join(fighticons_folder,'turn_button')
 
 def load(flip,folderpath,num,scale,rang):
+    a,b=int(scale[0]*GoldenX),int(scale[1]*GoldenY)
     if flip:
-        return [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),scale),True,False) for k in range(rang)]
-    return [pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),scale)for k in range(rang)]
+        return [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),(a,b)),True,False) for k in range(rang)]
+    return [pygame.transform.scale(pygame.image.load(path.join(folderpath,str(k//num)+'.png')),(a,b))for k in range(rang)]
 
+def loadJerem(flip,folderpath,letter,num,scale,rang):
+    a,b=int(scale[0]*GoldenX),int(scale[1]*GoldenY)
+    if flip:
+        return [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(folderpath,letter+str(k//num)+'.png')),(a,b)),True,False) for k in range(rang)]
+    return [pygame.transform.scale(pygame.image.load(path.join(folderpath,letter+str(k//num)+'.png')),(a,b))for k in range(rang)]
 
-###Player###
-PlayerScale = (46,64)
-Playersprite = pygame.transform.scale(pygame.image.load(path.join(champ_folder,'B1.png')),PlayerScale)
-PlayerRight = [pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale) for k in range(9)]
-PlayerLeft = [pygame.transform.flip(pygame.transform.scale(pygame.image.load(path.join(champ_folder,'R'+str(k//3+1)+'.png')),PlayerScale),True,False) for k in range(9)]
+###Archer###
+
+PlayerScale = (60,60)
+Playersprite = loadJerem(False,hunter_folder,'B',1,PlayerScale,2)
+PlayerRight = loadJerem(False,hunter_folder,'R',3,PlayerScale,9)
+PlayerLeft =loadJerem(False,hunter_folder,'L',3,PlayerScale,9)
+
+""" Playersprite = loadJerem(False,dark_wizard_folder,'B',1,PlayerScale,2)
+PlayerRight = loadJerem(False,dark_wizard_folder,'R',3,PlayerScale,9)
+PlayerLeft =loadJerem(False,dark_wizard_folder,'L',3,PlayerScale,9) """
+
+Playersprite = loadJerem(False,sun_wizard_folder,'B',1,PlayerScale,2)
+PlayerRight = loadJerem(False,sun_wizard_folder,'R',3,PlayerScale,9)
+PlayerLeft =loadJerem(False,sun_wizard_folder,'L',3,PlayerScale,9)
 
 ###Skeleton###
 SkeletonScale=(64,64)
@@ -99,3 +116,13 @@ Icons = load(False,fighticons_folder,1,IconsScale,2)
 
 End_button = load(False,end_button_folder,1,(90,50),4)
 Button_position =(400,650)
+print("before, ",Playercombathorizontalshift)
+Playercombathorizontalshift=int(Playercombathorizontalshift*GoldenX)
+print("after, ",Playercombathorizontalshift)
+Playercombatverticalshift=int(Playercombatverticalshift*GoldenY)
+
+Skeletoncombathorizontalshift=int(Skeletoncombathorizontalshift*GoldenX)
+Skeletoncombatverticalshift=int(Skeletoncombatverticalshift*GoldenY)
+
+Gobelincombathorizontalshift=int(Gobelincombathorizontalshift*GoldenX)
+Gobelincombatverticalshift=int(Gobelincombatverticalshift*GoldenY)
