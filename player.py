@@ -57,6 +57,8 @@ class Player(pg.sprite.Sprite):
         self.pause = 0
         self.time_since_last_spell = 0
 
+        self.divinesight = False
+
     def gain_xp(self, amount):
         self.xp += amount
 
