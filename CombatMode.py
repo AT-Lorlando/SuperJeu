@@ -74,6 +74,8 @@ bg= bg.convert_alpha()
 
 def redraw_window():
     screen.blit(bg, (0, 0))  #Background
+    global x
+    global y
     x, y = pygame.mouse.get_pos()
     currentchar=Characters[indice%len(Characters)]
     
@@ -139,6 +141,11 @@ def PathAnimation():
 
 def HealthView():
     for k in range(len(Characters)):
+        if Characters[k].healthpoint==0:
+                (Characters[k].poshex).remove_object()
+                update_grid(Grid,(Characters[k].poshex))
+                break
+
         if Characters[k] not in Friendly:
         #if Characters[k].healthpoint<100:
             if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
@@ -155,10 +162,7 @@ def HealthView():
             pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
     #for k in range(len(Characters)):
-            if Characters[k].healthpoint==0:
-                (Characters[k].poshex).remove_object()
-                update_grid(Grid,(Characters[k].poshex))
-                Characters.remove(Characters[k])
+            
                 
 
     hp =  main_font.render(f"{man.healthpoint}",1,BLACK)
@@ -258,6 +262,7 @@ def Spelldescriptor(k):
 
 def endbutton():
     if whosturn():
+        
         if AmIOnendbutton():
             screen.blit(End_button[1],Button_position)
         elif currentchar.movementpoints==0 and currentchar.mana==0:
@@ -280,6 +285,7 @@ listecase = []
 i = 0
 Try=[]
 TurnCount=0
+
 
 def goto(whoitis,elmt,KeepRight,KeepLeft):
     if elmt == Hex(1, 0):  #Hex to right
@@ -417,9 +423,11 @@ def eastorwest():
         currentchar.faceleft=False
     
         
-
 stopreach=False
 checkside=False
+global x
+global y
+x,y=0,0
 while run:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -428,7 +436,7 @@ while run:
 
     keys = pygame.key.get_pressed()
     mouse = pygame.mouse.get_pressed()
-    x, y = pygame.mouse.get_pos()
+    #x, y = pygame.mouse.get_pos()
     currentchar=Characters[indice%len(Characters)]
     
     if keys[pygame.K_k]:
@@ -471,7 +479,6 @@ while run:
                 currentchar.mana=currentchar.maxmana
                 currentchar.movementpoints=currentchar.maxmovement
                 currentchar.activespell=None
-                TurnCount+=1
                 pygame.time.delay(50)
 
 
@@ -494,7 +501,18 @@ while run:
     ############################IA################################################################
 
     else:
-        if listecase == [] :    #Right click
+        if currentchar.animation[0]:
+            indice+=1
+            stopreach=False
+            if checkside:
+                eastorwest()
+                checkside=False
+            currentchar=Characters[indice%len(Characters)]
+            currentchar.mana=currentchar.maxmana
+            currentchar.movementpoints=currentchar.maxmovement
+            currentchar.activespell=None
+            print(indice//len(Characters))
+        elif listecase == []:    
                 hextogo = man.poshex
                 if hextogo in Grid and not stopreach :
                     listecase = pathfinding(currentchar.poshex, hextogo, Grid,Friendly)
@@ -511,6 +529,7 @@ while run:
                         print("Pas de chemin")
                     else:
                         currentchar.movementpoints-=len(listecase)-1
+    
 
     if i < (len(listecase)-1) and listecase!=[] :
         if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
@@ -546,15 +565,20 @@ while run:
             stopreach=False
             if checkside:
                 eastorwest()
+                checkside=False
             currentchar=Characters[indice%len(Characters)]
             currentchar.mana=currentchar.maxmana
             currentchar.movementpoints=currentchar.maxmovement
             currentchar.activespell=None
-            TurnCount+=1
+            print(indice//len(Characters))
         
     else:
         listecase = []
         i = 0
+
+    if all([Characters[k].animation[0] for k in range(len(Characters)) if Characters[k] not in Friendly ]):
+        print("Gagné")
+        run =False
 
     redraw_window()
     pygame.display.update()

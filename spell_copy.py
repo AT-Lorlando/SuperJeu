@@ -13,6 +13,7 @@ class Spell :
     offsety=35
     manacost=0
     dammage=0
+    cooldown=0
     """ countdown=0
     spell=[False,False] #Thunder #... """
 
@@ -55,7 +56,8 @@ fireball.dammagezone = hx.hex_circle(hx.Hex(),1)
 fireball.castzone= hx.hex_circle((hx.Hex(), 3))
 fireball.name=fireball """
 
-def initspell(spell,name,dammage,dammagerange,castrange,manacost):
+def initspell(spell,name,dammage,dammagerange,castrange,manacost,cooldown):
+    spell.cooldown=cooldown
     spell.dammage=dammage
     spell.name=name
     spell.dammagerange=dammagerange
@@ -66,17 +68,17 @@ def initspell(spell,name,dammage,dammagerange,castrange,manacost):
     return spell
 
 sunburn = Spell(dammage)
-sunburn = initspell(sunburn,"Sunburn",20,1,3,2)
+sunburn = initspell(sunburn,"Sunburn",20,1,3,2,1)
 
 thunder = Spell(dammage)
-thunder = initspell(thunder,"Thunder",40,2,4,4)
+thunder = initspell(thunder,"Thunder",40,2,4,4,3)
 
 
 bomb = Spell(dammage)
-bomb = initspell(bomb,"Bomb",70,2,3,2)
+bomb = initspell(bomb,"Bomb",70,2,3,2,2)
 
 heal=Spell(dammage)
-heal = initspell(heal,"Heal",-20,1,2,2)
+heal = initspell(heal,"Heal",-20,1,2,2,1)
 
 attack = Spell(dammage)
-attack= initspell(attack,"Attack",10,1,2,1)
+attack= initspell(attack,"Attack",10,1,2,1,1)
