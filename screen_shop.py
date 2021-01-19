@@ -13,10 +13,9 @@ class Screen_shop(Mother_screen):
         # 180 is the argument to change the blur
         self.fond.fill((0, 0, 0, 180))
         self.ID = ID
+        self.shop = create_shop()
         if(self.ID):
             self.shop = SHOP_DICT[self.ID]
-        elif(game.actual_stage == 0):
-            self.shop = Shop()
         self.player_inventory = None
         self.animation = None
         self.image = None
@@ -29,6 +28,10 @@ class Screen_shop(Mother_screen):
             path.join(assets_folder, "coin.png"))
         self.fond_coin = pg.transform.scale(self.fond_coin, (30, 30))
         self.origin = None
+
+    def put_in_shop(self, items):
+        for item in items:
+            self.shop.inv.add_without_case(item)
 
     def update(self, player):
         self.mouse = pg.mouse.get_pressed()
