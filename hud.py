@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import *
 from os import path
+from math import floor
 
 class HUD:
     def __init__(self, x, y, player):
@@ -76,11 +77,14 @@ class Life_Data_HUD(HUD):
 class Exp_Data_HUD(HUD):
     def __init__(self, x, y, player):
         super(Exp_Data_HUD,self).__init__(x, y, player)
-        self.image = text_to_screen(f'{self.player.xp}/{self.player.xp_max}')
+        self.data = floor(self.player.xp/self.player.xp_max*100)
+        self.image = text_to_screen(f'{self.data}%')
+        
 
     def update(self):
-        self.image = text_to_screen(f'{self.player.xp}/{self.player.xp_max}', color=(50,50,255*(self.player.xp/self.player.xp_max)), l = 40)
-        self.outline = text_to_screen(f'{self.player.xp}/{self.player.xp_max}', color=(255,255,255), l = 40)
+        self.data = floor(self.player.xp/self.player.xp_max*100)
+        self.image = text_to_screen(f'{self.data}%', color=(50,50,255*(self.player.xp/self.player.xp_max)), l = 40)
+        self.outline = text_to_screen(f'{self.data}%', color=(255,255,255), l = 40)
 
     def draw(self, game):
         self.update()
