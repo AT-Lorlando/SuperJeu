@@ -236,10 +236,12 @@ class Save_area(Interactif):
     def interaction(self, player):
         self.game.save()
 class Chest_area(Interactif):
-    def __init__(self, game, x, y, ID):
+    def __init__(self, game, x, y, ID, items=None):
         super(Chest_area, self).__init__(game, x, y)
         self.key = pg.K_e
         self.shop = Screen_shop(game.screen, game, 0)
+        if items:
+            self.shop.put_in_shop(items)
 
     def interaction(self, player):
         self.shop.run(self.game.screen.copy(), player)
