@@ -16,11 +16,11 @@ class Dialogue(Mother_screen):
         self.sentence_index = 0
         self.npc = npc
         self.text_to_print = ["I have nothing to say","Sorry"]
+        self.info_message = []
         if self.quest:
             self.text_to_print = self.quest.text_dialogue
         for sentence in self.text_to_print:
-            self.tab.append(pg.font.SysFont("Blue Eyes.otf", 30).render(
-                sentence, True, (255, 255, 255)))
+            self.tab.append(text_to_screen(sentence))
         self.x = floor(WIDTH*0.25)
         self.y = floor(HEIGHT*0.1)
         self.rect = pg.Rect(self.x, self.y, TILESIZE, TILESIZE)
@@ -32,20 +32,33 @@ class Dialogue(Mother_screen):
         self.player = None
         
         # Buttons
-
-        
         self.next_button = Button(floor(WIDTH*0.6), floor(HEIGHT*0.8), pg.image.load(
             path.join(button_folder, "next.png")).convert(), pg.image.load(
             path.join(button_folder, "next_clicked.png")).convert(), "name",self.next)
         self.exit_button = Button(floor(WIDTH*0.3), floor(HEIGHT*0.8), pg.image.load(
             path.join(button_folder, "exit.png")).convert(), pg.image.load(
             path.join(button_folder, "exit_clicked.png")).convert(), "name",self.exit)
+        self.accept_button = Button(floor(WIDTH*0.6), floor(HEIGHT*0.8), pg.image.load(
+            path.join(button_folder, "accept.png")).convert(), pg.image.load(
+            path.join(button_folder, "accept_clicked.png")).convert(), "name", self.accept)
+        self.decline_button = Button(floor(WIDTH*0.3), floor(HEIGHT*0.8), pg.image.load(
+            path.join(button_folder, "decline.png")).convert(), pg.image.load(
+            path.join(button_folder, "decline_clicked.png")).convert(), "name", self.decline)
+        self.return_button = Button(floor(WIDTH*0.6), floor(HEIGHT*0.8), pg.image.load(
+            path.join(button_folder, "return.png")).convert(), pg.image.load(
+            path.join(button_folder, "return_clicked.png")).convert(), "name", self._return)
+
         self.buttons = [self.next_button, self.exit_button]
         self.down = False
+
 
     def run(self, background=None):
         self.running = True
         if self.quest:
+            if self.quest in self.player.quest_list:
+                self.sentence_index = len(self.text_to_print) - 1
+                self.info_message = [text_to_screen(self.quest.goal, color=GREEN)]
+                self.buttons = [self.exit_button, self.return_button]
             if self.quest.is_finished:
                 self.tab = [(pg.font.SysFont("Blue Eyes.otf", 30).render(
                     "Thanks for the help!", True, (255, 255, 255)))]
@@ -69,6 +82,9 @@ class Dialogue(Mother_screen):
         for i in range(self.sentence_index+1):
             self.screen.blit(
                 self.tab[i], (floor(WIDTH*0.275), floor(HEIGHT*0.13 + i*30)))
+        for i in range(len(self.info_message)):
+            self.screen.blit(
+                self.info_message[i], (floor(WIDTH*0.275), floor(HEIGHT*0.13 + (i+len(self.tab))*30)))
         if self.down:
             for button in self.buttons:
                 if button.is_clicked(mouse[0], (x, y)):
@@ -78,8 +94,6 @@ class Dialogue(Mother_screen):
         
 
     def events(self):
-        # catch all events here
-
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
@@ -88,7 +102,6 @@ class Dialogue(Mother_screen):
                     self.next()
             elif event.type == pg.MOUSEBUTTONDOWN:
                 self.down = True
-                print("Click")
 
     def draw(self):
         for button in self.buttons:
@@ -97,26 +110,25 @@ class Dialogue(Mother_screen):
     def next(self):
         self.sentence_index += 1
         if self.sentence_index == len(self.tab)-1:
-            self.buttons.remove(self.next_button)
-            self.buttons.remove(self.exit_button)
-            self.accept_button = Button(floor(WIDTH*0.6), floor(HEIGHT*0.8), pg.image.load(
-                path.join(button_folder, "accept.png")).convert(), pg.image.load(
-                path.join(button_folder, "accept_clicked.png")).convert(), "name", self.accept)
-            self.decline_button = Button(floor(WIDTH*0.3), floor(HEIGHT*0.8), pg.image.load(
-                path.join(button_folder, "decline.png")).convert(), pg.image.load(
-                path.join(button_folder, "decline_clicked.png")).convert(), "name", self.decline)
-            self.buttons.append(self.accept_button)
-            self.buttons.append(self.decline_button)
+            self.buttons = [self.accept_button, self.decline_button]
         
     def exit(self):
         self.running = False
 
     def accept(self):
         self.npc.accept(self.player)
-        self.running = False
+        self.info_message = [text_to_screen(self.quest.goal, color=GREEN)]
+        self.buttons = [self.exit_button, self.return_button]
 
     def decline(self):
         self.running = False
+
+    def _return(self):
+        if self.quest.is_complete(self.player):
+            self.quest.congrats
+        else:
+            self.info_message = [text_to_screen(self.quest.goal, color=GREEN),
+                text_to_screen("The quest isn't finished yet", color=RED)]
 
     def linkwith(self, player):
         self.player = player
