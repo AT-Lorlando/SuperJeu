@@ -4,6 +4,7 @@ from numpy.lib.function_base import diff
 import pandas as pd
 from math import floor, ceil
 from settings import *
+
 import csv
 
 ROOM_SIZE = 50
