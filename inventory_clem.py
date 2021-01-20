@@ -3,7 +3,6 @@ from item import *
 import pygame as pg
 from os import path
 
-
 class Inventory(pg.sprite.Sprite):
     def __init__(self, name="player", stuff=0):  # width, x, y
         self.inventory = []
@@ -36,9 +35,10 @@ class Inventory(pg.sprite.Sprite):
 
     def remove(self, item):
         for i in range(len(self.inventory)):
-            if self.inventory[i].item == item:
-                self.inventory[i].item = None
-                break
+            if self.inventory[i].item:
+                if self.inventory[i].item.ID == item.ID:
+                    self.inventory[i].item = None
+                    break
 
     def draw(self, screen, x=0, y=0):
         # screen.blit(self.fond, (self.pos_x, self.pos_y))
@@ -82,9 +82,10 @@ class Inventory(pg.sprite.Sprite):
 
     def add_without_case(self, *items):
         for item in items:
+            new = item.copy()
             for case in self.inventory:
                 if case.item == None:
-                    case.item = item
+                    case.item = new
                     break
 
     def add(self, case, item):

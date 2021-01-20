@@ -22,6 +22,10 @@ class Item(pg.sprite.Sprite):
         self.clicked = False
         self.price = 100
 
+    def copy(self):
+        new = Item(self.ID, self.name)
+        return new
+
     # Is true if the mouse is over the sprite
     def is_over(self, pos_mouse):
         return self.pos_x < pos_mouse[0] < self.pos_x + self.rect[0] and self.pos_y < pos_mouse[1] < self.pos_y + self.rect[1]
@@ -64,12 +68,20 @@ class Stuff(Item):
         # self.INT = INT
         # self.WIS = WIS
         # self.CHA = CHA
+    
+    def copy(self):
+        new = Stuff(self.ID, self.name)
+        return new
 
 
 class Consumable(Item):
     def __init__(self, health):
         super(Consumable, self).__init__()
         self.health = health
+
+    def copy(self):
+        new = Consumable(self.ID, self.name)
+        return new
 
 
 class Sword(Stuff):
@@ -78,14 +90,21 @@ class Sword(Stuff):
         self.STR = 5
         self.inclued_in = inv
 
+    def copy(self):
+        new = Sword(self.ID, self.name)
+        return new
 
 class Quest_Item(Item):
     def __init__(self, ID, name):
         super(Quest_Item, self).__init__(ID, name)
         self.price = 2
 
+    def copy(self):
+        new = Quest_Item(self.ID, self.name)
+        return new
 
-Lost_ring = Quest_Item(98, "Lost ring", )
+
+Lost_ring = Quest_Item(98, "Lost ring")
 Empowered_Sword = Sword(56, "Empowered sword")
 Empowered_Staff = Sword(73, "Empowered staff")
 

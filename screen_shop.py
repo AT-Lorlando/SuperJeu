@@ -28,6 +28,7 @@ class Screen_shop(Mother_screen):
             path.join(assets_folder, "coin.png"))
         self.fond_coin = pg.transform.scale(self.fond_coin, (30, 30))
         self.origin = None
+        self.down = False
 
     def put_in_shop(self, items):
         for item in items:
@@ -56,17 +57,42 @@ class Screen_shop(Mother_screen):
             if self.is_over(self.player_inventory) and over_case != None and over_case.item == None:
                 self.player_inventory.add(over_case, self.handled)
                 if self.origin != self.player_inventory.name:
-                    self.buy(self.handled, player)
+                    pass
+                    # self.buy(self.handled, player)
             elif self.is_over(self.shop.inv) and over_case != None and over_case.item == None:
                 self.shop.inv.add(over_case, self.handled)
                 if self.origin != self.shop.inv.name:
-                    self.sell(self.handled, player)
+                    pass
+                    # self.sell(self.handled, player)
             else:
                 self.copy.item = self.handled
                 self.handled = None
 
+        if self.down and not self.mouse[2]:
+            over_case = None
+            for case in self.player_inventory.inventory + self.shop.inv.inventory:
+                if self.is_over(case):
+                    over_case = case
+                    break
+
+            if self.is_over(self.player_inventory):
+                if over_case:
+                    if over_case.item:
+                        self.sell(over_case.item, player)
+
+            elif self.is_over(self.shop.inv):
+                if over_case:
+                    if over_case.item:
+                        self.buy(over_case.item, player)
+    
+            
+            self.down = False
+
         if not self.mouse[0]:
             self.handled = None
+
+        if self.mouse[2]:
+            self.down = True
 
     def draw(self, player):
         # self.screen.blit(self.shop.fond, (self.shop.inv.pos_x,self.shop.inv.pos_y))  # fond
@@ -97,10 +123,12 @@ class Screen_shop(Mother_screen):
 
     def buy(self, item, player):
         if self.ID:
+            player.inv.add_without_case(item)
             player.money -= item.price
 
     def sell(self, item, player):
         if self.ID:
+            player.inv.remove(item)
             player.money += item.price
 
     def is_over(self, target):
