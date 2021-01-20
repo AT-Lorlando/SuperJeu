@@ -125,7 +125,9 @@ class Dialogue(Mother_screen):
 
     def _return(self):
         if self.quest.is_complete(self.player):
-            self.quest.congrats
+            self.quest.congrats(self.player)
+            self.info_message = []
+            self.running = False
         else:
             self.info_message = [text_to_screen(self.quest.goal, color=GREEN),
                 text_to_screen("The quest isn't finished yet", color=RED)]
