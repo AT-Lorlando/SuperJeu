@@ -169,15 +169,15 @@ class Mob(MySprite):
             self.is_moving = False
 
     def look_update(self):
-        if self.vel.x > 0:
-            if self.vel.y > 0 and self.vel.y > self.vel.x:
+        if self.vel.x >= 0:
+            if self.vel.y >= 0 and self.vel.y > self.vel.x:
                 self.looking_at = "Bot"
             elif self.vel.y < 0 and abs(self.vel.y) > self.vel.x:
                 self.looking_at = "Top"
             else:
                 self.looking_at = "Right"
         elif self.vel.x < 0:
-            if self.vel.y > 0 and self.vel.y > abs(self.vel.x):
+            if self.vel.y >= 0 and self.vel.y > abs(self.vel.x):
                 self.looking_at = "Bot"
             elif self.vel.y < 0 and abs(self.vel.y) > abs(self.vel.x):
                 self.looking_at = "Top"
