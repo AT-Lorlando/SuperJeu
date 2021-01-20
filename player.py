@@ -10,12 +10,6 @@ from sprites import *
 from character import *
 import time
 vec = pg.math.Vector2
-
-
-def resize(img, size):
-    return pg.transform.scale(img, (size, size))
-
-
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.Layers[LAYER_NUMBER-1]
@@ -71,7 +65,12 @@ class Player(pg.sprite.Sprite):
         self.xp_max = 10*floor(self.xp_max * XP_RATIO)
         self.hp_max = 10*floor(self.hp_max * HP_RATIO)
         self.hp = self.hp_max
-        self.game.animation_add([(pg.image.load(path.join(level_up_folder, f'l ({x}).gif'))) for x in range(1, 38)], pos=(700,400), colorkey=(0,0,0))
+        self.game.animation_add(
+            [(resize(
+                pg.image.load(path.join(level_up_folder, f'l ({x}).png'))
+                ,WIDTH,HEIGHT)) 
+                for x in range(1, 38)], pos=(0,0), colorkey=(0,0,0), frame_rate=2
+                )
         if(self.xp >= self.xp_max):
             self.level_up()
 
