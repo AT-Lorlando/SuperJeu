@@ -97,4 +97,13 @@ Pickaxe = Item(121, "Pickaxe")
 Axe = Item(120, "Axe")
 # Ring = Item(192, "Apple")
 # Apple = Item(192, "Apple")
-ITEM_DICT = {192:Item(192, "Apple"),205:Item(205, "Egg"),202:Item(202, "Meat"),122:Item(122, "Shovel"),121:Item(121, "Pickaxe"),120:Item(120, "Axe"),98:Lost_ring,56:Empowered_Sword,73:Empowered_Staff}
+ITEM_DICT = {
+    192:Item(192, "Apple"),
+    205:Item(205, "Egg"),
+    202:Item(202, "Meat"),
+    122:Item(122, "Shovel"),
+    121:Item(121, "Pickaxe"),
+    120:Item(120, "Axe"),
+    98:Lost_ring,
+    56:Empowered_Sword,
+    73:Empowered_Staff}
