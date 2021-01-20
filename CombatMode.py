@@ -5,7 +5,7 @@ from Hex import *
 from settings import *
 from CombatCharacter import *
 from spell_copy import *
-
+from random import randint
 
 (WIDTH, HEIGHT)=(1097,720)
 pygame.init()
@@ -34,7 +34,7 @@ layout = Layout(orientation_pointy, (largeurHex, hauteurHex),(
 #print(SHIFT*size[0]//(2*largeurHex)-2,SHIFT*size[1],2*SHIFT*size[1]/(hauteurHex-0.5)//3-2)
 pospix = hex_to_pixel(layout, Hex(5,1))
 
-man = player(pospix[0], pospix[1], *PlayerScale,"Player 1")
+man = player(pospix[0], pospix[1],"Player 1")
 man.poshex = Tile(Hex(5, 1)).set_object(man)
 man.maxmana=6
 man.mana=6
@@ -47,18 +47,18 @@ man.spells.extend((False,False,False,False))
 man.movementpoints=4
 man.maxmovement=4
 man.Xshift=Playercombathorizontalshift
-print("Mode, ",Playercombathorizontalshift)
 man.Yshift=Playercombatverticalshift
 
 
 
-skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],*SkeletonScale,"Skeleton")
+skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],"Skeleton")
 skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
+
 skeleton.maxmovement=3
 skeleton.Xshift=Skeletoncombathorizontalshift+5
 skeleton.Yshift=Skeletoncombatverticalshift+5
 
-gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3))[1],*GobelinScale,"Gobelin")
+gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3))[1],"Gobelin")
 gobelin.poshex = Tile(Hex(2, 3)).set_object(gobelin)
 attack.owner=gobelin
 gobelin.spellsname.append(attack)
@@ -72,8 +72,8 @@ gobelin.Yshift=Gobelincombatverticalshift+2
 Characters=[man,skeleton,gobelin]
 Friendly=[man]
 
-main_font = pygame.font.SysFont("Blue Eyes.otf", 30)
-spell_font = pygame.font.SysFont("Blue Eyes.otf", 25)
+main_font = pygame.font.SysFont("Blue Eyes.otf", int(30*GoldenY))
+spell_font = pygame.font.SysFont("Blue Eyes.otf", int(25*GoldenY))
 
 """ Line = int(2*SHIFT*size[1]/(hauteurHex-0.5)//3-2) 
 Column= int(SHIFT*size[0]//(2*largeurHex)-2)
@@ -87,11 +87,17 @@ castzone=[]
 currentchar=0
 for c in Characters :
     update_grid(Grid,c.poshex)
+TilesHex=[]
+for k in range(10):
+    if randint(0,1)%2==0:
+        _Line=randint(1,Line-2)
+        _Column=randint(1,Column-2)
+        if Hex(_Column,_Line) in Grid and Grid[Grid.index(Tile(Hex(_Column,_Line)))].object==None:
+            TilesHex.append(Hex(_Column,_Line))
 
-Tiles = [Tile(Hex(1,1)),Tile(Hex(2,4)),Tile(Hex(7,5)),Tile(Hex(9,2))]
-
-for t in Tiles:
-    t.set_object("Three")
+for t in TilesHex:
+    t=Tile(t)
+    t.set_object("Rock")
     update_grid(Grid,t)
 
 fond = pygame.Surface((WIDTH, HEIGHT)).convert_alpha()
@@ -101,6 +107,7 @@ bg= bg.convert_alpha()
 
 
 def redraw_window():
+    
     screen.fill(DARKGREY)
     screen.blit(bg, (0+(1-SHIFT)/2*size[0], 0))  #Background
     global x
@@ -110,7 +117,7 @@ def redraw_window():
     
     Spell_range()
     GridOverlay()
-    
+    Rocky()
     PathAnimation()
     
    
@@ -118,14 +125,19 @@ def redraw_window():
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
     man.drawPlayer(screen)
-    screen.blit(Icons[1],(120,675))
-    screen.blit(Icons[0],(120,630))
+    
     HealthView()
     #Button turn
     inventory()
     endbutton()
     
-
+    
+def Rocky():
+    for elmt in TilesHex:
+        pos=(hex_to_pixel(layout,elmt))
+        __a=int(pos[0]-Rocks[0].get_width()/2)
+        __b=int(pos[1]-Rocks[0].get_height()/2)
+        screen.blit(Rocks[(elmt.q+elmt.r)%3],(__a,__b))
 
 def Spell_range():
     if waitforspell:
@@ -140,6 +152,8 @@ def GridOverlay():
     for element in Grid:
         pygame.draw.polygon(screen, BLACK, hex_corner(layout, element),1)  #Grid layout
     #pygame.draw.polygon(screen, (255, 0, 0), hex_corner(layout, Hex(1, 1)))
+StatsX=0.2*size[0]+40*GoldenX
+MiddleInventory=((1-SHIFT)/4+SHIFT)*size[1]
 
 def PathAnimation():
     L=[]
@@ -155,18 +169,23 @@ def PathAnimation():
                         pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
             
     if 1<len(L) and len(L)<(man.movementpoints+2):
-        Movement_label = main_font.render(f"MP: {man.movementpoints} - {len(L)-1}",1,RED)
+        Movement_label = main_font.render(f"MP: {man.movementpoints} - {len(L)-1}",1,WHITE)
     else:
-        Movement_label = main_font.render(f"MP: {man.movementpoints}",1,RED)
+        Movement_label = main_font.render(f"MP: {man.movementpoints}",1,WHITE)
     if waitforspell:
         if man.mana>= currentspell.manacost:
-            Mana_level = main_font.render(f"AP: {man.mana} - {currentspell.manacost}",10,BLUE)
+            Mana_level = main_font.render(f"AP: {man.mana} - {currentspell.manacost}",10,WHITE)
         else:
-            Mana_level = main_font.render(f"Not enough AP : {man.mana} - {currentspell.manacost}",1,BLUE)
+            Mana_level = main_font.render(f"Not enough AP ",1,WHITE)
     else:
-        Mana_level = main_font.render(f"AP: {man.mana}",1,BLUE)
-    screen.blit(Movement_label,(170,630+(Icons[1].get_height()-Movement_label.get_height())/2))
-    screen.blit(Mana_level,(170,675+(Icons[0].get_height()-Mana_level.get_height())/2))
+        Mana_level = main_font.render(f"AP: {man.mana}",1,WHITE)
+    up = MiddleInventory -12*GoldenY
+    down= MiddleInventory +37*GoldenY
+    screen.blit(Movement_label,(StatsX+50*GoldenX,up+(Icons[1].get_height()-Movement_label.get_height())/2))
+    screen.blit(Mana_level,(StatsX+50*GoldenX,down+(Icons[0].get_height()-Mana_level.get_height())/2))
+    screen.blit(Icons[1],(StatsX,up))
+    screen.blit(Icons[0],(StatsX,down))
+
 
 def HealthView():
     for k in range(len(Characters)):
@@ -184,21 +203,29 @@ def HealthView():
             healtposy-=hauteurHex
             #if not Characters[k].animation[0]:
                 #screen.blit(Dialog,(x,y-Dialog.get_height()))
-            A,B=Characters[k].playerX-Characters[k].Xshift,Characters[k].playerY-Characters[k].Yshift
-            #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,Health[0].get_width(),Health[0].get_height()),2)
-            pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,Characters[k].healthpoint/100*Health[0].get_width(),Health[0].get_height()))
-            pygame.draw.rect(screen, BLACK,(A,B,Health[0].get_width(),Health[0].get_height()),1)
+
+            A,B=hex_to_pixel(layout,Characters[k].poshex)
+            A,B=A-SHIFT*largeurHex,B-hauteurHex
+            #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,largeurHex,20),2)
+            pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,SHIFT*Characters[k].healthpoint/100*largeurHex*2,10*GoldenY))
+            pygame.draw.rect(screen, BLACK,(A,B,SHIFT*largeurHex*2,10*GoldenY),1)
             if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
                 CharacterDescriptor(k)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
     #for k in range(len(Characters)):
             
                 
-
-    hp =  main_font.render(f"{man.healthpoint}",1,BLACK)
-    pygame.draw.rect(screen, lifecolor(man.healthpoint),pygame.Rect(0,710-0.85*man.healthpoint,100,90))
-    screen.blit(heart,(0,620))
-    screen.blit(hp,(50-hp.get_width()/2,655))
+    
+    hp =  main_font.render(f"{man.healthpoint}",1,WHITE)
+    HeartX=(1-SHIFT)/2*size[0]+SHIFT*size[0]*1/8
+    HeartY=MiddleInventory+(Spellbar.get_height()-heart.get_height())/2
+    pygame.draw.rect(screen, lifecolor(man.healthpoint),pygame.Rect(
+        HeartX-100*GoldenX,
+        HeartY-0.85*man.healthpoint*GoldenY+85*GoldenY,100*GoldenX,90*GoldenY))
+    pygame.draw.rect(screen, DARKGREY,pygame.Rect(HeartX-100*GoldenX,HeartY+90*GoldenY,100*GoldenX,90*GoldenY))
+    screen.blit(heart,(HeartX-heart.get_width(),HeartY))
+    pygame.draw.rect(screen, DARKGREY,pygame.Rect(HeartX-heart.get_width()-1,HeartY,1,heart.get_height()))
+    screen.blit(hp,(HeartX-(heart.get_width()+hp.get_width())/2,HeartY+(heart.get_height()-hp.get_height())/2-5*GoldenY))
 
 def CharacterDescriptor(k):
     screen.blit(Dialog,(x,y-Dialog.get_height()))
@@ -223,17 +250,19 @@ def lifecolor(lifelevel):
         return (round(2*(1-lifelevel/100)*250),255-lifelevel//100,0)
     return (255,round(2*lifelevel/100*250),0)
 
-inventory_cases=[(597+60*k+k) for k in range (-1,9)]
+inventory_cases=[((SHIFT-0.1)*size[0]-Spellbar.get_width()/2+GoldenX*(60*k+8)) for k in range (9)]
 
 def inventory():
-    screen.blit(Spellbar,(WIDTH-Spellbar.get_width()-10,640))
-    if currentchar.activespell !=None:
-        pygame.draw.rect(screen, RED,pygame.Rect(597+60*(currentchar.activespell-1),645,60,60),2)
+    screen.blit(Spellbar,(
+        (SHIFT-0.1)*size[0]-Spellbar.get_width()/2,
+        MiddleInventory))
+    if currentchar.activespell !=None and waitforspell:
+        pygame.draw.rect(screen, RED,pygame.Rect(inventory_cases[currentchar.activespell]+2,MiddleInventory+6*GoldenY,59*GoldenX,59*GoldenY),2)
     for k in range(len(man.spellsname)):
-        screen.blit(Spell_icons[k],(inventory_cases[k]+2*(k+1),650))
+        screen.blit(Spell_icons[k],(inventory_cases[k]+2*k,MiddleInventory+8*GoldenY))
     for k in range(len(man.spellsname)):
-        if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
-            Spelldescriptor(k)
+        if x>inventory_cases[k] and x<inventory_cases[k+1] and y>MiddleInventory and y<MiddleInventory+Spellbar.get_height():
+                Spelldescriptor(k)
 
 def Spelldescriptor(k):
     screen.blit(Dialog,(x,y-Dialog.get_height()))
@@ -289,7 +318,7 @@ def Spelldescriptor(k):
     )
 
 
-
+Button_position =((0.1+3/4*0.4)*size[0],MiddleInventory+(Spellbar.get_height()-End_button[0].get_height())/2)
 def endbutton():
     if whosturn():
         
@@ -418,6 +447,7 @@ def goto(whoitis,elmt,KeepRight,KeepLeft):
             whoitis.change)
         vertical_step = (hauteurHex + largeurHex * sin(pi / 6)) // stepnumber
         horizon_step = largeurHex // stepnumber
+        
         for k in range(stepnumber):
             clock.tick(FPS)
             whoitis.playerY -= vertical_step
@@ -470,14 +500,25 @@ while run:
     currentchar=Characters[indice%len(Characters)]
     
     if keys[pygame.K_k]:
-        screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        PYGAMESIZE+=1
+        WINDOWSIZE = pygame.display.list_modes()[PYGAMESIZE%21]
+        size=WINDOWSIZE
+        screen = pygame.display.set_mode(size)
+
+    if keys[pygame.K_KP_MINUS]:
+        if man.healthpoint>0:
+            man.healthpoint-=1
+
+    if keys[pygame.K_KP_PLUS]:
+        if man.healthpoint<100:
+            man.healthpoint+=1
 
 
     ##############################################Player Interaction ###############################################
     if whosturn():          
         if mouse[0]:
             for k in range(len(currentchar.spellsname)):
-                if x>inventory_cases[k] and x<inventory_cases[k+1] and y>645 and y<705:
+                if x>inventory_cases[k] and x<inventory_cases[k+1] and y>MiddleInventory and y<MiddleInventory+Spellbar.get_height():
                     #if not waitforspell:
                         currentchar.activespell=k
                         waitforspell=True
@@ -513,7 +554,7 @@ while run:
 
 
         if mouse[2] and not waitforspell:
-            if listecase == [] and not any([pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)) for k in range (len(Characters))]):    #Right click
+            if listecase == []:    #Right click
                 hextogo = Tile(pixel_to_hex(layout, (x, y)))
                 if hextogo in Grid :
                     if Grid[Grid.index(hextogo)].object == None :
@@ -529,7 +570,7 @@ while run:
 
 
     ############################IA################################################################
-
+    
     else:
         if currentchar.animation[0]:
             indice+=1
@@ -541,7 +582,7 @@ while run:
             currentchar.mana=currentchar.maxmana
             currentchar.movementpoints=currentchar.maxmovement
             currentchar.activespell=None
-            print(indice//len(Characters))
+            
         elif listecase == []:    
                 hextogo = man.poshex
                 if hextogo in Grid and not stopreach :

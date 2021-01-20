@@ -35,7 +35,7 @@ spell_folder = path.join(assets_folder,'spell')
 # game settings
 WIDTH = 800  # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 600  # 16 * 48 or 32 * 24 or 64 * 12
-PYGAMESIZE=6
+PYGAMESIZE=6 #1 injouable
 FPS = 120
 TITLE = "Tilemap Demo"
 BGCOLOR = DARKGREY

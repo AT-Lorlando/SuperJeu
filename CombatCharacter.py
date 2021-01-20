@@ -7,15 +7,13 @@ from CombatImages import *
 
 
 class player(object):
-    def __init__(self, playerX, playerY, width, heigth,name):
+    def __init__(self, playerX, playerY,name):
         self.name=name
         self.Xshift=0
         self.Yshift=0
         self.playerX = playerX
         self.playerY = playerY
-        self.width = width
-        self.heigth = heigth
-        self.change = 5
+        self.change = 5*GoldenX
         self.maxmovement=0
         self.movementpoints=0
         self.healthpoint=100
@@ -24,7 +22,7 @@ class player(object):
         self.animation=[False,False,False,False]#Dead #Attack #Hit 
         self.spells=[False,False,False,False] #
         self.spellsname=[]
-        self.spellpos=Hex(0,0)
+        self.spellpos=Hex()
         self.activespell=None
         self.left = False
         self.right = False
@@ -49,7 +47,6 @@ class player(object):
             screen.blit(PlayerLeft[self.walkCount%9],pospix)
             self.walkCount += 1
         elif self.right:
-            print(self.walkCount)
             screen.blit(PlayerRight[self.walkCount%9],pospix)
             self.walkCount += 1
         else:

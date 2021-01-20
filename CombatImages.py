@@ -6,6 +6,8 @@ size = pygame.display.list_modes()[PYGAMESIZE]
 SHIFT=0.8
 GoldenX=size[0]/1360
 GoldenY=size[1]/768
+
+
 scale=int(size[0]*SHIFT),int(size[1]*SHIFT)
 bg = pygame.transform.scale(pygame.image.load(path.join(assets_folder,'test.png')),scale)
 
@@ -14,6 +16,7 @@ spell_sunburn=path.join(spell_folder,'spell_sunburn')
 spell_bomb=path.join(spell_folder,'spell_bomb')
 spell_heal=path.join(spell_folder,'spell_heal')
 fighticons_folder=path.join(assets_folder,'fighticons')
+rocks_folder=path.join(fighticons_folder,'rock')
 end_button_folder=path.join(fighticons_folder,'turn_button')
 
 def load(flip,folderpath,num,scale,rang):
@@ -38,10 +41,10 @@ PlayerLeft =loadJerem(False,hunter_folder,'L',3,PlayerScale,9)
 """ Playersprite = loadJerem(False,dark_wizard_folder,'B',1,PlayerScale,2)
 PlayerRight = loadJerem(False,dark_wizard_folder,'R',3,PlayerScale,9)
 PlayerLeft =loadJerem(False,dark_wizard_folder,'L',3,PlayerScale,9) """
-
+""" 
 Playersprite = loadJerem(False,sun_wizard_folder,'B',1,PlayerScale,2)
 PlayerRight = loadJerem(False,sun_wizard_folder,'R',3,PlayerScale,9)
-PlayerLeft =loadJerem(False,sun_wizard_folder,'L',3,PlayerScale,9)
+PlayerLeft =loadJerem(False,sun_wizard_folder,'L',3,PlayerScale,9) """
 
 ###Skeleton###
 SkeletonScale=(64,64)
@@ -94,20 +97,20 @@ Spell_heal=load(False,spell_heal,2,Spellscale,24)
 
 
 
-Spellbar= pygame.image.load(path.join(spell_folder,'Spellbar.png'))
+Spellbar= loadJerem(False,spell_folder,'spellbar',1,(558,70),1)[0]
 SpelliconsScale=(50,50)
 Spell_icons=load(False,spell_folder,1,SpelliconsScale,4)
-Dialog = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'dialog.png')),(127,64))
+Dialog = loadJerem(False,spell_folder,'dialog',1,(127,64),1)[0]
 DialogIconsScale = (20,20)
-Aim = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'aim.png')),DialogIconsScale)
-Range= pygame.transform.scale(pygame.image.load(path.join(spell_folder,'range.png')),DialogIconsScale)
-Sword = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'sword.png')),DialogIconsScale)
-Medicine = pygame.transform.scale(pygame.image.load(path.join(spell_folder,'medicine.png')),DialogIconsScale)
+Aim = loadJerem(False,spell_folder,'Aim',1,DialogIconsScale,1)[0]
+Range= loadJerem(False,spell_folder,'Range',1,DialogIconsScale,1)[0]
+Sword = loadJerem(False,spell_folder,'Sword',1,DialogIconsScale,1)[0]
+Medicine = loadJerem(False,spell_folder,'Medicine',1,DialogIconsScale,1)[0]
 
-HealthScale=(60,10)
-Health = load(False,health_folder,1,HealthScale,11)
 
-heart = pygame.transform.scale(pygame.image.load(path.join(health_folder,'heart.png')),(100,100))
+heart = load(False,health_folder,1,(100,100),1)[0]
+
+Rocks= load(False,rocks_folder,1,(64,61),3)
 
 
 
@@ -115,10 +118,8 @@ IconsScale=(40,40)
 Icons = load(False,fighticons_folder,1,IconsScale,2)
 
 End_button = load(False,end_button_folder,1,(90,50),4)
-Button_position =(400,650)
-print("before, ",Playercombathorizontalshift)
+
 Playercombathorizontalshift=int(Playercombathorizontalshift*GoldenX)
-print("after, ",Playercombathorizontalshift)
 Playercombatverticalshift=int(Playercombatverticalshift*GoldenY)
 
 Skeletoncombathorizontalshift=int(Skeletoncombathorizontalshift*GoldenX)

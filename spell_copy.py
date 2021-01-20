@@ -9,8 +9,8 @@ class Spell :
     dammagezone = [hx.Hex()]  #relative
     surtuile = None
     name=None
-    offsetx=31
-    offsety=35
+    offsetx=31*GoldenX
+    offsety=35*GoldenY
     manacost=0
     dammage=0
     cooldown=0
