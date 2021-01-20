@@ -185,13 +185,13 @@ class Game:
     def load_dungeon(self, dungeon_type, dungeon_difficulty):
         self.actual_dungeon = Dungeon(dungeon_type, dungeon_difficulty)
 
-    def animation_add(self, image_tab, sprite=None, pos=(0,0),colorkey=None):
+    def animation_add(self, image_tab, sprite=None, pos=(0,0),colorkey=None, frame_rate=0):
         if(sprite):
             self.animation_tab.append(
-                Animation(self, self.camera.apply(sprite), image_tab, colorkey))
+                Animation(self, self.camera.apply(sprite), image_tab, colorkey, frame_rate))
         else:
             self.animation_tab.append(
-                Animation(self, pos, image_tab,colorkey))
+                Animation(self, pos, image_tab,colorkey, frame_rate))
 
     def run(self):
         self.playing = True
@@ -303,9 +303,9 @@ class Game:
 
 
 class Animation():
-    def __init__(self, game, pos, tab, colorkey = None):
+    def __init__(self, game, pos, tab, colorkey = None, frame_rate=12):
         self.game = game
-        self.frame_rate = 12
+        self.frame_rate = frame_rate
         self.time_since_anime = 0
         self.actual_frame = 0
         self.pos = pos
