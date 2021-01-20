@@ -93,7 +93,7 @@ class Inventory(pg.sprite.Sprite):
                 case.item = item
 
     def is_in(self, item):
-        return any([case.item == item for case in self.inventory])
+        return any([case.item.ID if case.item else 0  == item.ID for case in self.inventory])
 
 
 class Case(pg.sprite.Sprite):
