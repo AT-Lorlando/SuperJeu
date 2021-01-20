@@ -21,6 +21,7 @@ spell_folder = path.join(assets_folder, 'spell')
 dark_wizard_folder = path.join(champ_folder, 'dark_wizard')
 sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
 hunter_folder = path.join(champ_folder, 'archer')
+mob1_folder = path.join(champ_folder, 'mob1')
 
 portal_folder = path.join(champ_folder, 'portal')
 explode_folder = path.join(champ_folder, 'explode')

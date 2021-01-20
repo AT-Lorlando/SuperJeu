@@ -284,8 +284,7 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.main_champ.animation()
-        self.image = self.main_champ.image
-        
+        self.image = self.main_champ.image        
         if(self.isPlaying):
             self.get_keys()
             # print("Player", self.vel)

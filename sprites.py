@@ -130,6 +130,14 @@ class Mob(MySprite):
 
         self.groups = game.Layers[6], game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
+
+        self.time_since_anime = 0
+        self.actual_frame = 1
+        self.looking_at = "Bot"
+        self.walk_right = [(pg.image.load(path.join(mob1_folder, f'r{x}.png'))) for x in range(0, 3)] 
+        self.walk_left = [(pg.image.load(path.join(mob1_folder, f'l{x}.png'))) for x in range(0, 3)]
+        self.walk_top = [(pg.image.load(path.join(mob1_folder, f't{x}.png'))) for x in range(0, 3)]
+        self.walk_bot = [(pg.image.load(path.join(mob1_folder, f'b{x}.png'))) for x in range(0, 3)]
     
     
     def collide_with_obstacle(self, dir):
@@ -160,6 +168,40 @@ class Mob(MySprite):
         else:
             self.is_moving = False
 
+    def look_update(self):
+        if self.vel.x > 0:
+            if self.vel.y > 0 and self.vel.y > self.vel.x:
+                self.looking_at = "Bot"
+            elif self.vel.y < 0 and abs(self.vel.y) > self.vel.x:
+                self.looking_at = "Top"
+            else:
+                self.looking_at = "Right"
+        elif self.vel.x < 0:
+            if self.vel.y > 0 and self.vel.y > abs(self.vel.x):
+                self.looking_at = "Bot"
+            elif self.vel.y < 0 and abs(self.vel.y) > abs(self.vel.x):
+                self.looking_at = "Top"
+            else:
+                self.looking_at = "Left"
+        self.animation()
+
+    def animation(self):
+        now = pg.time.get_ticks()
+        if(now> self.time_since_anime + 150):
+            self.time_since_anime = now
+            if(self.is_moving == True):
+                self.actual_frame = (self.actual_frame + 1) % 3
+            else:
+                self.actual_frame = 1
+            if(self.looking_at == 'Right'):
+                self.image = self.walk_right[self.actual_frame]
+            elif(self.looking_at == 'Left'):
+                self.image = self.walk_left[self.actual_frame]
+            elif(self.looking_at == 'Top'):
+                self.image = self.walk_top[self.actual_frame]
+            elif(self.looking_at == 'Bot'):
+                self.image = self.walk_bot[self.actual_frame]
+        self.image = resize(self.image, CHARACTER_SIZE)
 
     def update(self):
         self.IA()
@@ -169,12 +211,12 @@ class Mob(MySprite):
             self.aim.scale_to_length(self.speed)
             self.aim += self.vel * -1
             self.vel += self.aim * self.game.dt
-            self.pos += self.vel * self.game.dt  #+ 0.5 * self.aim * self.game.dt ** 2
+            self.pos += self.vel * self.game.dt
         self.rect.x = self.pos.x
         self.collide_with_obstacle('x')
         self.rect.y = self.pos.y
         self.collide_with_obstacle('y')
-
+        self.look_update()
         if(self.vel == (0, 0)):
             self.is_moving = False
 
