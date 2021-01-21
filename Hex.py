@@ -1,5 +1,5 @@
 from math import sqrt, pi, cos, sin
-from copy import deepcopy
+from copy import deepcopy,copy
 
 class Hex:
     """
