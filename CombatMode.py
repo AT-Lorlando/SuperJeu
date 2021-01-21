@@ -85,6 +85,7 @@ Grid = initgrid(Line, Column)
 waitforspell=False
 castzone=[]
 currentchar=0
+Grid = initgrid(Line, Column)
 for c in Characters :
     update_grid(Grid,c.poshex)
 TilesHex=[]
@@ -107,31 +108,31 @@ bg= bg.convert_alpha()
 
 
 def redraw_window():
-    
+
     screen.fill(DARKGREY)
     screen.blit(bg, (0+(1-SHIFT)/2*size[0], 0))  #Background
     global x
     global y
     x, y = pygame.mouse.get_pos()
     currentchar=Characters[indice%len(Characters)]
-    
+
     Spell_range()
     GridOverlay()
     Rocky()
     PathAnimation()
-    
-   
-        
+
+
+
     skeleton.drawSkeleton(screen)
     gobelin.drawGobelin(screen)
     man.drawPlayer(screen)
-    
+
     HealthView()
     #Button turn
     inventory()
     endbutton()
-    
-    
+
+
 def Rocky():
     for elmt in TilesHex:
         pos=(hex_to_pixel(layout,elmt))
@@ -161,13 +162,13 @@ def PathAnimation():
         if listecase==[]:
             #pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,man.poshex),largeurHex,2)
             if (pixel_to_hex(layout, (x, y)) in Grid) and Grid[Grid.index(pixel_to_hex(layout, (x, y)))].object == None:
-                    L=pathfinding(man.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid,Friendly)
-                    for k in range(len(L)):
-                        if len(L)<man.movementpoints+2 and k>0:
-                            pygame.draw.polygon(screen, WHITE,hex_corner(layout,L[k]),2)
-                    if len(L)>man.movementpoints+1:
-                        pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
-            
+                L=pathfinding(man.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid,Friendly)
+                for k in range(len(L)):
+                    if len(L)<man.movementpoints+2 and k>0:
+                        pygame.draw.polygon(screen, WHITE,hex_corner(layout,L[k]),2)
+                if len(L)>man.movementpoints+1:
+                    pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
+
     if 1<len(L) and len(L)<(man.movementpoints+2):
         Movement_label = main_font.render(f"MP: {man.movementpoints} - {len(L)-1}",1,WHITE)
     else:
@@ -190,19 +191,19 @@ def PathAnimation():
 def HealthView():
     for k in range(len(Characters)):
         if Characters[k].healthpoint==0:
-                (Characters[k].poshex).remove_object()
-                update_grid(Grid,(Characters[k].poshex))
-                break
+            (Characters[k].poshex).remove_object()
+            update_grid(Grid,(Characters[k].poshex))
+            break
 
         if Characters[k] not in Friendly:
-        #if Characters[k].healthpoint<100:
-            
-                    #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+            #if Characters[k].healthpoint<100:
+
+            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
             (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
             healtposx-=largeurHex-7
             healtposy-=hauteurHex
             #if not Characters[k].animation[0]:
-                #screen.blit(Dialog,(x,y-Dialog.get_height()))
+            #screen.blit(Dialog,(x,y-Dialog.get_height()))
 
             A,B=hex_to_pixel(layout,Characters[k].poshex)
             A,B=A-SHIFT*largeurHex,B-hauteurHex
@@ -213,9 +214,9 @@ def HealthView():
                 CharacterDescriptor(k)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
     #for k in range(len(Characters)):
-            
-                
-    
+
+
+
     hp =  main_font.render(f"{man.healthpoint}",1,WHITE)
     HeartX=(1-SHIFT)/2*size[0]+SHIFT*size[0]*1/8
     HeartY=MiddleInventory+(Spellbar.get_height()-heart.get_height())/2
@@ -242,7 +243,7 @@ def CharacterDescriptor(k):
         y-(height/4+Character_description_Health.get_height()/2))
     )
 
-    
+
 
 
 def lifecolor(lifelevel):
@@ -262,7 +263,7 @@ def inventory():
         screen.blit(Spell_icons[k],(inventory_cases[k]+2*k,MiddleInventory+8*GoldenY))
     for k in range(len(man.spellsname)):
         if x>inventory_cases[k] and x<inventory_cases[k+1] and y>MiddleInventory and y<MiddleInventory+Spellbar.get_height():
-                Spelldescriptor(k)
+            Spelldescriptor(k)
 
 def Spelldescriptor(k):
     screen.blit(Dialog,(x,y-Dialog.get_height()))
@@ -271,8 +272,8 @@ def Spelldescriptor(k):
     spell_description_name = spell_font.render(f"{man.spellsname[k].name}",1,WHITE)
     spell_description_range= spell_font.render(f"{man.spellsname[k].castrange}",1,WHITE)
     spell_description_aim= spell_font.render(f"{man.spellsname[k].dammagerange}",1,WHITE)
-   
-    
+
+
     screen.blit(spell_description_name,(
         x+(width-spell_description_name.get_width())/2,
         y-(3*Dialog.get_height()/4+spell_description_name.get_height()/2))
@@ -321,7 +322,7 @@ def Spelldescriptor(k):
 Button_position =((0.1+3/4*0.4)*size[0],MiddleInventory+(Spellbar.get_height()-End_button[0].get_height())/2)
 def endbutton():
     if whosturn():
-        
+
         if AmIOnendbutton():
             screen.blit(End_button[1],Button_position)
         elif currentchar.movementpoints==0 and currentchar.mana==0:
@@ -447,7 +448,7 @@ def goto(whoitis,elmt,KeepRight,KeepLeft):
             whoitis.change)
         vertical_step = (hauteurHex + largeurHex * sin(pi / 6)) // stepnumber
         horizon_step = largeurHex // stepnumber
-        
+
         for k in range(stepnumber):
             clock.tick(FPS)
             whoitis.playerY -= vertical_step
@@ -470,19 +471,19 @@ indice=0
 
 def canispell(target):
     return target in castzone and currentchar.mana>= currentspell.manacost
-    
+
 def whosturn():
     return currentchar==man
 
 def eastorwest():
     if listecase[-1]-Tile(man.poshex) in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
         currentchar.faceleft=True
-            
+
 
     elif listecase[-1]-Tile(man.poshex) in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)] :
         currentchar.faceleft=False
-    
-        
+
+
 stopreach=False
 checkside=False
 global x
@@ -498,7 +499,7 @@ while run:
     mouse = pygame.mouse.get_pressed()
     #x, y = pygame.mouse.get_pos()
     currentchar=Characters[indice%len(Characters)]
-    
+
     if keys[pygame.K_k]:
         PYGAMESIZE+=1
         WINDOWSIZE = pygame.display.list_modes()[PYGAMESIZE%21]
@@ -515,33 +516,33 @@ while run:
 
 
     ##############################################Player Interaction ###############################################
-    if whosturn():          
+    if whosturn():
         if mouse[0]:
             for k in range(len(currentchar.spellsname)):
                 if x>inventory_cases[k] and x<inventory_cases[k+1] and y>MiddleInventory and y<MiddleInventory+Spellbar.get_height():
                     #if not waitforspell:
-                        currentchar.activespell=k
-                        waitforspell=True
-                        currentspell=currentchar.spellsname[currentchar.activespell]
-                        castzone=currentspell.computecastzone(Grid,currentchar.poshex)
-                
+                    currentchar.activespell=k
+                    waitforspell=True
+                    currentspell=currentchar.spellsname[currentchar.activespell]
+                    castzone=currentspell.computecastzone(Grid,currentchar.poshex)
+
                 elif (pixel_to_hex(layout,(x,y)) in Grid) and waitforspell and (pixel_to_hex(layout,(x,y)) not in castzone):
-                    waitforspell=False  
+                    waitforspell=False
                     currentchar.activespell=None
                 pygame.time.delay(10)
-                
+
 
             if waitforspell:
                 if not any( currentchar.spells):
                     if canispell(pixel_to_hex(layout,(x,y))):
-                        
+
                         currentchar.spells[currentchar.activespell]=True
                         currentchar.spellpos=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
                         #Scriptprint(currentchar.name+' uses '+currentchar.spellsname[currentchar.activespell].name+', cost : '+str(currentchar.spellsname[currentchar.activespell].manacost)+' action point(s)')
                         currentchar.spellsname[currentchar.activespell].cast(Grid,pixel_to_hex(layout,(x,y)))
                         waitforspell=False
-                    
-            
+
+
             if AmIOnendbutton():
                 waitforspell=False
                 indice+=1
@@ -565,12 +566,12 @@ while run:
                             print("Pas de chemin")
                         else:
                             currentchar.movementpoints-=len(listecase)-1
-                    
+
     ##############################################################################################
 
 
     ############################IA################################################################
-    
+
     else:
         if currentchar.animation[0]:
             indice+=1
@@ -582,31 +583,31 @@ while run:
             currentchar.mana=currentchar.maxmana
             currentchar.movementpoints=currentchar.maxmovement
             currentchar.activespell=None
-            
-        elif listecase == []:    
-                hextogo = man.poshex
-                if hextogo in Grid and not stopreach :
-                    listecase = pathfinding(currentchar.poshex, hextogo, Grid,Friendly)
-                    #print(len(listecase),len(listecase)>currentchar.movementpoints+3)
-                    if len(listecase)>currentchar.movementpoints+2:
-                        listecase=listecase[:currentchar.movementpoints+1]
-                        
-                    
-                    else :
-                        listecase=listecase[:-1]
-                        checkside=True
-                    stopreach=True
-                    if listecase == [] :
-                        print("Pas de chemin")
-                    else:
-                        currentchar.movementpoints-=len(listecase)-1
-    
+
+        elif listecase == []:
+            hextogo = man.poshex
+            if hextogo in Grid and not stopreach :
+                listecase = pathfinding(currentchar.poshex, hextogo, Grid,Friendly)
+                #print(len(listecase),len(listecase)>currentchar.movementpoints+3)
+                if len(listecase)>currentchar.movementpoints+2:
+                    listecase=listecase[:currentchar.movementpoints+1]
+
+
+                else :
+                    listecase=listecase[:-1]
+                    checkside=True
+                stopreach=True
+                if listecase == [] :
+                    print("Pas de chemin")
+                else:
+                    currentchar.movementpoints-=len(listecase)-1
+
 
     if i < (len(listecase)-1) and listecase!=[] :
         if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
             KeepRight=True
             currentchar.faceleft=False
-            
+
 
         elif listecase[i+1]-listecase[i] in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)] and listecase[i]-currentchar.poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
             KeepLeft=True
@@ -619,7 +620,7 @@ while run:
         goto(currentchar,listecase[i] - currentchar.poshex,KeepRight,KeepLeft)
         currentchar.poshex = listecase[i].set_object(currentchar)
         i += 1
-        
+
     elif i == (len(listecase)-1) and listecase!=[]:
         if listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
             currentchar.faceleft=False
@@ -642,7 +643,7 @@ while run:
             currentchar.movementpoints=currentchar.maxmovement
             currentchar.activespell=None
             print(indice//len(Characters))
-        
+
     else:
         listecase = []
         i = 0

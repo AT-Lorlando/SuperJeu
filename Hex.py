@@ -1,5 +1,6 @@
 from math import sqrt, pi, cos, sin
 from copy import deepcopy
+from random import randint
 
 class Hex:
     """
@@ -221,6 +222,15 @@ def update_grid(Grid, Tile) :
         e = Grid[Grid.index(Tile)]
         Grid[Grid.index(Tile)] = Tile
         return e
+
+def check_grid(Grid) :
+    i=0
+    while Grid[i].object!=None :
+        i=randint(0,len(Grid))
+    for n in range(len(Grid)) :
+        if pathfinding(Grid[i],Grid[n], Grid,[])==[] :
+            return False
+    return True
 
 class cell:
     def __init__(self, tile):
