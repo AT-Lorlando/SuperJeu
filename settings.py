@@ -1,4 +1,5 @@
 from os import path
+from Hex import *
 
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
@@ -70,6 +71,9 @@ BULLET_RATE = 150
 GUN_SPREAD = 5
 
 #Combat Settings
+
+
+
 Playercombathorizontalshift=28
 Playercombatverticalshift=30
 
@@ -81,6 +85,10 @@ Gobelincombatverticalshift=40
 
 largeurHex = 35
 hauteurHex = 40
+
+Line = 7
+Column = 12
+
 
 
 # Loading things modified by user :

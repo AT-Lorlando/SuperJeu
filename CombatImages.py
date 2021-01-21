@@ -34,7 +34,7 @@ def loadJerem(flip,folderpath,letter,num,scale,rang):
 ###Archer###
 
 PlayerScale = (60,60)
-Playersprite = loadJerem(False,hunter_folder,'B',1,PlayerScale,2)
+Playersprite = loadJerem(False,hunter_folder,'B',1,PlayerScale,2)[0]
 PlayerRight = loadJerem(False,hunter_folder,'R',3,PlayerScale,9)
 PlayerLeft =loadJerem(False,hunter_folder,'L',3,PlayerScale,9)
 
@@ -54,8 +54,8 @@ skeleton_hit = path.join(skeleton_folder, 'sk_hit')
 skeleton_walk = path.join(skeleton_folder, 'sk_walk')
 skeleton_shield = path.join(skeleton_folder, 'sk_shield')
 
-Skeletonsprite=load(False,skeleton_folder,1,SkeletonScale,1)
-Skeletonsrpiteflip=load(True,skeleton_folder,1,SkeletonScale,1)
+Skeletonsprite=load(False,skeleton_folder,1,SkeletonScale,1)[0]
+Skeletonsrpiteflip=load(True,skeleton_folder,1,SkeletonScale,1)[0]
 SkeletonAttack=load(False,skeleton_attack,2,SkeletonScale,36)
 SkeletonAttackflip=load(True,skeleton_attack,2,SkeletonScale,36)
 SkeletonHit=load(False,skeleton_hit,2,SkeletonScale,16)
@@ -75,8 +75,8 @@ gobelin_hit = path.join(gobelin_folder, 'gobelin_hit')
 gobelin_walk = path.join(gobelin_folder, 'gobelin_walk')
 gobelin_bomb = path.join(gobelin_folder, 'gobelin_bomb')
 
-Gobelinsprite=load(False,gobelin_folder,1,GobelinScale,1)
-Gobelinsrpiteflip=load(True,gobelin_folder,1,GobelinScale,1)
+Gobelinsprite=load(False,gobelin_folder,1,GobelinScale,1)[0]
+Gobelinsrpiteflip=load(True,gobelin_folder,1,GobelinScale,1)[0]
 GobelinAttack=load(False,gobelin_attack,2,GobelinScale,16)
 GobelinAttackflip=load(True,gobelin_attack,2,GobelinScale,16)
 GobelinHit=load(False,gobelin_hit,2,GobelinScale,8)
@@ -101,9 +101,10 @@ Spellbar= loadJerem(False,spell_folder,'spellbar',1,(558,70),1)[0]
 SpelliconsScale=(50,50)
 Spell_icons=load(False,spell_folder,1,SpelliconsScale,4)
 Dialog = loadJerem(False,spell_folder,'dialog',1,(127,64),1)[0]
-DialogIconsScale = (20,20)
+DialogIconsScale = (25,25)
 Aim = loadJerem(False,spell_folder,'Aim',1,DialogIconsScale,1)[0]
-Range= loadJerem(False,spell_folder,'Range',1,DialogIconsScale,1)[0]
+
+#Range= loadJerem(False,spell_folder,'Range',1,DialogIconsScale,1)[0]
 Sword = loadJerem(False,spell_folder,'Sword',1,DialogIconsScale,1)[0]
 Medicine = loadJerem(False,spell_folder,'Medicine',1,DialogIconsScale,1)[0]
 
@@ -116,6 +117,7 @@ Rocks= load(False,rocks_folder,1,(64,61),3)
 
 IconsScale=(40,40)
 Icons = load(False,fighticons_folder,1,IconsScale,2)
+Manacost=pygame.transform.scale(Icons[1],(int(DialogIconsScale[0]*GoldenX),int(DialogIconsScale[1]*GoldenY)))
 
 End_button = load(False,end_button_folder,1,(90,50),4)
 

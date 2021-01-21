@@ -21,8 +21,7 @@ pygame.display.set_icon(Sword)
 
 ##Init
 
-Line = 7
-Column = 12
+
 
 largeurHex=largeurHex*GoldenX
 hauteurHex=hauteurHex*GoldenY
@@ -32,41 +31,38 @@ layout = Layout(orientation_pointy, (largeurHex, hauteurHex),(
     ))
 
 #print(SHIFT*size[0]//(2*largeurHex)-2,SHIFT*size[1],2*SHIFT*size[1]/(hauteurHex-0.5)//3-2)
-pospix = hex_to_pixel(layout, Hex(5,1))
 
-man = player(pospix[0], pospix[1],"Player 1")
-man.poshex = Tile(Hex(5, 1)).set_object(man)
-man.maxmana=6
-man.mana=6
+
+
+
 thunder.owner=man
 sunburn.owner=man
 bomb.owner=man
 heal.owner=man
 man.spellsname.extend((thunder,sunburn,bomb,heal))
 man.spells.extend((False,False,False,False))
-man.movementpoints=4
-man.maxmovement=4
-man.Xshift=Playercombathorizontalshift
-man.Yshift=Playercombatverticalshift
 
 
+attack.owner=skeleton
+skeleton.spellsname.append(attack)
 
-skeleton = player(hex_to_pixel(layout,Hex(0, 4))[0],hex_to_pixel(layout,Hex(0, 4))[1],"Skeleton")
-skeleton.poshex = Tile(Hex(0, 4)).set_object(skeleton)
-
-skeleton.maxmovement=3
-skeleton.Xshift=Skeletoncombathorizontalshift+5
-skeleton.Yshift=Skeletoncombatverticalshift+5
-
-gobelin = player(hex_to_pixel(layout,Hex(2, 3))[0],hex_to_pixel(layout,Hex(2, 3))[1],"Gobelin")
-gobelin.poshex = Tile(Hex(2, 3)).set_object(gobelin)
 attack.owner=gobelin
 gobelin.spellsname.append(attack)
-gobelin.mana=2
-gobelin.maxmana=2
-gobelin.maxmovement=8
-gobelin.Xshift=Gobelincombathorizontalshift-13
-gobelin.Yshift=Gobelincombatverticalshift+2
+
+
+man.animator=[([Playersprite],[Playersprite],1),([Playersprite],[Playersprite],1),([Playersprite],[Playersprite],1)]
+man.spellsanimations=[  (Spell_thunder,Spell_thunder,20),(Spell_sunburn,Spell_sunburn,18), (Spell_bomb,Spell_bomb,20),(Spell_heal,Spell_heal,24)]
+man.static=[PlayerRight,PlayerLeft,9,Playersprite,Playersprite]
+man.ranged=True
+
+skeleton.animator=[(SkeletonDeadflip,SkeletonDead,30),(SkeletonAttackflip,SkeletonAttack,36),(SkeletonHitflip,SkeletonHit,16),(SkeletonShieldflip,SkeletonShield,38)]
+skeleton.spellsanimations=[(SkeletonAttackflip,SkeletonAttack,36)]
+skeleton.static=[SkeletonRight,SkeletonLeft,18,Skeletonsprite,Skeletonsrpiteflip]
+
+
+gobelin.animator=[(GobelinDeadflip,GobelinDead,16),(GobelinAttackflip,GobelinAttack,16),(GobelinHitflip,GobelinHit,8),(GobelinBomb,GobelinBomb,37)]
+gobelin.spellsanimations=[(GobelinAttackflip,GobelinAttack,16)]
+gobelin.static=[GobelinRight,GobelinLeft,18,Gobelinsprite,Gobelinsrpiteflip]
 
 
 Characters=[man,skeleton,gobelin]
@@ -120,13 +116,13 @@ def redraw_window():
     GridOverlay()
     Rocky()
     PathAnimation()
-
-
-
-    skeleton.drawSkeleton(screen)
-    gobelin.drawGobelin(screen)
-    man.drawPlayer(screen)
-
+    
+   
+        
+    skeleton.draw(screen)
+    gobelin.draw(screen)
+    man.draw(screen)
+    
     HealthView()
     #Button turn
     inventory()
@@ -161,14 +157,14 @@ def PathAnimation():
     if not (waitforspell):
         if listecase==[]:
             #pygame.draw.circle(screen, BLACK,hex_to_pixel(layout,man.poshex),largeurHex,2)
-            if (pixel_to_hex(layout, (x, y)) in Grid) and Grid[Grid.index(pixel_to_hex(layout, (x, y)))].object == None:
-                L=pathfinding(man.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid,Friendly)
-                for k in range(len(L)):
-                    if len(L)<man.movementpoints+2 and k>0:
-                        pygame.draw.polygon(screen, WHITE,hex_corner(layout,L[k]),2)
-                if len(L)>man.movementpoints+1:
-                    pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
-
+            if (pixel_to_hex(layout, (x, y)) in Grid) and Grid[Grid.index(pixel_to_hex(layout, (x, y)))].object == None and currentchar in Friendly:
+                    L=pathfinding(man.poshex,Tile(pixel_to_hex(layout,(x,y))),Grid,Friendly)
+                    for k in range(len(L)):
+                        if len(L)<man.movementpoints+2 and k>0:
+                            pygame.draw.polygon(screen, WHITE,hex_corner(layout,L[k]),2)
+                    if len(L)>man.movementpoints+1:
+                        pygame.draw.polygon(screen, BLACK,hex_corner(layout, pixel_to_hex(layout, (x, y))),3)  #Mouse cap
+            
     if 1<len(L) and len(L)<(man.movementpoints+2):
         Movement_label = main_font.render(f"MP: {man.movementpoints} - {len(L)-1}",1,WHITE)
     else:
@@ -184,8 +180,8 @@ def PathAnimation():
     down= MiddleInventory +37*GoldenY
     screen.blit(Movement_label,(StatsX+50*GoldenX,up+(Icons[1].get_height()-Movement_label.get_height())/2))
     screen.blit(Mana_level,(StatsX+50*GoldenX,down+(Icons[0].get_height()-Mana_level.get_height())/2))
-    screen.blit(Icons[1],(StatsX,up))
-    screen.blit(Icons[0],(StatsX,down))
+    screen.blit(Icons[0],(StatsX,up))
+    screen.blit(Icons[1],(StatsX,down))
 
 
 def HealthView():
@@ -195,23 +191,23 @@ def HealthView():
             update_grid(Grid,(Characters[k].poshex))
             break
 
-        if Characters[k] not in Friendly:
-            #if Characters[k].healthpoint<100:
-
-            #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
-            (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
-            healtposx-=largeurHex-7
-            healtposy-=hauteurHex
-            #if not Characters[k].animation[0]:
+        #if Characters[k] not in Friendly:
+        #if Characters[k].healthpoint<100:
+            
+                    #(healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,(x,y)))
+        (healtposx,healtposy)=hex_to_pixel(layout,pixel_to_hex(layout,((Characters[k].playerX,Characters[k].playerY))))
+        healtposx-=largeurHex-7
+        healtposy-=hauteurHex
+        #if not Characters[k].animation[0]:
             #screen.blit(Dialog,(x,y-Dialog.get_height()))
 
-            A,B=hex_to_pixel(layout,Characters[k].poshex)
-            A,B=A-SHIFT*largeurHex,B-hauteurHex
-            #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,largeurHex,20),2)
-            pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,SHIFT*Characters[k].healthpoint/100*largeurHex*2,10*GoldenY))
-            pygame.draw.rect(screen, BLACK,(A,B,SHIFT*largeurHex*2,10*GoldenY),1)
-            if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
-                CharacterDescriptor(k)
+        A,B=hex_to_pixel(layout,Characters[k].poshex)
+        A,B=A-SHIFT*largeurHex,B-hauteurHex
+        #pygame.draw.rect(screen, BLACK,(healtposx,healtposy,largeurHex,20),2)
+        pygame.draw.rect(screen, lifecolor(Characters[k].healthpoint),(A,B,SHIFT*Characters[k].healthpoint/100*largeurHex*2,10*GoldenY))
+        pygame.draw.rect(screen, BLACK,(A,B,SHIFT*largeurHex*2,10*GoldenY),1)
+        if pixel_to_hex(layout,(Characters[k].playerX,Characters[k].playerY))==pixel_to_hex(layout, (x, y)):
+            CharacterDescriptor(k)
             #screen.blit(Health[Characters[k].healthpoint//10],(healtposx,healtposy))
     #for k in range(len(Characters)):
 
@@ -270,7 +266,7 @@ def Spelldescriptor(k):
     width,height = Dialog.get_width(),Dialog.get_height()
 
     spell_description_name = spell_font.render(f"{man.spellsname[k].name}",1,WHITE)
-    spell_description_range= spell_font.render(f"{man.spellsname[k].castrange}",1,WHITE)
+    spell_description_cost= spell_font.render(f"{man.spellsname[k].manacost}",1,WHITE)
     spell_description_aim= spell_font.render(f"{man.spellsname[k].dammagerange}",1,WHITE)
 
 
@@ -280,26 +276,28 @@ def Spelldescriptor(k):
     )
 
     cut = 6
+    
+    
+
+    screen.blit(Manacost,(
+        x+((1*width/cut-Manacost.get_width())/2),
+        y-(height/4+Manacost.get_height()/2))
+    )
+
+    screen.blit(spell_description_cost,(
+        x+((3*width/cut-spell_description_cost.get_width())/2),
+        y-(height/4+spell_description_cost.get_height()/2))
+    )
+
     screen.blit(Aim,(
-        x+((width/cut-Aim.get_width())/2),
+        x+((5*width/cut-Aim.get_width())/2),
         y-(height/4+Aim.get_height()/2))
     )
 
     screen.blit(spell_description_aim,(
-        x+((3*width/cut-spell_description_aim.get_width())/2),
+        x+((7*width/cut-spell_description_aim.get_width())/2),
         y-(height/4+spell_description_aim.get_height()/2))
     )
-
-    screen.blit(Range,(
-        x+((5*width/cut-Range.get_width())/2),
-        y-(height/4+Range.get_height()/2))
-    )
-
-    screen.blit(spell_description_range,(
-        x+((7*width/cut-spell_description_range.get_width())/2),
-        y-(height/4+spell_description_range.get_height()/2))
-    )
-
     if k!=3:
         screen.blit(Sword,(
             x+((9*width/cut-Sword.get_width())/2),
@@ -471,6 +469,18 @@ indice=0
 
 def canispell(target):
     return target in castzone and currentchar.mana>= currentspell.manacost
+    
+def IsAnyoneDoingSomething():
+    
+    for k in range (len(Characters)):
+        for elmt in Characters[k].animation:
+            if elmt:
+                return True
+        for elmt in Characters[k].spells:
+            if elmt:
+                return True
+    return False
+
 
 def whosturn():
     return currentchar==man
@@ -485,7 +495,7 @@ def eastorwest():
 
 
 stopreach=False
-checkside=False
+Canfight=False
 global x
 global y
 x,y=0,0
@@ -521,13 +531,13 @@ while run:
             for k in range(len(currentchar.spellsname)):
                 if x>inventory_cases[k] and x<inventory_cases[k+1] and y>MiddleInventory and y<MiddleInventory+Spellbar.get_height():
                     #if not waitforspell:
-                    currentchar.activespell=k
-                    waitforspell=True
-                    currentspell=currentchar.spellsname[currentchar.activespell]
-                    castzone=currentspell.computecastzone(Grid,currentchar.poshex)
-
-                elif (pixel_to_hex(layout,(x,y)) in Grid) and waitforspell and (pixel_to_hex(layout,(x,y)) not in castzone):
-                    waitforspell=False
+                        currentchar.activespell=k
+                        waitforspell=True
+                        currentspell=currentchar.spellsname[currentchar.activespell]
+                        castzone=currentspell.computecastzone(Grid,currentchar.poshex)
+        
+                elif (pixel_to_hex(layout,(x,y)) not in castzone) and not(x>(SHIFT-0.1)*size[0]-Spellbar.get_width()/2 and x<(SHIFT-0.1)*size[0]+Spellbar.get_width()/2 and y>MiddleInventory and y<MiddleInventory+Spellbar.get_height()):
+                    waitforspell=False  
                     currentchar.activespell=None
                 pygame.time.delay(10)
 
@@ -541,8 +551,9 @@ while run:
                         #Scriptprint(currentchar.name+' uses '+currentchar.spellsname[currentchar.activespell].name+', cost : '+str(currentchar.spellsname[currentchar.activespell].manacost)+' action point(s)')
                         currentchar.spellsname[currentchar.activespell].cast(Grid,pixel_to_hex(layout,(x,y)))
                         waitforspell=False
-
-
+                    
+            
+            #if AmIOnendbutton() and not IsAnyoneDoingSomething():
             if AmIOnendbutton():
                 waitforspell=False
                 indice+=1
@@ -576,32 +587,29 @@ while run:
         if currentchar.animation[0]:
             indice+=1
             stopreach=False
-            if checkside:
-                eastorwest()
-                checkside=False
             currentchar=Characters[indice%len(Characters)]
             currentchar.mana=currentchar.maxmana
             currentchar.movementpoints=currentchar.maxmovement
             currentchar.activespell=None
-
-        elif listecase == []:
-            hextogo = man.poshex
-            if hextogo in Grid and not stopreach :
-                listecase = pathfinding(currentchar.poshex, hextogo, Grid,Friendly)
-                #print(len(listecase),len(listecase)>currentchar.movementpoints+3)
-                if len(listecase)>currentchar.movementpoints+2:
-                    listecase=listecase[:currentchar.movementpoints+1]
-
-
-                else :
-                    listecase=listecase[:-1]
-                    checkside=True
-                stopreach=True
-                if listecase == [] :
-                    print("Pas de chemin")
-                else:
-                    currentchar.movementpoints-=len(listecase)-1
-
+            
+        elif listecase == []:    
+                hextogo = man.poshex
+                if hextogo in Grid and not stopreach :
+                    listecase = pathfinding(currentchar.poshex, hextogo, Grid,Friendly)
+                    #print(len(listecase),len(listecase)>currentchar.movementpoints+3)
+                    if len(listecase)>currentchar.movementpoints+2:
+                        listecase=listecase[:currentchar.movementpoints+1]
+                        
+                    
+                    else :
+                        listecase=listecase[:-1]
+                        Canfight=True
+                    stopreach=True
+                    if listecase == [] :
+                        print("Pas de chemin")
+                    else:
+                        currentchar.movementpoints-=len(listecase)-1
+    
 
     if i < (len(listecase)-1) and listecase!=[] :
         if listecase[i+1]-listecase[i] in [Hex(1, -1),Hex(0, 1),Hex(1,0)] and listecase[i]-currentchar.poshex in [Hex(1, -1),Hex(0, 1),Hex(1,0)]:
@@ -614,7 +622,7 @@ while run:
             currentchar.faceleft=True
         else:
             KeepRight,KeepLeft=False,False
-        tile_left = deepcopy(currentchar.poshex)
+        tile_left = copy(currentchar.poshex)
         tile_left.remove_object()
         update_grid(Grid, tile_left)
         goto(currentchar,listecase[i] - currentchar.poshex,KeepRight,KeepLeft)
@@ -626,27 +634,38 @@ while run:
             currentchar.faceleft=False
         elif listecase[i]-currentchar.poshex in [Hex(0, -1),Hex(-1, 0),Hex(-1, 1)]:
             currentchar.faceleft=True
-        tile_left = deepcopy(currentchar.poshex)
+        tile_left = copy(currentchar.poshex)
         tile_left.remove_object()
         update_grid(Grid, tile_left)
         goto(currentchar,listecase[i] - currentchar.poshex,False,False)
         currentchar.poshex = listecase[i].set_object(currentchar)
         i += 1
-        if not (whosturn()):
+        #if not (whosturn()) and not IsAnyoneDoingSomething():
+        if not(whosturn()):
             indice+=1
             stopreach=False
-            if checkside:
+            if Canfight:
                 eastorwest()
-                checkside=False
+                Canfight=False
+
+                currentchar.activespell=0
+                currentspell=currentchar.spellsname[currentchar.activespell]
+                currentchar.spells[currentchar.activespell]=True
+                currentchar.spellpos=man.poshex
+                #Scriptprint(currentchar.name+' uses '+currentchar.spellsname[currentchar.activespell].name+', cost : '+str(currentchar.spellsname[currentchar.activespell].manacost)+' action point(s)')
+                currentchar.spellsname[currentchar.activespell].cast(Grid,man.poshex)
+
             currentchar=Characters[indice%len(Characters)]
             currentchar.mana=currentchar.maxmana
             currentchar.movementpoints=currentchar.maxmovement
             currentchar.activespell=None
-            print(indice//len(Characters))
-
+        
     else:
         listecase = []
         i = 0
+    if all([Characters[k].animation[0] for k in range(len(Characters)) if Characters[k] in Friendly ]):
+        print("Perdu")
+        run =False
 
     if all([Characters[k].animation[0] for k in range(len(Characters)) if Characters[k] not in Friendly ]):
         print("Gagné")

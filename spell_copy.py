@@ -1,5 +1,6 @@
 import Hex as hx
 from CombatCharacter import *
+
 class Spell :
     name=""
     owner = None
@@ -81,4 +82,4 @@ heal=Spell(dammage)
 heal = initspell(heal,"Heal",-20,1,2,2,1)
 
 attack = Spell(dammage)
-attack= initspell(attack,"Attack",10,1,2,1,1)
+attack= initspell(attack,"Attack",15,1,2,1,1)
