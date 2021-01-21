@@ -244,7 +244,6 @@ class Game:
         if(self.actual_stage > 0):
             self.add_to_known_tiles()
         self.camera.update(self.player)
-        self.minimap.update()
 
     def interactif_dialogue(self, sprite):
         if(sprite):
