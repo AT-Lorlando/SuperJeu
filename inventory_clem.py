@@ -1,45 +1,57 @@
-from settings import WIDTH
+from settings import assets_folder
 from item import *
 import pygame as pg
+from os import path
 
-
-class Inventory():
-    def __init__(self):  # width, x, y
+class Inventory(pg.sprite.Sprite):
+    def __init__(self, name="player", stuff=0):  # width, x, y
         self.inventory = []
-        # for i in range(len(self.inventory)):
-        #     self.inventory.append()
+        super(Inventory, self).__init__()
+        self.width = 4
         self.rect = (420, 400)
         self.fond = pg.Surface(self.rect)
         self.fond.fill((0, 255, 255))
-        self.width = 4
-        self.pos_x = 50
-        self.pos_y = 50
-        self.index = -1
-        # self.dragged = False
+        self.pos_x = 0
+        self.pos_y = 0
+        self.index = -1  # no item is handled
+        self.name = name
+        if stuff == 0:
+            for i in range(16):
+                case = Case()
+                self.add_case(case)
+        else:
+            for i in range(stuff):
+                case = Case()
+                self.add_case(case)
+            self.rect = (100, 500)
 
     def shift(self, x):  # shift the positions of all the items of the inventory
-        self.pos_x += x
-        for item in self.inventory:
-            item.pos_x += x
-            item.image.fill((255, 0, 255))
-
-    def add(self, item):  # add an item of the inventory
-        item.pos_x = self.pos_x + (len(self.inventory) % self.width) * 103 + 10
-        item.pos_y = self.pos_y + \
-            (len(self.inventory) // self.width) * 103 + 10
-        self.inventory.append(item)
-        # print("inventaire", item.pos_x, item.pos_y, item.name)
+        if not self.shifted:
+            self.pos_x += x
+            for item in self.inventory:
+                item.pos_x += x
+                item.image.fill((255, 0, 255))
+            self.shifted = True
 
     def remove(self, item):
-        for i in len(self.inventory):
-            if self.inventory[i] == item:
-                self.inventory[i] = None
+        for i in range(len(self.inventory)):
+            if self.inventory[i].item:
+                if self.inventory[i].item.ID == item.ID:
+                    self.inventory[i].item = None
+                    break
 
-    def draw(self, screen):
-        screen.blit(self.fond, (self.pos_x, self.pos_y))
-        for items in self.inventory:
-            screen.blit(items.print, (items.pos_x, items.pos_y))
-        self.draw_lines()
+    def draw(self, screen, x=0, y=0):
+        # screen.blit(self.fond, (self.pos_x, self.pos_y))
+        for i, case in enumerate(self.inventory):
+            case.pos_x = self.pos_x + (i % self.width)*100+x
+            case.pos_y = self.pos_y + (i // self.width)*100+y
+            case.draw(screen)
+
+    def draw_stuff(self, screen, x=0, y=0):
+        for i, case in enumerate(self.inventory):
+            case.pos_x = self.pos_x  # + (i % self.width)*100+x
+            case.pos_y = self.pos_y + i * 100 + y  # + (i // self.width)*100+y
+            case.draw(screen)
 
     def draw_lines(self):
         lines = []
@@ -61,39 +73,59 @@ class Inventory():
         pg.draw.line(self.fond, (0, 0, 0), (startx, endy), (endx, endy))
         pg.draw.line(self.fond, (0, 0, 0), (endx, starty), (endx, endy))
 
-    def update(self, mouse, pos_mouse, liberty):
-        tab = []
-        for item in self.inventory:
-            # update the item
-            tab.append(item.update(mouse, pos_mouse, liberty))
-        for i in range(len(tab)):
-            if tab[i] == 0:
-                self.index = i  # bring back the index of the item moved
-        if liberty == 1 and self.index != -1:  # test when the item is dropped
-            lines = []
-            col = []
-            startx = 5
-            starty = 5
-            endx = self.rect[0]-5
-            endy = self.rect[1]-5
-            for i in range(self.width + 1):
-                col.append(startx + i*(endx//self.width))
-            for i in range(4):
-                lines.append(starty + i*(endx//self.width))
-            # replace the item
-            i = 0
-            while pos_mouse[0] > col[i] + self.pos_x:
-                i += 1
-            self.inventory[self.index].pos_x = col[i-1] + self.pos_x
-            i = 0
-            while pos_mouse[1] > lines[i] + self.pos_y:
-                i += 1
-                if i > len(lines):
+    def update(self, mouse, pos_mouse):
+        for case in self.inventory:
+            case.update(mouse, pos_mouse)
+
+    def add_case(self, case):
+        self.inventory.append((case))
+
+    def add_without_case(self, *items):
+        for item in items:
+            new = item.copy()
+            for case in self.inventory:
+                if case.item == None:
+                    case.item = new
                     break
-            self.inventory[self.index].pos_y = lines[i-1] + self.pos_y
 
-            # reset
-            self.index = -1
+    def add(self, case, item):
+        for _case in self.inventory:
+            if case == _case:
+                case.item = item
 
-        print(self.index)
-        return not (0 in tab)
+    def is_in(self, item):
+        return any([case.item.ID == item.ID if case.item else 0 for case in self.inventory])
+
+
+class Case(pg.sprite.Sprite):
+    def __init__(self):
+        super(Case, self).__init__()
+        self.rect = (100, 100)
+        self.fond = pg.image.load(
+            path.join(assets_folder, "inv_sprite.png"))
+        self.fond = pg.transform.scale(self.fond, self.rect)
+        self.width = 4
+        self.pos_x = 0
+        self.pos_y = 0
+        self.item = None
+
+    def update(self, mouse, pos_mouse):
+        if self.item != None:
+            # print("name :", self.item.name, "coor :",
+            #       self.item.pos_x, self.item.pos_y)
+            self.item.pos_x = self.pos_x + \
+                self.rect[0]//2 - self.item.rect[0]//2
+            self.item.pos_y = self.pos_y + \
+                self.rect[1]//2 - self.item.rect[1]//2
+            self.item.update(mouse, pos_mouse)
+
+    def draw(self, screen):
+        screen.blit(self.fond, (self.pos_x, self.pos_y))
+        if self.item != None:
+            self.item.draw(screen)
+
+    def add(self, item):
+        self.item = item
+
+    def remove(self):
+        self.item = None

@@ -1,23 +1,30 @@
-import pygame
+import pygame as pg
 from copy import deepcopy
-
+from settings import *
 from pygame.constants import KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP
 
 
-class Item(pygame.sprite.Sprite):
-    def __init__(self):  # , image, name, pos_x, pos_y
+class Item(pg.sprite.Sprite):
+    def __init__(self, ID, name):  # , image, name, pos_x, pos_y
         super(Item, self).__init__()
         self.pos_x = 0
         self.pos_y = 0
-        self.image = pygame.Surface((90, 90))
-        self.image.fill((255, 255, 0))
-        self.print = self.image
+        self.ID = ID
+        self.name = name
+        self.image = resize(pg.image.load(
+            path.join(item_folder, f'i ({self.ID}).png')), ITEM_SIZE)
+        self.to_print = self.image
         self.rect = self.image.get_size()
         self.centerx = self.pos_x + (self.rect[0]/2)
         self.centery = self.pos_y + (self.rect[1]/2)
         # self.name = name
         self.quantity = 1
         self.clicked = False
+        self.price = 100
+
+    def copy(self):
+        new = Item(self.ID, self.name)
+        return new
 
     # Is true if the mouse is over the sprite
     def is_over(self, pos_mouse):
@@ -27,44 +34,44 @@ class Item(pygame.sprite.Sprite):
     def is_clicked(self, mouse, pos_mouse):
         return (mouse[0] and self.pos_x < pos_mouse[0] < self.pos_x + self.rect[0] and self.pos_y < pos_mouse[1] < self.pos_y + self.rect[1])
 
-    def update(self, mouse, pos_mouse, liberty):
+    def update(self, mouse, pos_mouse):
         # If you click on the item, it will follows the cursor and becomes bigger
-        # print("dans item", self.name, "pos :", self.pos_x, self.pos_x)
-
-        if self.is_clicked(mouse, pos_mouse) and liberty:
-            self.clicked = True
-            return 0
-        elif not mouse[0] and not liberty:
-            self.clicked = False
-            print("hope")
-            return 1
-        if self.clicked:
+        if self.is_clicked(mouse, pos_mouse):
+            # print("clicked in item")
             self.pos_x = pos_mouse[0] - self.rect[0]/2 - 5
             self.pos_y = pos_mouse[1] - self.rect[1]/2 - 5
-            self.print = pygame.transform.scale(
-                self.image, (self.rect[0]+10, self.rect[1]+10))
-            return 0
+            self.to_print = resize(self.image, ITEM_SIZE+10)
         else:
-            self.print = self.image
-            return 1
-        # print("self.clicked :", self.clicked)
+            self.to_print = self.image
 
     # Draw the image at the position given
-
     def draw(self, screen):
-        screen.blit(self.print, (self.pos_x, self.pos_y))
+        screen.blit(self.to_print, (self.pos_x, self.pos_y))
+        self.draw_quantity(screen)
+
+    def draw_quantity(self, screen):
+        nb = str(self.quantity)
+        font_surface = pg.font.SysFont(
+            "Blue Eyes.otf", 20).render(nb, True, (255, 255, 255))
+        font_size = [font_surface.get_rect()[2], font_surface.get_rect()[3]]
+        screen.blit(
+            font_surface, (self.pos_x + self.rect[0]-font_size[0]/2, self.pos_y + self.rect[1]-font_size[1]/2))
 
 
 class Stuff(Item):
-    def __init__(self):  # , STR, DEX, CON, INT, WIS, CHA
+    def __init__(self, ID, name):  # , STR, DEX, CON, INT, WIS, CHA
         # Item.__init__(self)
-        super(Stuff, self).__init__()
+        super(Stuff, self).__init__(ID, name)
         self.STR = 0
         # self.DEX = DEX
         # self.CON = CON
         # self.INT = INT
         # self.WIS = WIS
         # self.CHA = CHA
+    
+    def copy(self):
+        new = Stuff(self.ID, self.name)
+        return new
 
 
 class Consumable(Item):
@@ -72,10 +79,50 @@ class Consumable(Item):
         super(Consumable, self).__init__()
         self.health = health
 
+    def copy(self):
+        new = Consumable(self.ID, self.name)
+        return new
+
 
 class Sword(Stuff):
-    def __init__(self, name):  # , pos_x, pos_y
-        Item.__init__(self)
-        super(Sword, self).__init__()
+    def __init__(self, ID, name, inv="player"):  # , pos_x, pos_y
+        super(Sword, self).__init__(ID, name)
         self.STR = 5
-        self.name = name
+        self.inclued_in = inv
+
+    def copy(self):
+        new = Sword(self.ID, self.name)
+        return new
+
+class Quest_Item(Item):
+    def __init__(self, ID, name):
+        super(Quest_Item, self).__init__(ID, name)
+        self.price = 2
+
+    def copy(self):
+        new = Quest_Item(self.ID, self.name)
+        return new
+
+
+Lost_ring = Quest_Item(98, "Lost ring")
+Empowered_Sword = Sword(56, "Empowered sword")
+Empowered_Staff = Sword(73, "Empowered staff")
+
+Apple = Item(192, "Apple")
+Egg = Item(205, "Egg")
+Meat = Item(202, "Meat")
+Shovel = Item(122, "Shovel")
+Pickaxe = Item(121, "Pickaxe")
+Axe = Item(120, "Axe")
+# Ring = Item(192, "Apple")
+# Apple = Item(192, "Apple")
+ITEM_DICT = {
+    192:Item(192, "Apple"),
+    205:Item(205, "Egg"),
+    202:Item(202, "Meat"),
+    122:Item(122, "Shovel"),
+    121:Item(121, "Pickaxe"),
+    120:Item(120, "Axe"),
+    98:Lost_ring,
+    56:Empowered_Sword,
+    73:Empowered_Staff}

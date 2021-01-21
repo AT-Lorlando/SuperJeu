@@ -141,3 +141,7 @@ cython_debug/
 *.txt
 .vscode/settings.json
 map_exemple.txt
+
+*.json
+*.p
+save.p

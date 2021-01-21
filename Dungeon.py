@@ -5,38 +5,55 @@ import pandas as pd
 from math import floor, ceil
 from settings import *
 
+import csv
+
 ROOM_SIZE = 50
 SPACE_BETWEEN_END = floor(0.10 * ROOM_SIZE)
-global_header = 110
+global_header = 11000    
 
 def random_lenght(Room_size):
     return random.randint(floor(0.35 * Room_size), ceil(0.75*Room_size))
 
 def get_header():
     global global_header
-    global_header += 10
-    if global_header > 9900:
-        global_header = 110
+    global_header += 1000
+    if global_header > 99000:
+        global_header = 11000
     return global_header
 
 class Instance:
     def __init__(self, name):
         self.name = name
         self.data = []
-        self.data = np.full( (20, 35), FLOOR_ID)
-        self.data[:,0] = np.full_like(1, WALL_ID)
-        self.data[:,-1] = np.full_like(1, WALL_ID)
-        self.data[0] = np.full_like(1, WALL_ID)
-        self.data[-1] = np.full_like(1, WALL_ID)
-        self.data[5,5] = 100 + 10 + DOOR_ID
-        self.data[8,5] = 100 + 20 + DOOR_ID
-        self.data[8,8] = SPAWN_ID
+        self.data = np.full( (70, 80), FLOOR_ID)
         self.door_type = 1
 
+    def open(self, filename):
+        file = open(f'{filename}', "rt")
+        tab = []
+        tile = 0
+        k = 0
+        for i,line in enumerate(file):
+            for j,c in enumerate(line):
+                if(c != ';' and c != '\n'):
+                    tab.append(int(c))
+                # elif(j//2 >= 80):
+                #     break
+                else:
+                    for index, y in enumerate(tab):
+                        tile += y*pow(10,len(tab)-index-1)
+                    self.data[i, k] = tile
+                    # if(tile != 1):
+                    #     print('add', tile, i, j//2, k)
+                    tile = 0
+                    tab = []
+                    k +=1
+            k = 0
+            
     def save(self):
         file = open(f'Instance_{self.name}.txt', "w")
         for line in self.data:
-            file.write(str(line).replace('0', ' ').replace(' ', ' ').replace('[', '').replace('\n', '').replace(']','\n'))
+            file.write(str(line).replace('[', '').replace('\n', '').replace(']','\n').replace('  ', ' ').replace('  ', ' ').replace(' ', ','))
 
 class Tile:
     def __init__(self, ID):
@@ -141,17 +158,15 @@ class Room:
                 tile.set_pos(thisX-tile.Width+1, thisY-tile.Height+1) 
         self.tile = tile
 
-    def add_spawn(self):
+    def add_ID(self, ID):
         assert(self.tile != 0)
         thisX = random.randint(2, self.tile.Width-2)
         thisY = random.randint(2, self.tile.Height-2)
-        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + SPAWN_ID
-    
-    def add_stair(self):
-        assert(self.tile != 0)
-        thisX = random.randint(2, self.tile.Width-2)
-        thisY = random.randint(2, self.tile.Height-2)
-        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + STAIR_ID
+        while(self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] != self.tile.header + FLOOR_ID):
+            thisX = random.randint(2, self.tile.Width-2)
+            thisY = random.randint(2, self.tile.Height-2)
+        self.data[thisY+self.tile_Ypos][thisX+self.tile_Xpos] = self.tile.header + ID
+        
 
 class Stage:
     def __init__(self, ID, Final_size, Room_size):
@@ -298,99 +313,95 @@ class Stage:
                 room1.connect()
                 room2.connect()
 
+    def add_type(self, x):
+        for i, line in enumerate(self.data):
+            for j, tile in enumerate(line):
+                if tile%100 == FLOOR_ID or tile%100 == WALL_ID:
+                    self.data[i][j] += 100 * x
+
     def save(self):
-        np.savetxt(f"Stage{self.ID}.txt", self.data, fmt="%.4i")
-        # with open(f"Stage{self.ID}.txt", 'r+') as f:
-        #     for line in f:
-        #         f.write(str(line).replace('0000', '   '))
-        # f.close
-        # file = open(f"Stage{self.ID}.txt", "rt")
-        # for line in file:
-        #     file.write(str(line).replace('[', '').replace('\n', '').replace(']','\n'))
-            #file.write(str(line).replace(f'{VOID_ID}', ' ').replace(' ', ' ').replace('[', '').replace('\n', '').replace(']','\n'))
+        np.savetxt(f"Stage{self.ID}.txt", self.data, fmt="%.5i")
 
 
 class Dungeon:
     def __init__(self, instance_type, difficulty):
         assert(difficulty > 0, difficulty)
-        print('New dungeon lvl', difficulty, 'type', instance_type)
         self.stage_tab = []
         self.type = instance_type
         self.difficulty = difficulty
         self.stage_numbers = random.randint(self.difficulty+2, self.difficulty+3)
-        print(self.stage_numbers)
         for i in range(1,self.stage_numbers+1):
             if(i>8):
                 i = 8
-            print('add stage', i)
-            self.stage_tab.append(New_Stage(i, i))
-        print('Final stage')
-        self.stage_tab.append(New_Stage(0, 0))
+            self.stage_tab.append(New_Stage(i, i, self.type))
+        self.stage_tab.append(New_Stage(0, 0, self.type))
 
-def New_Stage(ID, difficulty):
-    tile_number = 0
-    stage_size = 0
-    if(difficulty == 0):
-        tile_number = 1
-        stage_size = 1
-    if(difficulty == 1):
-        tile_number = random.randint(3, 4)
-        stage_size = 2
-    elif(difficulty == 2):
-        tile_number = random.randint(4, 6)
-        stage_size = 3
-    elif(difficulty == 3):
-        tile_number = random.randint(5,7)
-        stage_size = 3
-    elif(difficulty == 4):
-        tile_number = random.randint(7,9)
-        stage_size = 3
-    elif(difficulty == 5):
-        tile_number = random.randint(9,12)
-        stage_size = 4
-    elif(difficulty == 6):
-        tile_number = random.randint(11,14)
-        stage_size = 4
-    elif(difficulty == 7):
-        tile_number = random.randint(13,16)
-        stage_size = 4
-    elif(difficulty == 8):
-        tile_number = random.randint(20,25)
-        stage_size = 5
+
+
+def New_Stage(ID, difficulty, dungeon_type):
+    stage_size = STAGE_SIZE_TAB[difficulty]
+    tile_number = random.randint(difficulty*2,floor(difficulty*2.5))
+    if tile_number > stage_size*stage_size:
+        tile_number = stage_size*stage_size
+        
+    chest_weight = [8,6,4,2]
+    mob_weight = [5,7,6,3,2,1]
 
     stage = Stage(ID, stage_size, ROOM_SIZE)
     Room_size = ROOM_SIZE
 
-    while(not stage.are_connected(tile_number)):
-        stage = Stage(ID, stage_size, ROOM_SIZE)
-        Tile_pos_tab = np.sort(random.sample([i for i in range(stage_size*stage_size)], k = tile_number))
-        special_room = random.sample(sorted(Tile_pos_tab), k = 2 if tile_number > 1 else 1) #Spawn and Stair pos
-        for pos in Tile_pos_tab:
-            new_room = Room(pos, Room_size)
-            new_room.add_tile(Tile(pos))
-            if pos == special_room[0]:
-                new_room.add_spawn()
-            elif pos == special_room[1]:
-                new_room.add_stair()
-            if(pos%stage_size == 0): #RIGHT
-                new_room.add_corridor('RIGHT')
-            elif(pos%stage_size == stage_size): #RIGHT
-                new_room.add_corridor('LEFT')
-            elif(0<pos%stage_size<stage_size): #MID
-                new_room.add_corridor('RIGHT')
-                new_room.add_corridor('LEFT')
-            if(floor(pos/stage_size) == 0): #TOP
-                new_room.add_corridor('BOT')
-            elif(floor(pos/stage_size) == stage_size): #BOT
-                new_room.add_corridor('TOP')
-            elif(0<floor(pos/stage_size)<stage_size): #MID
-                new_room.add_corridor('TOP')
-                new_room.add_corridor('BOT')
-            stage.add_room(new_room)
-        for room1 in stage.room_tab:
-            for room2 in stage.room_tab:
-                stage.connect_corridor(room1, room2)
+    if(difficulty):
+        while(not stage.are_connected(tile_number)):
+            stage = Stage(ID, stage_size, ROOM_SIZE)
+            #Chosing tile position:
+            Tile_pos_tab = np.sort(random.sample([i for i in range(stage_size*stage_size)], k = tile_number))
+            #Chosing stair and spawn position
+            special_room = random.sample(sorted(Tile_pos_tab), k = 2 if tile_number > 1 else 1) #Spawn and Stair pos
+            for pos in Tile_pos_tab:
+                new_room = Room(pos, Room_size)
+                new_room.add_tile(Tile(pos))
+                #Adding spawn and stairs
+                if pos == special_room[0]:
+                    new_room.add_ID(SPAWN_ID)
+                elif pos == special_room[1]:
+                    new_room.add_ID(STAIR_ID)
 
-    print('Stage diffuclty', difficulty)
+                #Adding corridor with the position of the tile
+                if(pos%stage_size == 0): #RIGHT
+                    new_room.add_corridor('RIGHT')
+                elif(pos%stage_size == stage_size): #RIGHT
+                    new_room.add_corridor('LEFT')
+                elif(0<pos%stage_size<stage_size): #MID
+                    new_room.add_corridor('RIGHT')
+                    new_room.add_corridor('LEFT')
+                if(floor(pos/stage_size) == 0): #TOP
+                    new_room.add_corridor('BOT')
+                elif(floor(pos/stage_size) == stage_size): #BOT
+                    new_room.add_corridor('TOP')
+                elif(0<floor(pos/stage_size)<stage_size): #MID
+                    new_room.add_corridor('TOP')
+                    new_room.add_corridor('BOT')
+                
+
+                #chest and Mob parts
+                for _ in range(random.choices([0,1,2,3], weights=chest_weight, k=1)[0]):
+                    new_room.add_ID(CHEST_ID)
+                for _ in range(random.choices([0,1,2,3,4,5], weights=mob_weight, k=1)[0]):
+                    new_room.add_ID(MOB_ID)  
+
+                stage.add_room(new_room)
+            for room1 in stage.room_tab:
+                for room2 in stage.room_tab:
+                    stage.connect_corridor(room1, room2)
+    else:
+        stage = Stage(ID, stage_size, ROOM_SIZE)
+        new_room = Room(0, Room_size)
+        new_room.add_tile(Tile(0))
+        new_room.add_ID(SPAWN_ID)
+        new_room.add_ID(STAIR_ID)
+        new_room.add_ID(CHEST_ID)
+        stage.add_room(new_room)
+
+    stage.add_type(dungeon_type)
     stage.save()
     return stage

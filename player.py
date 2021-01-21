@@ -6,122 +6,193 @@ from Dungeon import *
 from inventory_clem import *
 from shop import *
 from screen_shop import *
-from character import *
 from sprites import *
-from bullets import *
+from character import *
 import time
 vec = pg.math.Vector2
-
-
-def resize(img, size):
-    return pg.transform.scale(img, (size+2, size+2))
-     
-        
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.frontLayer.all_sprites, game.health_bar
+        self.groups = game.Layers[LAYER_NUMBER-1]
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.image.load(path.join(dark_wizard_folder,'b0.png')).convert_alpha()
-    
+        self.image = pg.Surface((CHARACTER_SIZE, CHARACTER_SIZE))
         self.rect = self.image.get_rect()
         self.vel = vec(0, 0)
         self.pos = vec(x, y) * TILESIZE
         self.playerpos = ([floor(pos/TILESIZE) for pos in self.pos])
         self.isPlaying = False
-        self.explode = [(pg.image.load(path.join(explode_folder, f'f ({x}).gif'))) for x in range(1, 23)]
+        self.explode = [
+            (pg.image.load(path.join(explode_folder, f'f ({x}).gif'))) for x in range(1, 23)]
 
         self.inv = Inventory()
-        self.inv.add(Sword("sprite1"))
-        self.inv.add(Sword("sprite2"))
-        self.inv.add(Sword("sprite3"))
+        self.inv.add_without_case(Axe)
+
+        self.stuff = Inventory("stuff", 5)
 
         self.level = 1
+        self.xp = 100
+        self.xp_max = 200
+        self.hp = 100
+        self.hp_max = 200
         self.champion_pool = []
         self.champion_pool.append(Dark_Wizard(self))
         self.champion_pool.append(Sun_Wizard(self))
         self.champion_pool.append(Hunter(self))
         self.main_champ = self.champion_pool[0]
 
+        self.money = 1000
+
+        self.quest_list = []
+        self.finished_quest = []
+
         self.looking_at = 'Bot'
         self.is_moving = False
-        self.last_shot =0
 
-        self.health = 5
+        self.pause = 0
+        self.time_since_last_spell = 0
+
+        self.divinesight = False
+
+    def gain_xp(self, amount):
+        self.xp += amount
+
+    def gain_money(self, amount):
+        self.money += amount
         
+    def level_up(self):
+        self.level += 1
+        self.xp -= self.xp_max
+        self.xp_max = 10*floor(self.xp_max * XP_RATIO)
+        self.hp_max = 10*floor(self.hp_max * HP_RATIO)
+        self.hp = self.hp_max
+        self.game.animation_add(
+            [(resize(
+                pg.image.load(path.join(level_up_folder, f'l ({x}).png'))
+                ,WIDTH,HEIGHT)) 
+                for x in range(1, 38)], pos=(0,0), colorkey=(0,0,0), frame_rate=2
+                )
+        if(self.xp >= self.xp_max):
+            self.level_up()
 
     def set_pos(self, x, y):
         self.pos.x = x
         self.pos.y = y
 
     def add_to_pool(self, champion):
-        self.champion_pool.add(champion)
-
-    def attacking(self):   
-        des = pg.mouse.get_pos()
-        self.time = pg.time.get_ticks() #get the time in milliseconds
-        if self.time - self.last_shot > BULLET_RATE:
-            self.last_shot = self.time
-            Bullet(self.game, (self.pos.x + 32, self.pos.y + 32),des) 
+        self.champion_pool.append(champion)
 
     def get_keys(self):
-        self.vel = vec(0, 0)
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] or keys[pg.K_a]:
-            if keys[pg.K_RIGHT] or keys[pg.K_d]:
-                self.is_moving = False
-            else:
-                self.looking_at = 'Left'
-                self.vel.x = -PLAYER_SPEED
+        if(self.isPlaying):
+            keys = pg.key.get_pressed()
+            if keys[pg.K_LEFT]:
+                if keys[pg.K_RIGHT]:
+                    self.vel.x = 0
+                    self.is_moving = False
+                else:
+                    self.looking_at = 'Left'
+                    self.vel.x = -PLAYER_SPEED
+                    self.is_moving = True
+            elif keys[pg.K_RIGHT]:
+                self.looking_at = 'Right'
+                self.vel.x = PLAYER_SPEED
                 self.is_moving = True
-        elif keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.looking_at = 'Right'
-            self.vel.x = PLAYER_SPEED
-            self.is_moving = True
-        if keys[pg.K_UP] or keys[pg.K_w]:
-            if keys[pg.K_DOWN] or keys[pg.K_s]:
-                self.is_moving = False
-            else:
-                self.looking_at = 'Top'
-                self.vel.y = -PLAYER_SPEED
+            elif self.vel.x != 0:
+                self.vel.x *= 0.9
+            if keys[pg.K_UP]:
+                if keys[pg.K_DOWN]:
+                    self.vel.y = 0
+                    if keys[pg.K_LEFT] or keys[pg.K_RIGHT]:
+                        self.is_moving = True
+                    else:
+                        self.is_moving = False
+                else:
+                    self.looking_at = 'Top'
+                    self.vel.y = -PLAYER_SPEED
+                    self.is_moving = True
+            elif keys[pg.K_DOWN]:
+                self.looking_at = 'Bot'
+                self.vel.y = PLAYER_SPEED
                 self.is_moving = True
-        elif keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.looking_at = 'Bot'
-            self.vel.y = PLAYER_SPEED
-            self.is_moving = True
-        mouse = pg.mouse.get_pressed()
-        if mouse[0]:
-            self.attacking()
-        if self.vel.x != 0 and self.vel.y != 0:
-            self.vel *= 0.7071
+            elif self.vel.y != 0:
+                self.vel.y *= 0.9
 
-        if keys[pg.K_0]:
-            print((self.pos[0],self.pos[1]))
-            print(self.game.camera.apply(self))
-            print(self.rect)
-        elif keys[pg.K_1]:
-            self.switch(0)
-        elif keys[pg.K_2]:
-            self.switch(1)
-        elif keys[pg.K_3]:
-            self.switch(2)
+            if(self.is_moving):
+                if -10 < self.vel.x < 10:
+                    self.vel.x = 0
 
-    #Change the character
+                if -10 < self.vel.y < 10:
+                    self.vel.y = 0
+
+            if self.vel.x != 0 and self.vel.y != 0:
+                self.vel *= 0.7071
+                
+            if keys[pg.K_0]:
+                for quest in self.quest_list:
+                    print(quest.goal)
+            if keys[pg.K_8]:
+                self.hp -= 1 if self.hp > 0 else 0
+                print(self.hp)
+            if keys[pg.K_9]:
+                self.hp += 1 if self.hp < self.hp_max else 0
+                print(self.hp)
+            if keys[pg.K_6]:
+                self.xp -= 1 if self.xp > 0 else 0
+                print(self.xp)
+            if keys[pg.K_7]:
+                self.xp += 1 if self.xp < self.xp_max else 0
+                print(self.xp)
+            if keys[pg.K_5]:
+                self.xp += 100
+                print(self.xp)
+                # for sprite in self.game.frontLayer:
+                #     print(sprite)
+                # print((self.pos[0], self.pos[1]))
+                # print(self.game.camera.apply(self))
+                # print(self.rect)
+                # print(self.main_champ)
+            elif keys[pg.K_1]:
+                self.switch(0)
+            elif keys[pg.K_2]:
+                self.switch(1)
+            elif keys[pg.K_3]:
+                self.switch(2)
+            elif keys[pg.K_a]:
+                self.use_spell(0)
+
+    def use_spell(self, spell):
+        now = pg.time.get_ticks()
+        if now - self.time_since_last_spell > 120:
+            self.time_since_last_spell = now
+            Fireball(self)
+
     def switch(self, x):
         self.vel = vec(0, 0)
         self.isPlaying = False
         self.main_champ = self.champion_pool[x]
+        self.main_champ.animation()
+        self.image = self.main_champ.image
+        pg.display.update()
         bg = self.game.screen.copy()
-        for img in self.explode:
-            self.game.screen.blit(bg,(0,0))
-            self.game.screen.blit(pg.transform.scale(img,(150,150)), (WIDTH/2 - 50, HEIGHT/2 - 85, 100, 100))
+        for img in self.explode[:len(self.explode)//2]:
+            self.game.screen.blit(bg, (0, 0))
+            self.game.screen.blit(pg.transform.scale(
+                img, (150, 150)), (WIDTH/2 - CHARACTER_SIZE+10, (HEIGHT)/2 - CHARACTER_SIZE-15, 90, 100))
             pg.display.flip()
-            time.sleep(.02)
+            self.game.dt_update()
+            time.sleep(.01)
+        self.game.draw()
+        bg = self.game.screen.copy()
+        for img in self.explode[len(self.explode)-len(self.explode)//2:]:
+            self.game.screen.blit(bg, (0, 0))
+            self.game.screen.blit(pg.transform.scale(
+                img, (150, 150)), (WIDTH/2 - CHARACTER_SIZE+10, (HEIGHT)/2 - CHARACTER_SIZE-15, 90, 100))
+            pg.display.flip()
+            self.game.dt_update()
+            time.sleep(.01)
         self.isPlaying = True
+        self.rect = self.image.get_rect()
 
     def collide_with_obstacle(self, dir):
-        # self.game.interactif_dialogue(0)
-
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
             if hits:
@@ -143,6 +214,24 @@ class Player(pg.sprite.Sprite):
                 self.vel.y = 0
                 self.rect.y = self.pos.y
 
+    def collide_with_interactif(self):
+        self.time = pg.time.get_ticks()
+        if(self.time > self.pause + 250):
+            self.pause = self.time
+            hits = pg.sprite.spritecollide(self, self.game.interactif, False)
+
+            if hits:
+                self.game.interactif_dialogue(hits[0])
+            else:
+                self.game.interactif_dialogue(None)
+
+    def collide_with_mob(self):
+        hits = pg.sprite.spritecollide(self, self.game.mobs, False)
+
+        if hits:
+            self.hp -= 10
+            hits[0].kill()
+
     def collide_interaction(self, sprite):
         if sprite in self.game.doors:
             self.vel = vec(0, 0)
@@ -152,11 +241,6 @@ class Player(pg.sprite.Sprite):
             self.vel = vec(0, 0)
             self.isPlaying = False
             self.go_upstair()
-        elif isinstance(sprite, Shoper):
-            self.game.interactif_dialogue(sprite)
-            sprite.shop.run(self.game.screen.copy(), self.inv)
-        else:
-            self.game.interactif_dialogue(0)
 
     def passing_door(self, door):
         self.game.known_tiles = []
@@ -172,23 +256,47 @@ class Player(pg.sprite.Sprite):
 
     def go_upstair(self):
         assert(self.game.actual_dungeon)
+        items = []
         self.game.known_tiles = []
         self.game.actual_stage += 1
-        self.game.draw_instance(
-            self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
+        print(len(self.game.actual_dungeon.stage_tab))
+        if(self.game.actual_stage == len(self.game.actual_dungeon.stage_tab)):
+            for quest in self.quest_list:
+                if type(quest) == Lost_Item_Quest:
+                    for item in quest.needed:
+                        if type(item) == Quest_Item:
+                            items.append(item)
+            self.game.draw_instance(
+                self.game.actual_dungeon.stage_tab[self.game.actual_stage-1], items)
+            return
+            
+        elif(self.game.actual_stage > len(self.game.actual_dungeon.stage_tab)):
+            self.game.actual_dungeon = 0
+            self.game.actual_stage = 0
+            self.game.draw_instance(
+                self.game.hub)
+            return
+        else:
+            self.game.draw_instance(
+                self.game.actual_dungeon.stage_tab[self.game.actual_stage-1])
+            return
 
     def update(self):
         self.main_champ.animation()
-        self.image = self.main_champ.image
-        hits = pg.sprite.spritecollide(self, self.game.obstacle, False)
-        self.collide_interaction(hits)
+        self.image = self.main_champ.image        
         if(self.isPlaying):
             self.get_keys()
-            self.pos += 2*self.vel * self.game.clock.tick(FPS) / 1000
+            # print("Player", self.vel)
+            self.pos += self.vel * self.game.dt
             self.rect.x = self.pos.x
             self.collide_with_obstacle('x')
             self.rect.y = self.pos.y
             self.collide_with_obstacle('y')
+            self.collide_with_mob()
+            self.collide_with_interactif()
             self.playerpos = [floor(pos/TILESIZE) for pos in self.pos]
         if(self.vel == (0, 0)):
             self.is_moving = False
+
+        if (self.xp >= self.xp_max):
+            self.level_up()

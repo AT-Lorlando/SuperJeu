@@ -1,5 +1,5 @@
 from os import path
-from Hex import *
+import pygame as pg
 
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
@@ -13,84 +13,87 @@ ORANGE = (170, 110, 0)
 YELLOW = (255, 255, 0)
 BLUE=(0,0,255)
 
-#Folder
+# Folder
 game_folder = path.dirname('.')
 dungeon_folder = path.join(game_folder, 'dungeon')
 assets_folder = path.join(game_folder, 'assets')
-room_folder = path.join(assets_folder, 'room')
+
 champ_folder = path.join(assets_folder, 'character')
+spell_folder = path.join(assets_folder, 'spell')
 dark_wizard_folder = path.join(champ_folder, 'dark_wizard')
 sun_wizard_folder = path.join(champ_folder, 'sun_wizard')
 hunter_folder = path.join(champ_folder, 'archer')
+mob1_folder = path.join(champ_folder, 'mob1')
+
+portal_folder = path.join(champ_folder, 'portal')
 explode_folder = path.join(champ_folder, 'explode')
-skeleton_folder = path.join(champ_folder, 'skeleton')
-gobelin_folder = path.join(champ_folder, 'gobelin')
-wall_folder = path.join(assets_folder, 'wall')
-sprite_folder = path.join(assets_folder, 'img_sprite')
+level_up_folder = path.join(champ_folder, 'level_up')
+
 button_folder = path.join(assets_folder, 'buttons_img')
-portal_folder = path.join(assets_folder, 'portal')
-bullet_forder = path.join(assets_folder,'bullet_img')
-health_folder = path.join(assets_folder,'healthbar')
-spell_folder = path.join(assets_folder,'spell')
+map_folder = path.join(assets_folder, 'map_background')
+
+# wall_folder = path.join(assets_folder, 'wall')
+sprite_folder = path.join(assets_folder, 'img_sprite')
+enemy_folder = path.join(assets_folder,'enemy')
+item_folder = path.join(assets_folder, 'items')
+# portal_folder = path.join(assets_folder, 'portal')
+# room_folder = path.join(assets_folder, 'room')
+
+# Tiles Folder
+tile_folder = path.join(assets_folder, 'tiles')
+deco_folder = path.join(tile_folder, 'deco')
+floor_folder = path.join(tile_folder, 'floor')
+house_folder = path.join(tile_folder, 'house')
+npc_folder = path.join(tile_folder, 'npc')
+wall_folder = path.join(tile_folder, 'wall')
+
 
 # game settings
 WIDTH = 800  # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 600  # 16 * 48 or 32 * 24 or 64 * 12
 PYGAMESIZE=6 #1 injouable
 FPS = 120
-TITLE = "Tilemap Demo"
+TITLE = "Superjeu"
 BGCOLOR = DARKGREY
 
-TILESIZE = 75
-    
-GRIDWIDTH = WIDTH / TILESIZE
-GRIDHEIGHT = HEIGHT / TILESIZE
+TILESIZE = 96
+CHARACTER_SIZE = 60
+ITEM_SIZE = 40
+
+XP_RATIO = 0.12
+HP_RATIO = 0.11
 
 VOID_ID = 0
-FLOOR_ID = 1
-WALL_ID = 2
-#CORNER_ID = 3
-SHOP_ID = 6
-SPAWN_ID = 7
-DOOR_ID = 8
-STAIR_ID = 9
+FLOOR_ID = 10
+WALL_ID = 11
+NPC_ID = 12
+
+QUEST_ID = 112
+SHOP_ID = 212
+SAVE_ID = 812
+CHEST_ID = 912
+
+
+SPAWN_ID = 13
+DOOR_ID = 14
+STAIR_ID = 15
+COLLECTABLE_ID = 16
+MOB_ID = 17
+
+
+HOUSE_ID = 52
+WATER_ID = 53
 
 # Player settings
 PLAYER_SPEED = 600
 RANGE = 25
+LAYER_NUMBER = 10
 
-ZOOM_VALUE = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3.5, 5]
+STAGE_SIZE_TAB = [1,2,3,3,3,4,4,4,5]
+ZOOM_VALUE = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3, 3.5, 5]
 
-#Enemy settings
-ENEMY_SPEED = 600
+def text_to_screen(text, color=(255,255,255), l=30):
+    return pg.font.SysFont("Blue Eyes.otf", l).render(text, True, color)
 
-#Bullets settings
-BULLET_SPEED = 450
-BULLET_LIFETIME = 1000
-BULLET_RATE = 150
-GUN_SPREAD = 5
-
-#Combat Settings
-
-
-
-Playercombathorizontalshift=28
-Playercombatverticalshift=30
-
-Skeletoncombathorizontalshift=24
-Skeletoncombatverticalshift=38
-
-Gobelincombathorizontalshift=44
-Gobelincombatverticalshift=40
-
-largeurHex = 35
-hauteurHex = 40
-
-Line = 7
-Column = 12
-
-
-
-# Loading things modified by user :
-with open("assets/save/settings.txt") as options:
-    SETTINGS=[line for line in options]
+def resize(img, size, y=0):
+    return pg.transform.scale(img, (size, y)) if y else pg.transform.scale(img, (size, size))
