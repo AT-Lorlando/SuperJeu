@@ -36,9 +36,8 @@ def get_header(game, tile):
 class Game:
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT),pg.RESIZABLE)
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
-
         self.game_folder = path.dirname('.')
         self.clock = pg.time.Clock()
 
@@ -85,27 +84,6 @@ class Game:
         self.resume = False
         self.screen_inv = Screen_inv(self.screen, self)
 
-        #MUSIC
-        swap_music("assets/music/dungeon.mp3")
-
-    '''    
-    def generate_enemy(self, num):
-        
-        with open("map.txt") as file:
-            lines = file.readlines()
-
-        #create enemy in random     
-        pos = []
-        for _ in range(num):
-            while True:
-                x, y = randrange(0, len(lines[0])), randrange(0, len(lines))
-                if lines[y][x] == '.' and [x,y] not in pos:
-                    pos.append([x,y])
-                    break                
-
-        for p in pos:
-            Enemy(self, p[0], p[1])
-    '''
     def add_to_known_tiles(self):
         PlayerX = floor(self.player.pos[0]/TILESIZE)
         PlayerY = floor(self.player.pos[1]/TILESIZE)
@@ -231,7 +209,7 @@ class Game:
     def quit(self):
         pg.quit()
         sys.exit()
-    
+
     def update(self):
         # update portion of the game loop
         # self.backLayer.update()
@@ -244,14 +222,6 @@ class Game:
         if(self.actual_stage > 0):
             self.add_to_known_tiles()
         self.camera.update(self.player)
-
-    def interactif_dialogue(self, sprite):
-        if(sprite):
-            # print('2')
-            self.interactif_sentence = f'Press sprite.key to interact with {sprite}'
-        else:
-            self.interactif_sentence = None
-            # print('3')
 
     def interactif_dialogue(self, sprite):
         if(sprite):
@@ -305,12 +275,6 @@ class Game:
         print(save.money)
         print(self.player.pos)
 
-    def print_minimap(self):
-        while self.HUD[0]:
-            self.minimap.draw()
-            pg.display.flip()
-            self.events()
-
     def events(self):
         # print("Catch")
         # catch all events here
@@ -338,8 +302,6 @@ class Game:
 
     def show_start_screen(self):
         pass
-
-
 
 class Save_player():
     def __init__(self, money, pos, xp, actual_quests):
